@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph format="1" name="upsilontonos">
+  <advance width="434" />
+  <unicode hex="03CD" />
+  <outline>
+    <contour><point smooth="yes" type="curve" x="404" y="184" />
+      <point type="line" x="404" y="499" />
+      <point type="line" x="350" y="499" />
+      <point smooth="yes" type="line" x="350" y="174" />
+      <point x="350" y="92" />
+      <point x="307" y="40" />
+      <point smooth="yes" type="curve" x="224" y="40" />
+      <point x="143" y="40" />
+      <point x="91" y="94" />
+      <point smooth="yes" type="curve" x="91" y="174" />
+      <point type="line" x="91" y="499" />
+      <point type="line" x="34" y="499" />
+      <point smooth="yes" type="line" x="34" y="184" />
+      <point x="34" y="75" />
+      <point x="98" y="-10" />
+      <point smooth="yes" type="curve" x="222" y="-10" />
+      <point x="346" y="-10" />
+      <point x="404" y="71" />
+    </contour><contour><point type="line" x="202" y="682" />
+      <point x="215" y="696" />
+      <point x="213" y="719" />
+      <point smooth="yes" type="curve" x="195" y="729" />
+      <point x="178" y="739" />
+      <point x="158" y="728" />
+      <point smooth="yes" type="curve" x="152" y="710" />
+      <point type="line" x="114" y="603" />
+      <point type="line" x="149" y="603" />
+    </contour></outline>
+  <lib>
+  <dict>
+  <key>com.typemytype.robofont.mark</key>
+  <array>
+    <real>0.6</real>
+    <real>1</real>
+    <real>0.694</real>
+    <real>1</real>
+  </array>
+  </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph format="1" name="Emacron">
+  <advance width="405" />
+  <unicode hex="0112" />
+  <outline>
+    <contour><point type="line" x="41" y="0" />
+      <point type="line" x="372" y="0" />
+      <point type="line" x="372" y="50" />
+      <point type="line" x="97" y="50" />
+      <point type="line" x="97" y="356" />
+      <point type="line" x="269" y="356" />
+      <point type="line" x="287" y="411" />
+      <point type="line" x="97" y="411" />
+      <point type="line" x="97" y="646" />
+      <point type="line" x="374" y="646" />
+      <point type="line" x="374" y="698" />
+      <point type="line" x="41" y="698" />
+    </contour><contour><point type="line" x="243" y="675" />
+      <point type="line" x="23" y="675" />
+      <point type="line" x="23" y="617" />
+      <point type="line" x="243" y="617" />
+    </contour></outline>
+  <lib>
+  <dict>
+  <key>com.typemytype.robofont.mark</key>
+  <array>
+    <real>0.6</real>
+    <real>1</real>
+    <real>0.694</real>
+    <real>1</real>
+  </array>
+  </dict>
+  </lib>
+</glyph>
