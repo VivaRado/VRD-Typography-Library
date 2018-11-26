@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph format="1" name="Eacute">
+  <advance width="405" />
+  <unicode hex="00C9" />
+  <outline>
+    <contour><point type="line" x="41" y="0" />
+      <point type="line" x="372" y="0" />
+      <point type="line" x="372" y="50" />
+      <point type="line" x="97" y="50" />
+      <point type="line" x="97" y="356" />
+      <point type="line" x="269" y="356" />
+      <point type="line" x="287" y="411" />
+      <point type="line" x="97" y="411" />
+      <point type="line" x="97" y="646" />
+      <point type="line" x="374" y="646" />
+      <point type="line" x="374" y="698" />
+      <point type="line" x="41" y="698" />
+    </contour><contour><point type="line" x="196" y="682" />
+      <point x="209" y="696" />
+      <point x="207" y="719" />
+      <point smooth="yes" type="curve" x="189" y="729" />
+      <point x="172" y="739" />
+      <point x="152" y="728" />
+      <point smooth="yes" type="curve" x="146" y="710" />
+      <point type="line" x="108" y="603" />
+      <point type="line" x="143" y="603" />
+    </contour></outline>
+  <lib>
+  <dict>
+  <key>com.typemytype.robofont.mark</key>
+  <array>
+    <real>0.6</real>
+    <real>1</real>
+    <real>0.694</real>
+    <real>1</real>
+  </array>
+  </dict>
+  </lib>
+</glyph>
