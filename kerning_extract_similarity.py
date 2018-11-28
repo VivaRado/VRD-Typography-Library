@@ -43,6 +43,7 @@ if  args.purpose is None:
 	print('=\n=> Please Provide the Purpose of Similarity Extraction: component 1 to 1 similarity, or kerning groups loose similarity: -p "comp" or "kern"\n=')	
 	#
 #
+args.compress = "Yes"
 # if  args.compress is None:
 # 	#
 # 	faults = True

@@ -15,6 +15,8 @@ def copy_kerning(self, kerning_type="class", _stream="Downstream"):
 		EFO_class_kerning_groups_file = os.path.join(EFO_kerning_dir,self.current_font_file_name+'.plist')
 		UFO_class_kerning_groups_file = os.path.join(self.current_font_instance_directory,'kerning.plist')
 		#
+		#if (os.path.isdir(EFO_class_kerning_groups_file)):
+		#
 		copyfile(EFO_class_kerning_groups_file, UFO_class_kerning_groups_file)
 		#
 		print('\tCopied Kerning '+kerning_type+': ',UFO_class_kerning_groups_file)

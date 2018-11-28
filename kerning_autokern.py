@@ -48,7 +48,7 @@ if faults == False:
 	#
 	EFO = EFO(args.source,EFO_temp)
 	#
-	EFO._efo_to_ufos(args.fonts, True, "flat")
+	EFO._efo_to_ufos(args.fonts, True)
 	#
 	AUTOKERN = AUTOKERN(args.source, args.fonts, args.compress_class_plist)
 	#

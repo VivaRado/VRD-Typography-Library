@@ -62,18 +62,21 @@ class AUTOKERN(object):
 			result_lines = ''
 			result_keys = []
 			#
-			pl = plistlib.readPlist(os.path.join(self.current_font_instance_directory,'kerning.plist'))
-			#
-			for x,v in pl.items():
+			if os.path.isdir(os.path.join(self.current_font_instance_directory,'kerning.plist')):
 				#
-				for z,y in v.items():
+				pl = plistlib.readPlist(os.path.join(self.current_font_instance_directory,'kerning.plist'))
+				#
+				for x,v in pl.items():
 					#
-					permu_list = [x,z]
-					permut_str = '"'+x+'","'+z+'"'+'\n'
-					#
-					total_permut = total_permut + permut_str
-					#
-					weights_perm[orig_w].append(permu_list)
+					for z,y in v.items():
+						#
+						permu_list = [x,z]
+						permut_str = '"'+x+'","'+z+'"'+'\n'
+						#
+						total_permut = total_permut + permut_str
+						#
+						weights_perm[orig_w].append(permu_list)
+						#
 					#
 				#
 			#
@@ -203,6 +206,11 @@ class AUTOKERN(object):
 				#
 				pairlist_tuple_to_kern = ('--glyph-pairs-to-kern',*pairlist_tup)
 				#
+				if len(pairlist[gf]) == 0:
+					#
+					pairlist_tuple_to_kern = ()
+					#
+				#
 				autokernArgs = TFSMap()
 				#AutokernSettings(autokernArgs).getCommandLineSettings(*pseudo_argv)
 				AutokernSettings(autokernArgs).getCommandLineSettings(*(pseudo_argv+pairlist_tuple_to_kern))
@@ -224,5 +232,14 @@ class AUTOKERN(object):
 		self.current_font_instance_directory = os.path.join(self.current_font_family_directory,self.current_font_instance_name+'.ufo')
 		self.current_fontinfo = efo_fontinfo.get_font_info_for_weight(self)
 		#
-		self.current_kerning_settings = self.kerning_settings[0][gf]
+		for x in self.kerning_settings:
+			#
+			for k,v in x.items():
+				#
+				if k == gf:
+					#
+					self.current_kerning_settings = v	
+					#
+				#
+			#
 		#

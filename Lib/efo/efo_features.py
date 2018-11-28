@@ -60,13 +60,18 @@ def combine_fea(self):
 			#
 			EFO_features_file = os.path.join(EFO_features_dir,file)
 			#
-			print('\tFOUND FEATURE: ', features_start_end_name[x])
+			_fea = features_start_end_name[x]
+			#
+			print('\tFOUND FEATURE: ', _fea)
+			#
 			#
 			with open(EFO_features_file, 'r') as fea_file:
 				#
-				data = fea_file.read()
+				data = generic_tools.get_between('# '+_fea+' Start\n', '\n# '+_fea+' End', fea_file.read())
 				#
-				all_fea = all_fea + '\n# '+features_start_end_name[x]+' Start\n' + data + '\n# '+features_start_end_name[x]+' End'+'\n'
+				print(data)
+				#
+				all_fea = all_fea + '\n# '+_fea+' Start\n' + data + '\n# '+_fea+' End'+'\n'
 				#
 			#
 		elif "kern_fea" in file:
@@ -77,9 +82,11 @@ def combine_fea(self):
 			#
 			with open(current_EFO_kern_fea, 'r') as kern_fea_file:
 				#
-				data = kern_fea_file.read()
+				data = generic_tools.get_between('# '+"Kerning"+' Start\n', '# '+"Kerning"+' End', kern_fea_file.read())
 				#
-				all_fea = all_fea + '\n# '+features_start_end_name[x]+' Start\n' + data + '\n# '+features_start_end_name[x]+' End'+'\n'
+				print(data)
+				#
+				all_fea = all_fea + '\n# '+"Kerning"+' Start\n' + data + '\n# '+"Kerning"+' End'+'\n'
 				#
 			#
 		#
@@ -107,7 +114,7 @@ def split_fea(self, _from_compress = False):
 		#
 		for _fea in features_start_end_name:
 			#
-			data = '# '+_fea+' Start'+generic_tools.get_between('# '+_fea+' Start', '# '+_fea+' End', fea_data)+'# '+_fea+' End'
+			data = generic_tools.get_between('# '+_fea+' Start', '# '+_fea+' End', fea_data)
 			#
 			if features_requested_order[x] == "kern_fea":
 				#

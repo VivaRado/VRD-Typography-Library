@@ -115,7 +115,7 @@ class EFO(object):
 				#
 			#
 	#
-	def _efo_to_ufos(self, _fonts='', _flatten=False, _kerning_type="class"):
+	def _efo_to_ufos(self, _fonts='', _flatten=False, _kerning_type=""):
 		#
 		'''
 		Export UFOs from EFO:
@@ -188,17 +188,19 @@ class EFO(object):
 				#
 				kerning_to_copy = _kerning_type # class / flat
 				#
-				if kerning_to_copy == "class":
+				if kerning_to_copy != "":
 					#
-					copy_kerning(self, "class", "Downstream")
-					copy_groups_class_kerning(self, "Downstream")
+					if kerning_to_copy == "class":
+						#
+						copy_kerning(self, "class", "Downstream")
+						copy_groups_class_kerning(self, "Downstream")
+						#
+					else:
+						#
+						copy_kerning(self, "flat", "Downstream")
+						remove_groups_class_kerning(self)
+						#
 					#
-				else:
-					#
-					copy_kerning(self, "flat", "Downstream")
-					remove_groups_class_kerning(self)
-					#
-				#
 				generate_lib(self)
 				copy_metainfo(self, "Downstream")
 				#
