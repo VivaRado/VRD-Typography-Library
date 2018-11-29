@@ -69,7 +69,7 @@ def combine_fea(self):
 				#
 				data = generic_tools.get_between('# '+_fea+' Start\n', '\n# '+_fea+' End', fea_file.read())
 				#
-				print(data)
+				#print(data)
 				#
 				all_fea = all_fea + '\n# '+_fea+' Start\n' + data + '\n# '+_fea+' End'+'\n'
 				#
@@ -84,7 +84,7 @@ def combine_fea(self):
 				#
 				data = generic_tools.get_between('# '+"Kerning"+' Start\n', '# '+"Kerning"+' End', kern_fea_file.read())
 				#
-				print(data)
+				#print(data)
 				#
 				all_fea = all_fea + '\n# '+"Kerning"+' Start\n' + data + '\n# '+"Kerning"+' End'+'\n'
 				#

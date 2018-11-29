@@ -41,7 +41,8 @@ import plistlib
 import collections
 from collections import Counter
 #
-
+ignore_glyphs = []
+#
 plist_header = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -244,6 +245,8 @@ class COMPRESS(object):
 			let_a = self.get_kern_name_and_dir(y[0])
 			let_b = self.get_kern_name_and_dir(y[1])
 			#
+			#print(let_a, let_b)
+			#
 			fea_line = fea_pos_line.format('@_'+let_a[0], '@_'+let_b[0]+'1', str(k_int))
 			#
 			#do_fea_kern = do_fea_kern +'    '+fea_line + '\n'
@@ -259,6 +262,7 @@ class COMPRESS(object):
 	def fea_kern_list_to_file(self, final_kerning_list):
 		#
 		kern_strings = '''# Kerning Start
+
 feature kern { # Kerning
 # DEFAULT
 lookup kern1 {\n'''
