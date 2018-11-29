@@ -32,7 +32,7 @@ if  args.output is None:
 	#
 	#faults = True
 	#
-	print('=\n=> Output Directory for EFO is fontinfo.JSON Parent Directory or Provide: -o "dir/"\n=')	
+	print('=\n=> Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide: -o "dir/"\n=')	
 	#
 if faults == False:
 	#

@@ -27,11 +27,16 @@ The endpoints of the Lib so far as argument functions:
 -f (the weights of the font to convert)  
 -k (what kerning to export / "flat" or "comp")
 ```
-**Kerning Autokern**
+**UFOs to EFO** 
 ```
 -s (source EFO)  
--f (the weights of the font to kern)  
--c (compress using SIMEX - EFO/groups/kerning.plist)  
+-f (the weights of the font to extract similarity from - just needs one weight)  
+-p (purpose - Either for Components or Kerning: "comp" or "kern")
+```
+**Kerning Autokern**
+```
+-s (source fontinfo.JSON)  
+-o (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide) 
 ```
 **Kerning Compress Flat**
 ```
