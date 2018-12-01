@@ -20,6 +20,20 @@ from tfs3.common.TFSMap import TFSMap
 #
 class AUTOKERN(object):
 	#
+	ignore_glyphs_list = ["brevecomb",
+	"caroncomb",
+	"circumflexcomb",
+	"commaturnedabovecomb",
+	"dieresiscomb",
+	"dotaccentcomb", 
+	"gravecomb",
+	"hungarumlautcomb",
+	"macroncomb",
+	"ringcomb",
+	"tildecomb",
+	"cedillacomb",
+	"ogonekcomb"]
+	#
 	def __init__(self, _in, _fonts='', _compress_class_plist='No'):
 		#
 		self._in = _in
@@ -37,6 +51,7 @@ class AUTOKERN(object):
 			self._fonts = _fonts
 			#
 		#
+	#
 	#
 	def extract_pairs(self, dir_path, weights):
 		#
@@ -94,7 +109,10 @@ class AUTOKERN(object):
 			#
 			for g in li:
 				#
-				l.append(g)
+				if g not in ignore_glyphs_list:
+					#
+					l.append(g)
+					#
 				#
 		#
 		data = tuple(filter(None, l))
