@@ -11,26 +11,26 @@ import sys
 from sys import argv
 import re
 #
-import readline 
-import rlcompleter 
-from argparse import ArgumentParser
-import atexit
+# import readline 
+# import rlcompleter 
+# from argparse import ArgumentParser
+#import atexit
 #
 import io
 #
 from shutil import copyfile
 #
-# tab completion 
-readline.parse_and_bind('tab: complete') 
-# history file 
-histfile = os.path.join(os.environ['HOME'], '.pythonhistory') 
-try: 
-	readline.read_history_file(histfile) 
-except IOError: 
-	pass 
-atexit.register(readline.write_history_file, histfile) 
-del histfile, readline, rlcompleter
-#
+# # tab completion 
+# readline.parse_and_bind('tab: complete') 
+# # history file 
+# histfile = os.path.join(os.environ['HOME'], '.pythonhistory') 
+# try: 
+# 	readline.read_history_file(histfile) 
+# except IOError: 
+# 	pass 
+# atexit.register(readline.write_history_file, histfile) 
+# del histfile, readline, rlcompleter
+# #
 #
 import difflib
 import plistlib
@@ -72,6 +72,8 @@ def lib_to_glyphlib(_in, _out):
 	#
 	for k,v in p_g.items():
 		#
+		print(k,v)
+		#
 		for glyph_name in v:
 			#
 			ret_uni = match_glyph_uni(glyph_name)
@@ -88,6 +90,8 @@ def lib_to_glyphlib(_in, _out):
 				#
 				ret_uni = ""
 				#
+			#
+			print(generic_tools.glyphNameToFileName(glyph_name), glyph_name)
 			#
 			glyph = ET.Element("glyph", dict(name=glyph_name, unicode=ret_uni, glif=generic_tools.glyphNameToFileName(glyph_name).split('.glif')[0]))
 			#

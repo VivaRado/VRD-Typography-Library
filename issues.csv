@@ -1,8 +1,6 @@
 Issue,	State,	Notes, Observer
 00100,	Resolved,	EFO Componentize Integration. Componentization script. VRD TYPL., VivaRado
 00101,	Postponed,	Componentization sometimes leaves old contour remains along with the created components, VivaRado
-00102,	Postponed,	Make Componentization understand if components are already satisfied, VivaRado
-00103,	Postponed,	Make Componentization understand what anchors does the glyph need and add just those, VivaRado
-00104,	Postponed,	Make Componentization accept adjustment values for finetuning anchor position - JSON, VivaRado
+00105,	Postponed,	Make Componentization move glif files back to EFO glyphs dir, VivaRado
 00200,	Postponed,	Create Tests for all functions, VivaRado
 00300,	Postponed,	Test Python3 Type Facet Library Update on functionality other than Autokerning., VivaRado

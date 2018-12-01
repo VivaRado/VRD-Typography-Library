@@ -28,10 +28,11 @@ from .efo_glif import generate_contents_plist
 from .efo_glif import copy_glif_files
 #
 sys.path.insert(0, abspath(join(dirname("generic"), '..')))
+sys.path.insert(0, abspath(join(dirname("components"), '..')))
 #
 from Lib.generic import generic_tools
 from Lib.generic import lib_to_glyphlib
-import Lib.components
+from Lib.components import comp_tools
 #
 #REMOVE
 from pprint import pprint
@@ -219,13 +220,15 @@ class EFO(object):
 			#
 		#
 	#
-	def _ufos_to_efo(self, _to_copy=["metainfo","features","glyphs","fontinfo","kerning","lib"], _ufos_to_temp=True, _from_compress=False):
+	def _ufos_to_efo(self, _to_copy=["metainfo","features","glyphs","fontinfo","kerning","lib"], _ufos_to_temp=True, _from_compress=False, _from_components=False):
 		#
 		read_efo_json_fontinfo(self, "Upstream")
 		#
 		self.font_files = get_font_file_array(self)
 		#
-		print('UFOs to EFO')
+		print('UFOs to EFO', _from_components)
+		#
+		self._from_components = _from_components
 		#
 		self.current_font_family_name = generic_tools.sanitize_string(self.fontinfo[0]["shared_info"]["familyName"])
 		#
@@ -253,8 +256,16 @@ class EFO(object):
 			self.current_font_file_name = f
 			self.current_font_instance_name = generic_tools.sanitize_string(self.current_font_family_name+' '+self.current_font_file_name)
 			#
-			if _from_compress:
+			if _from_compress or _from_components:
 				#
+				#if _from_components:
+					#
+					#
+				#	pass
+					#self.current_font_file_name = f.split('_compo')[0]
+					#self.current_font_instance_name = generic_tools.sanitize_string(self.current_font_family_name+' '+self.current_font_file_name)
+					#
+					#
 				self.current_source_ufo = os.path.join( self.current_source_ufo_family,self.current_font_instance_name+'.ufo' )
 				#
 			else:

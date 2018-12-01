@@ -29,10 +29,10 @@ class COMPS(object):
 	#
 	read_efo_json_fontinfo = ""
 	#
-	def __init__(self, _in, _ufo_dst):
+	def __init__(self, _in, _ufo_src):
 		#
 		self._in = _in
-		self._ufo_dst = _ufo_dst
+		self._ufo_src = _ufo_src
 		#
 		#self._fonts = _fonts
 		#
@@ -74,18 +74,10 @@ class COMPS(object):
 	#
 	def ufos_comp(self):
 		#
-		print(self._ufo_dst)
+		#run_ufo_glyphs(comp_dir_path, ufo_dir_path)
 		#
-		for ff in self._ufo_dst:
-			#
-			for k, v in ff.items():
-				#
-				print(v)
-				#
-				ufo_src_path = v
-				#
-				comp_class_file = os.path.join(*(self._in,self.EFO_groups_dir,"components.plist"))#input("components class group plist file: ")
-				#
-				run_ufo_glyphs(comp_class_file, ufo_src_path)
-				#
-				
+		comp_class_file = os.path.join(*(self._in,self.EFO_groups_dir,"components.plist"))#input("components class group plist file: ")
+		#
+		run_ufo_glyphs(comp_class_file, self._ufo_src)
+		#
+		

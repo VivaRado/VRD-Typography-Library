@@ -45,7 +45,10 @@ def flatten_components(ufo_dir):
 			#
 			new_outline = []
 			#
-			source_glyph = os.path.join(t_dir,generic_tools.glyphNameToFileName(glyphName))
+			#print(generic_tools.glyphNameToFileName(glyphName))
+			#print(glyphName)
+			#
+			source_glyph = os.path.join(t_dir,generic_tools.glyphNameToFileName(glyphName)+'.glif')
 			#
 			target_elem = ET.parse(source_glyph)
 			target_dest = target_elem.find('outline')

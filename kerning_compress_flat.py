@@ -37,13 +37,6 @@ if  args.fonts is None:
 	print('=\n=> Please Provide the Fonts to Compress: -f "thn,reg,bld"\n=')	
 	#
 #
-# if  args.compress_class_plist is None:
-# 	#
-# 	faults = True
-# 	#
-# 	print('=\n=> Please Select to Compress to Class Based Kerning through Similarity Plist (Obtained by kerning_extract_similarity.py and stored in your EFO/groups): -c "Yes"/"No" \n=')
-# 	#
-#
 new_class_fontinfo = [
     {
         "shared_info": {
@@ -69,8 +62,6 @@ if faults == False:
 	#
 	EFO._efo_to_ufos(args.fonts, True, "flat")
 	#
-	given_fonts = args.fonts.split('.')
-	#
 	source_efo_flat_kern_dir = os.path.join(EFO._in, "kerning/flat")
 	source_efo_similarity_kern_plist = os.path.join(EFO._in, "groups/kerning.plist")
 	#
@@ -81,8 +72,6 @@ if faults == False:
 		for k, v in x.items():
 			#
 			copy_ufo_for_class_compress = v.split('.ufo')[0]+'_class.ufo'
-			#
-			source_font_flat_kerning = os.path.join(source_efo_flat_kern_dir,k+'.plist')
 			#
 			generic_tools.copyDirectory(v, copy_ufo_for_class_compress)
 			#
@@ -116,10 +105,7 @@ if faults == False:
 	EFO._out = args.source
 	EFO.current_source_ufo_family = c_source_ufo_family
 	#
-	#time.sleep(4)
-	#
-	EFO._ufos_to_efo(["kerning","features"], False, True)
+	EFO._ufos_to_efo(["kerning","features"], False, True, False)
 	#
 	#
 #
-

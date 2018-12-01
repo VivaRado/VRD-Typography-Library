@@ -9,6 +9,7 @@ import json
 import xml.etree.cElementTree as ET
 import xml.dom.minidom as minidom
 #
+from ufoLib.filenames import userNameToFileName
 #
 def merge_two_dicts(x, y):
 	"""Given two dicts, merge them into a new dict as a shallow copy."""
@@ -220,6 +221,9 @@ def get_dict_wo_key(dictionary, key):
 #
 
 def glyphNameToFileName(glyphName):
+
+	return userNameToFileName(glyphName)
+
 	"""Default algorithm for making a file name out of a glyph name.
 	This one has limited support for case insensitive file systems:
 	it assumes glyph names are not case sensitive apart from the first
@@ -251,32 +255,32 @@ def glyphNameToFileName(glyphName):
 	else:
 		#
 		# is capital digram
-		have_upper = 0
+		# have_upper = 0
+		# #
+		# for p in parts:
+		# 	#
+		# 	if len(p) > 1:
+		# 		#
+		# 		_p = list(p)
+		# 		#
+		# 		for x in _p:
+		# 			#
+		# 			if x.isupper():
+		# 				#
+		# 				have_upper += 1
+		# 				#
+		# 		#
+		# 	#
+		# #
+		# if have_upper > 1:
+		# 	#
+		# 	parts[0] += "__"
+		# 	#
+		# else:
+		# it is a single name
+		if parts[0] != parts[0].lower():
+			parts[0] += "_"
 		#
-		for p in parts:
-			#
-			if len(p) > 1:
-				#
-				_p = list(p)
-				#
-				for x in _p:
-					#
-					if x.isupper():
-						#
-						have_upper += 1
-						#
-				#
-			#
-		#
-		if have_upper > 1:
-			#
-			parts[0] += "__"
-			#
-		else:
-			# it is a single name
-			if parts[0] != parts[0].lower():
-				parts[0] += "_"
-			#
 	for i in range(1, len(parts)):
 		# resolve additional, period separated parts, like alt / Alt
 		if parts[i] != parts[i].lower():

@@ -4,7 +4,9 @@ import os
 #
 from Lib.efo import EFO
 from Lib.components import COMPS
-#import Lib.generic.tab_completion
+from Lib.generic import generic_tools
+#
+import json
 #
 from argparse import ArgumentParser
 #
@@ -23,6 +25,24 @@ args = parser.parse_args()
 #
 dir_path = os.path.dirname(os.path.realpath(__file__))
 #
+
+new_class_fontinfo = [
+    {
+        "shared_info": {
+            "familyName": ""
+        }
+    },
+    {
+        "font_files": []
+    },
+    {
+        "font_info": []
+    },
+    {
+        "font_kerning_settings": []
+    }
+]
+#
 faults = False
 #
 if  args.source is None:
@@ -39,14 +59,52 @@ if  args.fonts is None:
 	#
 if faults == False:
 	#
+	#
 	EFO_temp = os.path.join(args.source,"temp")
 	#
 	EFO = EFO(args.source,EFO_temp)
 	#
-	EFO._efo_to_ufos(args.fonts)
+	EFO._efo_to_ufos(args.fonts, True, "class")
 	#
-	UFO_to_COMPUFO = COMPS(args.source, EFO.all_exported_ufo_dst)
+	f_files_class = []
 	#
-	UFO_to_COMPUFO.ufos_comp()
+	for x in EFO.all_exported_ufo_dst:
+		#
+		for k, v in x.items():
+			#
+			copy_ufo_for_componentization = v.split('.ufo')[0]+'_compo.ufo'
+			#
+			generic_tools.copyDirectory(v, copy_ufo_for_componentization)
+			#
+			f_files_class.append(k+'_compo')
+			#
+			#
+			UFO_to_COMPUFO = COMPS(args.source, copy_ufo_for_componentization)
+			#
+			UFO_to_COMPUFO.ufos_comp()
+			#
+		#
+	#
+	new_class_fontinfo[0]["shared_info"]["familyName"] = EFO.current_font_family_name
+	new_class_fontinfo[1]["font_files"] = f_files_class
+	#
+	#print(new_class_fontinfo)
+	#
+	c_fontinfo_dir = os.path.join(*(EFO._in,"temp","fontinfo.json"))
+	#
+	with open(c_fontinfo_dir, 'w') as outfile:
+		#
+		json.dump(new_class_fontinfo, outfile)
+		#
+	#
+	#print(c_fontinfo_dir,args.source)
+	#
+	c_source_ufo_family = os.path.join(*(EFO._in,"temp",EFO.current_font_family_name))
+	#
+	EFO._in = c_fontinfo_dir
+	EFO._out = args.source
+	EFO.current_source_ufo_family = c_source_ufo_family
+	#
+	EFO._ufos_to_efo(["glyphs"], False, False, True)
 	#
 #

@@ -56,17 +56,34 @@ def copy_glif_files(self, _stream):
 	elif _stream == "Upstream":
 		#
 		#
-		print('EFO: Copying UFO GLIF Files to EFO')
+		print('EFO: Copying UFO GLIF Files to EFO:', self.current_font_file_name)
 		#
-		# Make Glyphs Directories
-		current_glyphs_dir = os.path.join(*(self.new_efo_dir,self.EFO_glyphs_dir,self.current_font_file_name))
-		generic_tools.make_dir(current_glyphs_dir)
-		#
-		if os.path.exists(os.path.dirname(current_glyphs_dir)):
+		if self._from_components:
+			# Make Glyphs Directories
+			uncomp_current_glyphs_dir = os.path.join(*(self.new_efo_dir,self.EFO_glyphs_dir,self.current_font_file_name) )
+			current_glyphs_dir = uncomp_current_glyphs_dir.split("_compo")[0]
+			generic_tools.make_dir(current_glyphs_dir)
 			#
-			generic_tools.rm_dir(current_glyphs_dir)
+			if os.path.exists(os.path.dirname(uncomp_current_glyphs_dir)):
+				#
+				generic_tools.rm_dir(uncomp_current_glyphs_dir)
+				#
 			#
-		#
+			if os.path.exists(os.path.dirname(current_glyphs_dir)):
+				#
+				generic_tools.rm_dir(current_glyphs_dir)
+				#
+			#
+		else:
+			# Make Glyphs Directories
+			current_glyphs_dir = os.path.join(*(self.new_efo_dir,self.EFO_glyphs_dir,self.current_font_file_name))
+			generic_tools.make_dir(current_glyphs_dir)
+			#
+			if os.path.exists(os.path.dirname(current_glyphs_dir)):
+				#
+				generic_tools.rm_dir(current_glyphs_dir)
+				#
+			#
 		copytree(self.current_source_ufo_glyphs_dir, current_glyphs_dir, ignore=ignore_patterns("*contents.plist", 'glyphs*'))
 		#
 	#

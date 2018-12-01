@@ -237,7 +237,7 @@ def get_base_glif_contours(_dir_glif, needed_glifs):
 def rebase_accent(acc_orig, acc_dest, glif_loc, _acc_pos, g_info):
 	#
 	#
-	print(acc_orig, acc_dest, glif_loc)
+	#print(acc_orig, acc_dest, glif_loc)
 	#
 	acc_orig_glif = os.path.join(glif_loc, acc_orig+'.glif')
 	acc_dest_glif = os.path.join(glif_loc, acc_dest+'.glif')
@@ -307,8 +307,8 @@ def rebase_accent(acc_orig, acc_dest, glif_loc, _acc_pos, g_info):
 			print('>>>>>', 'NOK')
 			print('>>>>>', 'combs should not include components, original accents should include comb components')
 			#
-			print(acc_dest_glif)
-			print(acc_orig_glif)
+			#print(acc_dest_glif)
+			#print(acc_orig_glif)
 			#
 			exchange_replace_contour(acc_orig, acc_dest, acc_dest_glif, acc_orig_glif, acc_orig, _acc_pos, g_info)
 			#
@@ -594,7 +594,6 @@ def run_ufo_glyphs(comp_dir_path, ufo_dir_path):
 			#
 			print('=======================')
 			print('BASE: ',o)
-			print('INFO: ',glif_info)
 			print('COMP: ',u)
 			print('_______________________')
 			#
