@@ -13,12 +13,12 @@ The endpoints of the Lib so far as argument functions:
 **EFO to SVGs**
 ```
 -s (source EFO)  
--f (the weights of the font to convert)  
+-f (the weights of the font to convert: "reg,bld,...")  
 ```
 **SVGs to EFO**
 ```
 -s (source EFO)  
--f (the weights of the font to convert)  
+-f (the weights of the font to convert: "reg,bld,...")  
 ```
 **EFO to UFOs**
 ```
@@ -41,13 +41,18 @@ The endpoints of the Lib so far as argument functions:
 **Kerning Compress Flat**
 ```
 -s (source EFO)  
--f (the weights of the font to compress)
+-f (the weights of the font to compress: "reg,bld,...") 
 ```
 **Kerning Extract Similarity** 
 ```
 -s (source EFO)  
 -f (the weights of the font to extract similarity from - just needs one weight)  
 -p (purpose - Either for Components or Kerning: "comp" or "kern")
+```
+**Componentize EFO** 
+```
+-s (source EFO)  
+-f (the weights of the font to componentize: "reg,bld,...")
 ```
 
 [By VivaRado](https://www.vivarado.com)
