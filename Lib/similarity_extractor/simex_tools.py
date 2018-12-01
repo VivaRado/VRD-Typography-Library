@@ -18,7 +18,7 @@ from .simex_render import *
 #
 flush_space = '                                                             '
 #
-def get_glyphs(srcUfoFont, check_list, checking):
+def get_glyphs(srcUfoFont, check_list, checking_only_list, ignore_list, ignore_only_list):
 	#
 	glyph_nums = collections.OrderedDict()
 	#
@@ -48,17 +48,26 @@ def get_glyphs(srcUfoFont, check_list, checking):
 		if len(contours) < 1:
 			continue
 		#
-		if check_list:
-		
-			if ufoglyph.name in checking:
 				#
-				glyph_nums[ufoglyph.name] = render_glyph(contours, ufoglyph)
+		if check_list and ignore_list:
+			#
+			if check_list:
+			
+				if ufoglyph.name in checking_only_list:
+					#
+					glyph_nums[ufoglyph.name] = render_glyph(contours, ufoglyph)
+					#
+			if ignore_list:
 				#
+				if ufoglyph.name not in ignore_only_list:
+					#
+					glyph_nums[ufoglyph.name] = render_glyph(contours, ufoglyph)
+			#
 		else:
 			#
 			glyph_nums[ufoglyph.name] = render_glyph(contours, ufoglyph)
 			#
-		
+		#
 	#
 	return glyph_nums
 	#

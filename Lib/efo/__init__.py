@@ -27,11 +27,11 @@ from .efo_metainfo import copy_metainfo
 from .efo_glif import generate_contents_plist
 from .efo_glif import copy_glif_files
 #
-#sys.path.insert(0, abspath(join(dirname("generic"), '..')))
+sys.path.insert(0, abspath(join(dirname("generic"), '..')))
 #
 from Lib.generic import generic_tools
 from Lib.generic import lib_to_glyphlib
-from Lib.components import comp_tools
+import Lib.components
 #
 #REMOVE
 from pprint import pprint

@@ -3,7 +3,7 @@ from fontTools.misc.py23 import *
 import os
 import re
 import tempfile
-from xml.etree import ElementTree
+#from xml.etree import ElementTree
 #from xml.etree.ElementTree import ElementTree, Element
 
 from Lib.efo import efo_fontinfo

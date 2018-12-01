@@ -31,9 +31,50 @@ from .simex_plist_kern import *
 #REMOVE
 from pprint import pprint
 #
-checking = ['A', 'Alphatonos', 'Abreve', 'Deltagreek', 'Omicron', 'Theta', 'O', 'E', 'F', 'P', 'R', 'L', 'Lacute', 'J', 'Eng', 'V', 'W']
-#checking = ['A', 'Alphatonos', 'Abreve', 'Deltagreek', 'Omicron', 'Theta', 'O']
-check_list = False
+checking_list = ['A', 'Alphatonos', 'Abreve', 'Deltagreek', 'Omicron', 'Theta', 'O', 'E', 'F', 'P', 'R', 'L', 'Lacute', 'J', 'Eng', 'V', 'W']
+ignore_list = ['hungarumlaut',
+'hungarumlautcomb',
+'comma',
+'commaaccent',
+'commaturnedbelowcomb',
+'tilde',
+'tildecomb',
+'dotaccent',
+'dotaccentcomb',
+'dieresis',
+'dieresiscomb',
+'commaturnedabove',
+'commaturnedabovecomb',
+'dieresistonos',
+'dieresistonoscomb',
+'acute',
+'acutecomb',
+'tonos',
+'tonoscomb',
+'circumflex',
+'circumflexcomb',
+'caron',
+'caroncomb',
+'hungarumlaut',
+'hungarumlautcomb',
+'comma',
+'commaaccent',
+'commaturnedbelowcomb',
+'ring',
+'ringcomb',
+'macroncomb',
+'overscore',
+'ogonek',
+'cedilla',
+'cedillacomb',
+'breve',
+'brevecomb',
+'grave',
+'gravecomb'
+]
+#checking_list = ['A', 'Alphatonos', 'Abreve', 'Deltagreek', 'Omicron', 'Theta', 'O']
+do_check = False
+do_ignore = False
 #
 # SIMILARITY PURPOSE VARIABLES
 # left, center, right
@@ -104,7 +145,7 @@ class SIMEX(object):
 				#
 				srcUfoFont = TFSFontFromFile(ufo_src_path)
 				#
-				glyph_nums = get_glyphs(srcUfoFont, check_list, checking)
+				glyph_nums = get_glyphs(srcUfoFont, do_check, checking_list, do_ignore, ignore_list)
 				#
 				if self._purpose == "comp":
 					max_diff = max_diff_comp

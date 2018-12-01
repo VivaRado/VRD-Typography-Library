@@ -12,6 +12,9 @@ from os.path import dirname, join, abspath
 #sys.path.insert(0, abspath(join(dirname("generic"), '..')))
 #
 from Lib.generic import generic_tools
+from Lib.efo import efo_fontinfo
+#
+from .comp_ufo import run_ufo_glyphs
 #
 #REMOVE
 from pprint import pprint
@@ -26,10 +29,12 @@ class COMPS(object):
 	#
 	read_efo_json_fontinfo = ""
 	#
-	def __init__(self, _in, _out=None):
+	def __init__(self, _in, _ufo_dst):
 		#
 		self._in = _in
+		self._ufo_dst = _ufo_dst
 		#
+		#self._fonts = _fonts
 		#
 		self.EFO_fontinfo = "fontinfo.json"
 		self.EFO_features_dir = "features"
@@ -38,22 +43,49 @@ class COMPS(object):
 		self.EFO_glyphs_dir = "glyphs"
 		self.EFO_temp = "temp"
 		#
-		read_efo_json_fontinfo(self)
+		efo_fontinfo.read_efo_json_fontinfo(self)
 		#
-		self.font_files = get_font_file_array(self)
-		#
-		if _out:
-			#
-			self._out = _out
-			#
-			self.current_font_family_directory = os.path.join(self._out,self.current_font_family_name)
-			#
-			print(self.current_font_family_directory)
-			print(self._in, self._out)
-			#
-		#
+		# if _fonts != '':
+		# 	#
+		# 	self._fonts = _fonts
+		# 	#
+		# 	if "," in self._fonts:
+		# 		#
+		# 		self.font_files = self._fonts.split(',')
+		# 		#
+		# 	else:
+		# 		#
+		# 		self.font_files = [self._fonts]
+		# 		#
+		# 	#
+		# 	faults = generic_tools.check_given_fonts_exist(_fonts, self.font_files)
+		# 	#_font_files = self.font_files
+
+		# else:
+
+		# 	faults = False
+		# 	#_font_files = self.font_files
+		# #
+		# if faults == False:
+		# 	#
+		# 	print('\tCOMPONENTIZING: ',self.font_files)
+		# 	#
 	#
-	def components_flatten(self, _fonts=''):
+	#
+	def ufos_comp(self):
 		#
-		pass
+		print(self._ufo_dst)
 		#
+		for ff in self._ufo_dst:
+			#
+			for k, v in ff.items():
+				#
+				print(v)
+				#
+				ufo_src_path = v
+				#
+				comp_class_file = os.path.join(*(self._in,self.EFO_groups_dir,"components.plist"))#input("components class group plist file: ")
+				#
+				run_ufo_glyphs(comp_class_file, ufo_src_path)
+				#
+				

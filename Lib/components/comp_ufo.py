@@ -10,24 +10,7 @@ from lxml import etree
 from os.path import basename
 import difflib
 #
-# tab completion 
-#
-import readline 
-import rlcompleter 
-import atexit
-#
-readline.parse_and_bind('tab: complete') 
-# history file 
-histfile = os.path.join(os.environ['HOME'], '.pythonhistory') 
-try: 
-	readline.read_history_file(histfile) 
-except IOError: 
-	pass 
-atexit.register(readline.write_history_file, histfile) 
-del histfile, readline, rlcompleter
-#
-#
-#
+import xml.etree.ElementTree as ET
 #
 #
 base_top_accent_tall_pos_y = 735
@@ -37,6 +20,7 @@ comb_top_accent_pos_y = 600
 comb_bottom_accent_pos_y = 0
 tall_small_case = ['l','t']
 #l_dots_list = ['Ldot','ldot']
+#
 #
 comp_anchors_top = '''<contour>
       <point x="{1}" y="750" type="move" name="top"/>
@@ -134,6 +118,9 @@ comb_bot_rebase = ['cedilla',
 			# 'strokeshortcomb'
 			];
 #
+non_exist = []
+non_comp = []
+#
 def get_between(_start, _end, _str):
 	#
 	return _str[_str.find(_start)+len(_start):_str.find(_end)]
@@ -217,7 +204,10 @@ def get_base_glif_contours(_dir_glif, needed_glifs):
 			#
 			glif_data = the_file.read()
 			#
-			name = re.search('<glyph name="(.*)" format', glif_data).group(1)
+			glif_parse = ET.fromstring(glif_data)
+			#
+			name = glif_parse.get('name')
+			res_width = int(glif_parse.findall('advance')[0].get('width'))
 			#
 			if name not in seen_glifs:
 				#
@@ -225,21 +215,6 @@ def get_base_glif_contours(_dir_glif, needed_glifs):
 					#
 					#
 					try:
-						#
-						try:
-							#
-							#
-							out_start = '<advance width="'
-							out_end = '"/>'
-							#
-							res_width=int(get_between(out_start, out_end, glif_data))
-							#
-						except Exception:
-							#
-							res_width = 0
-							#
-							pass
-							#
 						#
 						out_start = "<outline>"
 						out_end = "</outline>"
@@ -257,8 +232,7 @@ def get_base_glif_contours(_dir_glif, needed_glifs):
 					#
 				#
 	return base_contours, res_width
-#
-non_exist = []
+
 #
 def rebase_accent(acc_orig, acc_dest, glif_loc, _acc_pos, g_info):
 	#
@@ -331,7 +305,7 @@ def rebase_accent(acc_orig, acc_dest, glif_loc, _acc_pos, g_info):
 		else:
 			#
 			print('>>>>>', 'NOK')
-			print('>>>>>', 'combs should not include components, original accents should include combs')
+			print('>>>>>', 'combs should not include components, original accents should include comb components')
 			#
 			print(acc_dest_glif)
 			print(acc_orig_glif)
@@ -597,8 +571,8 @@ def run_ufo_glyphs(comp_dir_path, ufo_dir_path):
 	#
 	needed_glifs = list(pl)
 	#
-	#
 	run_base = get_base_glif_contours(_dir_glif, needed_glifs)
+	#
 	base_contours = run_base[0]
 	#
 	for o,p in pl.items():
@@ -719,13 +693,8 @@ def run_ufo_glyphs(comp_dir_path, ufo_dir_path):
 			#
 		#
 	#
+	print('NOT EXISTING GLYPHS')
+	print(non_exist)
+	print('NOT COMPONENTIZED GLYPHS')
+	print(non_comp)
 #
-#
-ufo_src_path = input("Directory of UFO file: ")
-#
-comp_class_file = input("components class group plist file: ")
-#
-run_ufo_glyphs(comp_class_file, ufo_src_path)
-#
-print('NOT EXISTING GLYPHS')
-print(non_exist)
