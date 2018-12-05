@@ -66,6 +66,9 @@ if faults == False:
 	#
 	EFO._efo_to_ufos(args.fonts, True, "class")
 	#
+	
+	''
+	#
 	f_files_class = []
 	#
 	for x in EFO.all_exported_ufo_dst:
@@ -79,7 +82,7 @@ if faults == False:
 			f_files_class.append(k+'_compo')
 			#
 			#
-			UFO_to_COMPUFO = COMPS(args.source, copy_ufo_for_componentization)
+			UFO_to_COMPUFO = COMPS(args.source, copy_ufo_for_componentization, EFO)
 			#
 			UFO_to_COMPUFO.ufos_comp()
 			#
@@ -88,16 +91,12 @@ if faults == False:
 	new_class_fontinfo[0]["shared_info"]["familyName"] = EFO.current_font_family_name
 	new_class_fontinfo[1]["font_files"] = f_files_class
 	#
-	#print(new_class_fontinfo)
-	#
 	c_fontinfo_dir = os.path.join(*(EFO._in,"temp","fontinfo.json"))
 	#
 	with open(c_fontinfo_dir, 'w') as outfile:
 		#
 		json.dump(new_class_fontinfo, outfile)
 		#
-	#
-	#print(c_fontinfo_dir,args.source)
 	#
 	c_source_ufo_family = os.path.join(*(EFO._in,"temp",EFO.current_font_family_name))
 	#
@@ -107,4 +106,5 @@ if faults == False:
 	#
 	EFO._ufos_to_efo(["glyphs"], False, False, True)
 	#
-#
+	generic_tools.empty_dir(EFO_temp)
+	#

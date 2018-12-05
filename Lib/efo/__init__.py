@@ -19,6 +19,7 @@ from .efo_fontinfo import get_font_info_for_weight
 from .efo_fontinfo import generate_fontinfo
 from .efo_fontinfo import get_shared_info
 from .efo_fontinfo import update_font_info
+from .efo_anchors import get_anchor_offsets
 from .efo_groups import copy_groups_class_kerning
 from .efo_groups import remove_groups_class_kerning
 from .efo_kerning import copy_kerning
@@ -81,7 +82,9 @@ class EFO(object):
 		self.EFO_glyphs_dir = "glyphs"
 		self.EFO_temp = "temp"
 		self.EFO_vectors = "vectors"
+		self.EFO_anchors = "anchors"
 		#
+		get_anchor_offsets(self)
 		#
 		if Path(self._in).name == "fontinfo.json":
 			#
@@ -258,14 +261,6 @@ class EFO(object):
 			#
 			if _from_compress or _from_components:
 				#
-				#if _from_components:
-					#
-					#
-				#	pass
-					#self.current_font_file_name = f.split('_compo')[0]
-					#self.current_font_instance_name = generic_tools.sanitize_string(self.current_font_family_name+' '+self.current_font_file_name)
-					#
-					#
 				self.current_source_ufo = os.path.join( self.current_source_ufo_family,self.current_font_instance_name+'.ufo' )
 				#
 			else:

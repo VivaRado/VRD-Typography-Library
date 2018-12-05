@@ -1,5 +1,6 @@
 Issue,	State,	Notes, Observer
 00101,	Postponed,	Componentization sometimes leaves old contour remains along with the created components, VivaRado
+00102,	Postponed,	Replace all get between to actual etree parsing, VivaRado
 00106,	Postponed,	Add fine-tuning abilities to EFO for Componentization Anchors, VivaRado
 00200,	Postponed,	Create Tests for all functions, VivaRado
 00300,	Postponed,	Test Python3 Type Facet Library Update on functionality other than Autokerning., VivaRado

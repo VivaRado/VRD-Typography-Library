@@ -11,11 +11,6 @@ from os.path import basename
 import difflib
 #
 import xml.etree.ElementTree as ET
-import lxml.etree as LET
-from bs4 import BeautifulSoup
-from xml.dom import minidom
-#from lxml import etree
-
 #
 #
 _format = 1
@@ -72,19 +67,18 @@ comp_anchors_bot_ogonek = '''<contour>
       <point x="{1}" y="{0}" type="move" name="_ogonek"/>
     </contour>'''
 #
-
-base_anchors_contour = '''\n<contour>
- <point name="ogonek" type="move" x="{2}" y="0"/>
-</contour>
-<contour>
- <point name="bottom" type="move" x="{0}" y="0"/>
-</contour>
-<contour>
- <point name="top" type="move" x="{0}" y="{1}"/>
-</contour>
-<contour>
- <point name="tonos" type="move" x="{3}" y="{4}"/>
-</contour>'''
+base_anchors_contour = '''<contour>
+      <point x="{2}" y="0" type="move" name="ogonek"/>
+    </contour>
+    <contour>
+      <point x="{0}" y="0" type="move" name="bottom"/>
+    </contour>
+    <contour>
+      <point x="{0}" y="{1}" type="move" name="top"/>
+    </contour>
+    <contour>
+      <point x="{3}" y="{4}" type="move" name="tonos"/>
+    </contour>'''
 #
 base_anchors = '''
   <anchor x="{2}" y="0" name="ogonek"/>
@@ -141,8 +135,6 @@ comb_bot_rebase = ['cedilla',
 			# 'strokelongcomb',
 			# 'strokeshortcomb'
 			];
-#
-all_combs = comb_top + comb_top_rebase + comb_bot + comb_bot_rebase
 #
 non_exist = []
 non_comp = []
@@ -264,6 +256,8 @@ def rebase_accent(acc_orig, acc_dest, glif_loc, _acc_pos):
 			#
 			if comp_o in o_f_r:
 				#
+				#print(acc_orig+'INCLUDES: '+acc_dest, end='')
+				#
 				exist_orig_comp = True
 				#
 			#
@@ -289,6 +283,8 @@ def rebase_accent(acc_orig, acc_dest, glif_loc, _acc_pos):
 			#
 			if comp_d in d_f_r:
 				#
+				#print(acc_dest+'INCLUDES: '+acc_orig, end='')
+				#
 				exist_dest_comp = True
 				#
 			#
@@ -304,11 +300,15 @@ def rebase_accent(acc_orig, acc_dest, glif_loc, _acc_pos):
 		if exist_dest_comp:
 			#
 			pass
+			#print('\r\t\t'+'>>>>>' + 'OK'+flush_space+'\n',end='' )
 			#
 		else:
 			#
-			print('\r\t\t'+'>>>>>' + 'NOK'+flush_space+'\n',end='')
-			print('\r\t\t'+'>>>>>' + 'combs should not include components, original accents should include comb components:'+acc_orig+flush_space+'\n',end='')
+			print('\r\t\t'+'>>>>>' + 'NOK')
+			print('\r\t\t'+'>>>>>' + 'combs should not include components, original accents should include comb components'+flush_space+'\n')
+			#
+			#print(acc_dest_glif)
+			#print(acc_orig_glif)
 			#
 			exchange_replace_contour(acc_dest, acc_dest_glif, acc_orig_glif, acc_orig, _acc_pos)
 			#
@@ -355,46 +355,49 @@ def exchange_replace_contour(acc_dest, acc_dest_glif, acc_orig_glif, comb_accent
 	#
 	replace_contour(replaced_a, acc_orig_glif, False)
 	#
-def replace_contour(_this, _here, _return_replaced, _clean = False, _base = False):
+def replace_contour(_this, _here, _return_replaced, _clean = False):
 	#
 	out_start = "<outline>"
 	out_end = "</outline>"
 	#
 	replacement = ''
 	#
-	#
-	parser = etree.XMLParser(remove_blank_text=True)
-	#
 	with open(_here, 'r') as rf:
 		#
 		glif_data = rf.read()
 		#
-		result= get_between(out_start, out_end, glif_data)
+		result=get_between(out_start, out_end, glif_data)
+		#
 		#
 		if _clean:
-			#
+
+			# #
+			# tree = ET.fromstring(glif_data)
+			# etree_str = ET.tostring(tree, encoding="unicode", method='xml')
+			# #
 			replacement = clean_base_contour(result)
-			#
+
+			print('==============')
+			print(replacement)
+			print('==============')
+
 		else:
 
 			replacement = result
 		#
 		rf.close()
 		#
+		#
 		with open(_here, 'w') as wf:
 			#
-			if _base:
+			result = glif_data.replace(replacement, _this)
+			#
+			if _return_replaced and _clean:
 				#
-				replacement = replacement.replace(' <c', '  <c').replace(' </c', '  </c').replace( '  <p', '   <p')
+				return result
 				#
 			#
-			new_data = glif_data.replace(replacement, _this)
-			#
-			clean_xml_str = out_start+replacement+out_end#
-			#
-			new_xml_str = BeautifulSoup(new_data.replace('<?xml version="1.0" encoding="UTF-8"?>',''), "xml").prettify()#.replace('<?xml version="1.0" encoding="UTF-8"?>','').replace('<clean>','').replace('</clean>','')
-			#
-			wf.write(new_xml_str)
+			wf.write(result)
 			#
 			wf.close()
 			#
@@ -500,8 +503,15 @@ def do_repos_anchors(self,name, _type, _comb_name=""):
 					_x = self.anchor_offsets[self.current_font_name][_type][name][0]
 					_y = self.anchor_offsets[self.current_font_name][_type][name][1]
 					#
+					#print('\n'+name)
+					#
+			#
+			#print(">>>>>>>>>>>>>>>", name[0].isupper())
 			#
 			if name[0].isupper() == False:
+				#
+				#print(name, _y)
+				#print('+===============================')
 				#
 				if name not in tall_small_case:
 					#
@@ -625,8 +635,6 @@ def accent_logic(name,_pos):
 	return accent_name, rebased, name
 	#
 #
-done_accents = []
-#
 def check_accents (self, name, combs, rebase_combs, _dir_glif, glif_width):
 	#
 	created_accent = ''
@@ -640,13 +648,6 @@ def check_accents (self, name, combs, rebase_combs, _dir_glif, glif_width):
 		name = acl[2]
 		#
 		if len(accent_name) > 0: 
-			#
-			if accent_name not in done_accents:
-				#
-				done_accents.append(accent_name)
-				#
-				rebase_accent(accent_name, rebased, _dir_glif, _pos)
-				#
 			#
 			created_accent = create_accent_comp(self, name, accent_name, _dir_glif, rebased, _pos, glif_width)
 			#
@@ -666,6 +667,11 @@ def create_accent_comp(self, name, accent_name, _dir_glif, rebased, _pos, glif_w
 	accent_location = os.path.join(self._dir_glif, accent_name+'.glif')
 	#
 	accent_width = int(get_base_glif_width(accent_location, accent_name, True)[1])
+	#
+	#print('accent_width', accent_width)
+	#
+	rebase_accent(accent_name, rebased, _dir_glif, _pos)
+	#
 	#
 	if _pos == 'top':
 		#
@@ -691,6 +697,9 @@ def create_accent_comp(self, name, accent_name, _dir_glif, rebased, _pos, glif_w
 		_y = - 150#- self.anchor_offsets[self.current_font_name]["metric"]["y_offset"]
 		#
 		if name[0].isupper() == False:
+			#
+			#print(name, _y)
+			#print('+===============================')
 			#
 			if name not in tall_small_case:
 				#
@@ -729,7 +738,7 @@ def check_anchors_exist(_comb_glif, _comb_name):
 		#
 		if anchors == None:
 			#
-			print ("\tCOMB Should Include Anchors: "+_comb_glif+flush_space,end='')
+			print ("COMB Should Include Anchors")
 			#
 			glif_info_width = str(get_base_glif_width(_comb_glif, _comb_name, True)[1] / 2)
 			#
@@ -764,8 +773,6 @@ def check_anchors_exist(_comb_glif, _comb_name):
 			#
 			with open(_comb_glif, 'w') as f:
 				#
-				print ("\t\tAdded Anchors: "+_comb_glif+flush_space,end='')
-				#
 				f.write('<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(tree, encoding="unicode", method='xml'))
 				f.close()
 				#
@@ -787,14 +794,16 @@ def determine_accent():
 	pass
 	#
 #
+#
+out_start = "<outline>"
+out_end = "</outline>"
+#
 def clean_base_contour(base_contour):
-	#
-	out_start = "<outline>"
-	out_end = "</outline>"
-	#
 	tree = ET.fromstring(out_start+base_contour+out_end)
 	#
+	#
 	etree_str = ET.tostring(tree, encoding="unicode", method='xml')
+	print(etree_str)
 	#
 	contours = tree.findall('contour')
 	anchors = tree.findall('anchor')
@@ -811,89 +820,23 @@ def clean_base_contour(base_contour):
 					if "move" in str(point.attrib):
 						elem.remove(child)
 						break
-		
+		if elem.tag == 'anchor':
+			#
+			tree.remove(elem)
+			#
+	#
+	
 	#
 	etree_str = ET.tostring(tree, encoding="unicode", method='xml')
+	print(etree_str)
 	#
-	res_a= out_start+get_between(out_start, out_end, etree_str)+out_end
+	result=get_between(out_start, out_end, etree_str)
 	#
-	res_b = BeautifulSoup(res_a, "xml").prettify().replace('<?xml version="1.0" encoding="UTF-8"?>','')
-	#
-	result= get_between(out_start, out_end, res_b)
+	#print(result)
 	#
 	return result
+	#base_anchors_contour_calc = base_anchors_contour.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
 	#
-#
-def clean_anchors(_glif):
-	#
-	with open(_glif, 'r') as rf:
-		#
-		glif_data = rf.read()
-		#
-
-		tree = ET.fromstring(glif_data)
-		#
-		#
-		for elem in tree.iter():
-
-			if elem.tag == 'anchor':
-				#
-				tree.remove(elem)
-				#
-		#
-		etree_str = ET.tostring(tree, encoding="unicode", method='xml')
-		#
-		result= etree_str
-		#
-		return result
-	#
-#
-def add_components (self, t, o, u_name, comb_bot, comb_bot_rebase, base_conts):
-	#
-	created_accent = check_accents(self, u_name, comb_bot, comb_bot_rebase, self._dir_glif, t[2])
-	#
-	base_cont = base_conts[1]
-	rep_cont = t[1]
-	#
-	diff_ratio = difflib.SequenceMatcher(a=base_cont,b=rep_cont).ratio()
-	components_xml = LET.Element("components")
-	#
-	if diff_ratio == 1:
-		#
-		match_cont = ''
-		#
-		LET.SubElement(components_xml, "component", base=o)
-		#
-	else:
-		#
-		match_cont = get_matching_contour(base_cont, rep_cont)
-		#
-		if len(created_accent[0]) > 0:
-			#
-			LET.SubElement(components_xml, "component", base=o)
-			et_accent = LET.fromstring(created_accent[0])
-			components_xml.append(et_accent)
-			#
-			match_cont = ''
-			#
-		else:
-			#
-			LET.SubElement(components_xml, "component", base=o)
-			#
-		#
-		glif_now_loc = os.path.join(self._dir_glif,t[0])
-		#
-	#
-	et_comp_list = components_xml.findall("component")
-	#
-	etree_comps_str = ''
-	#
-	for x in et_comp_list:
-		#
-		etree_comps_str = etree_comps_str + LET.tostring(x, encoding='utf8', method="xml", xml_declaration=False, pretty_print=True).decode()
-		#
-	#
-	return etree_comps_str+match_cont
 	#
 #
 def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
@@ -919,8 +862,6 @@ def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 			check_anchors_exist(comb_dir, x)
 			#
 	#
-	x = 0
-	#
 	for o,p in pl.items():
 		#
 		glif_info = get_base_glif_width(self._dir_glif, o)
@@ -938,21 +879,47 @@ def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 		#
 		for u,t in get_contours_to_rep.items():
 			#
-			print('\r\t'+'COMP: Base = '+o+', Comp = '+u+flush_space+'\n',end='')
-			#print('\r\t'+'COMP: Base = '+o+', Comp = '+u+flush_space)
+			print('\r\t'+'COMP: Base = '+o+', Comp = '+u+flush_space,end='')
 			#
 			u_name = u
 			#
-			etree_comps_str = add_components(self, t, o, u_name, comb_bot, comb_bot_rebase, base_conts)
+			created_accent = check_accents(self, u_name, comb_bot, comb_bot_rebase, self._dir_glif, t[2])
 			#
-			replacement_contour = etree_comps_str
+			base_cont = base_conts[1]
+			rep_cont = t[1]
+			#
+			diff_ratio = difflib.SequenceMatcher(a=base_cont,b=rep_cont).ratio()
+			#
+			if diff_ratio == 1:
+				#
+				match_cont = ''
+				add_comp = '\n    <component base="{0}"/>'.format(o)
+				#
+			else:
+				#
+				match_cont = get_matching_contour(base_cont, rep_cont)
+				#
+				if len(created_accent[0]) > 0:
+					#
+					match_cont = ''
+					add_comp = '\n    <component base="{0}"/>\n    {1}'.format(o, created_accent[0])
+					#
+				else:
+					#
+					add_comp = '\n    <component base="{0}"/>'.format(o)
+					#
+				#
+				glif_now_loc = os.path.join(self._dir_glif,t[0])
+				#
+			#
+			replacement_contour = add_comp+match_cont
 			#
 			target_glif = os.path.join(self._dir_glif, t[0])
 			base_glif = os.path.join(self._dir_glif, base_conts[0])
 			#
-			clean_anchors(target_glif)
-			#
 			replace_contour(replacement_contour, target_glif, False)
+			#
+			all_combs = comb_top + comb_top_rebase + comb_bot + comb_bot_rebase
 			#
 			if o not in all_combs and u not in all_combs:
 				#
@@ -981,18 +948,25 @@ def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 					pos_y = base_top_accent_tall_pos_y
 					#
 				#
+				clean_base_cont = clean_base_contour(base_cont)
+				#
+				if (_format == 2):
+					base_anchors_contour_calc = ''
+					base_anchors_calc = '' #base_anchors.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
+				else:
+					base_anchors_contour_calc = base_anchors_contour.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
+					base_anchors_calc = ''
+				#
+				#
+				#
+				base_anchors_calc = base_anchors.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
+				#
+				replace_contour(base_cont, base_glif, False, True)
+				#
+				#data = replace_contour(base_anchors_calc+clean_base_cont+base_anchors_contour_calc, base_glif, True, True)
+				#
+				#print(data)
 			#
-		#
-		clean_base_cont = clean_base_contour(base_conts[1])
-		#
-		if (_format == 2):
-			base_anchors_contour_calc = ''
-			base_anchors_calc = base_anchors.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
-		else:
-			base_anchors_contour_calc = base_anchors_contour.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
-			base_anchors_calc = ''
-		#
-		replace_contour(clean_base_cont+base_anchors_contour_calc, os.path.join(self._dir_glif, base_conts[0]), False, True, True)
 		#
 	#
 	print('\nNOT EXISTING GLYPHS')

@@ -29,7 +29,8 @@ class COMPS(object):
 	#
 	read_efo_json_fontinfo = ""
 	#
-	def __init__(self, _in, _ufo_src):
+	def __init__(self, _in, _ufo_src, EFO):
+		#
 		#
 		self._in = _in
 		self._ufo_src = _ufo_src
@@ -43,41 +44,16 @@ class COMPS(object):
 		self.EFO_glyphs_dir = "glyphs"
 		self.EFO_temp = "temp"
 		#
+		self.current_font_name = EFO.current_font_file_name
+		self.anchor_offsets = EFO.anchor_offsets
+		#
 		efo_fontinfo.read_efo_json_fontinfo(self)
 		#
-		# if _fonts != '':
-		# 	#
-		# 	self._fonts = _fonts
-		# 	#
-		# 	if "," in self._fonts:
-		# 		#
-		# 		self.font_files = self._fonts.split(',')
-		# 		#
-		# 	else:
-		# 		#
-		# 		self.font_files = [self._fonts]
-		# 		#
-		# 	#
-		# 	faults = generic_tools.check_given_fonts_exist(_fonts, self.font_files)
-		# 	#_font_files = self.font_files
-
-		# else:
-
-		# 	faults = False
-		# 	#_font_files = self.font_files
-		# #
-		# if faults == False:
-		# 	#
-		# 	print('\tCOMPONENTIZING: ',self.font_files)
-		# 	#
-	#
 	#
 	def ufos_comp(self):
 		#
-		#run_ufo_glyphs(comp_dir_path, ufo_dir_path)
-		#
 		comp_class_file = os.path.join(*(self._in,self.EFO_groups_dir,"components.plist"))#input("components class group plist file: ")
 		#
-		run_ufo_glyphs(comp_class_file, self._ufo_src)
+		run_ufo_glyphs(self, comp_class_file, self._ufo_src)
 		#
 		

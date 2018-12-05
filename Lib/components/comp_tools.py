@@ -9,6 +9,10 @@ import ufoLib
 from Lib.ufo2svg import tools
 from Lib.generic import generic_tools
 import xml.etree.cElementTree as ET
+import lxml.etree as LET
+from xml.dom import minidom
+#
+from bs4 import BeautifulSoup
 #
 '''
 Flattens but punctuation is missaligned.
@@ -27,8 +31,8 @@ def flatten_components(ufo_dir):
 	copy_tree(source_dir, target_dir)
 	#
 	t_dir = target_dir#/media/root/Malysh1/winshm/advent_repo/Advent/_/exp/advent_pro_fmm/test.ufo/glyphs'
-	#print('INPUT', ufo_dir)
-	#print('OUTPUT', t_dir)
+	print('INPUT', ufo_dir)
+	print('OUTPUT', t_dir)
 	#
 	ufoWriter = ufoLib.GlyphSet(t_dir)
 	#
@@ -41,67 +45,75 @@ def flatten_components(ufo_dir):
 		text = inGlyphSet.getGLIF(glyphName)
 		comp = ufoLib.glifLib._fetchComponentBases(text)
 		#
-		if len(comp):
-			#
-			new_outline = []
-			#
-			#print(generic_tools.glyphNameToFileName(glyphName))
-			#print(glyphName)
-			#
-			source_glyph = os.path.join(t_dir,generic_tools.glyphNameToFileName(glyphName)+'.glif')
-			#
-			target_elem = ET.parse(source_glyph)
-			target_dest = target_elem.find('outline')
-			#
-			for co in comp:
-				#
-				comp_source = inGlyphSet.getGLIF(co)
-				tree = ET.fromstring(comp_source)
-				outl = tree.find('outline')
-				#
-				for x in outl:
-					#
-					contour = ET.Element("contour")
-					#
-					for point in x:
-						#
-						contour.append(point)
-						#
-					#
-					if len(contour):
-						#
-						target_dest.append(contour)
-						#
-					#
-				#
-			#
-			for elem in target_elem.iter():
-				for child in list(elem):
-					if child.tag == 'component':
-						elem.remove(child)
-					elif child.tag == 'contour':
-						#
-						for point in list(child):
-							#	
-							if "move" in str(point.attrib):
-								elem.remove(child)
-								break
-			#
-			
-			xml_str = ET.tostring(target_elem.getroot(), method='xml').decode().replace("'", '"')
-			#print(ElementTree.tostring(svgGlyph, method='xml'))
-			#
-			#data = ET.tostring(target_elem.getroot())
-			f = open(source_glyph, "w")
-			f.write('<?xml version="1.0" encoding="UTF-8"?>\n'+xml_str) 
-			#target_elem.write(source_glyph, encoding='utf8')
-			#
-		else:
-			g.drawPoints(None) 
-			ufoWriter.writeGlyph(glyphName, g, g.drawPoints)
+		source_glyph = os.path.join(t_dir,generic_tools.glyphNameToFileName(glyphName)+'.glif')
 		#
-	#
-	ufoWriter.writeContents()
+		g.drawPoints(None) 
+		ufoWriter.writeGlyph(glyphName, g, g.drawPoints)
+		#
+		#ufoWriter.writeContents()
+		#
+		with open(source_glyph, 'r') as rf:
+			#
+			glif_data = rf.read()
+			#
+			with open(source_glyph, 'w') as wf:
+				#
+				target_elem = ET.fromstring(glif_data)
+				target_dest = target_elem.find('outline')
+				#
+				for co in comp:
+					#
+					comp_source = inGlyphSet.getGLIF(co)
+					tree = ET.fromstring(comp_source)
+					outl = tree.find('outline')
+					#
+					for x in outl:
+						#
+						contour = ET.Element("contour")
+						#
+						for point in x:
+							#
+							contour.append(point)
+							#
+						#
+						if len(contour):
+							#
+							target_dest.append(contour)
+							#
+						#
+					#
+				#
+				for elem in target_elem.iter():
+					#
+					#print(elem.tag)
+					#
+					for child in list(elem):
+						if child.tag == 'component':
+							elem.remove(child)
+						elif child.tag == 'contour':
+							#
+							for point in list(child):
+								#	
+								if "move" in str(point.attrib):
+									elem.remove(child)
+									break
+				#
+				anchors = target_elem.findall('anchor')
+				#
+				for anchor in anchors:
+					target_elem.remove(anchor)
+				#
+				xml_str = ET.tostring(target_elem, method='xml').decode().replace("'", '"').replace('</contour><contour>','</contour>\n    <contour>').replace('<contour><point','    <contour>\n      <point')
+				new_xml = LET.fromstring(xml_str)
+				new_xml_str = LET.tostring(new_xml, encoding='utf8', method="xml", xml_declaration=False, pretty_print=True).decode()
+				clean_xml_str = BeautifulSoup(xml_str, "xml").prettify()#minidom.parseString(xml_str).toprettyxml(indent="   ")
+				#
+				f = open(source_glyph, "w")
+				f.write(clean_xml_str) 
+				f.close()
+				#
+			#
+		#
 	#
 	time.sleep(2)
 	#

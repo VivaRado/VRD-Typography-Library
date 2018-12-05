@@ -64,15 +64,13 @@ def copy_glif_files(self, _stream):
 			current_glyphs_dir = uncomp_current_glyphs_dir.split("_compo")[0]
 			generic_tools.make_dir(current_glyphs_dir)
 			#
-			if os.path.exists(os.path.dirname(uncomp_current_glyphs_dir)):
-				#
-				generic_tools.rm_dir(uncomp_current_glyphs_dir)
-				#
-			#
 			if os.path.exists(os.path.dirname(current_glyphs_dir)):
 				#
+				#pass
 				generic_tools.rm_dir(current_glyphs_dir)
 				#
+			#
+			copytree(self.current_source_ufo_glyphs_dir, current_glyphs_dir, ignore=ignore_patterns("*contents.plist", 'glyphs*'))
 			#
 		else:
 			# Make Glyphs Directories
@@ -84,6 +82,6 @@ def copy_glif_files(self, _stream):
 				generic_tools.rm_dir(current_glyphs_dir)
 				#
 			#
-		copytree(self.current_source_ufo_glyphs_dir, current_glyphs_dir, ignore=ignore_patterns("*contents.plist", 'glyphs*'))
+			copytree(self.current_source_ufo_glyphs_dir, current_glyphs_dir, ignore=ignore_patterns("*contents.plist", 'glyphs*'))
 		#
 	#
