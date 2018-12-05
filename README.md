@@ -29,9 +29,8 @@ The endpoints of the Lib so far as argument functions:
 ```
 **UFOs to EFO** 
 ```
--s (source EFO)  
--f (the weights of the font to extract similarity from - just needs one weight)  
--p (purpose - Either for Components or Kerning: "comp" or "kern")
+-s (source fontinfo.JSON)
+-o (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide)
 ```
 **Kerning Autokern**
 ```
