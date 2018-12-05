@@ -8,7 +8,7 @@ Old Scripts Include
 Exporting and Importing for FontLab and Illustrator.
 
 
-The endpoints of the Lib so far as argument functions:  
+The endpoints of the Lib so far, as argument functions:  
 
 **EFO to SVGs**
 ```
