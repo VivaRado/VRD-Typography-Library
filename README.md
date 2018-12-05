@@ -55,4 +55,6 @@ The endpoints of the Lib so far as argument functions:
 -f (the weights of the font to componentize: "reg,bld,...")
 ```
 
+**VivaRado is thankful for all your observations :+1: please submit any issues at support@vivarado.com - with Subject: ISSUE:Topic, or send it here on github**
+
 [By VivaRado](https://www.vivarado.com)
