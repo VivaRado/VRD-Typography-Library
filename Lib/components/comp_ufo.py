@@ -17,8 +17,9 @@ from xml.dom import minidom
 #from lxml import etree
 
 #
-#
 _format = 1
+#
+#
 base_top_accent_tall_pos_y = 735
 base_top_accent_tall_tonos_pos_y = 700
 base_top_accent_short_pos_y = 545
@@ -28,10 +29,6 @@ tall_small_case = ['l','t', 'd', 'h']
 l_dots_list = ['Ldot','ldot']
 #
 flush_space = '                                      '
-#
-comb_anchors_top = '''<anchor x="{0}" y="750" name="top"/><anchor x="{0}" y="600" name="_top"/>'''
-#
-comb_anchors_bot = '''<anchor x="{0}" y="0" name="_bottom"/><anchor x="{0}" y="-250" name="bottom"/>'''
 #
 comp_anchors_top = '''<contour>
       <point x="{0}" y="750" type="move" name="top"/>
@@ -72,26 +69,12 @@ comp_anchors_bot_ogonek = '''<contour>
       <point x="{1}" y="{0}" type="move" name="_ogonek"/>
     </contour>'''
 #
-
-base_anchors_contour = '''\n<contour>
- <point name="ogonek" type="move" x="{2}" y="0"/>
-</contour>
-<contour>
- <point name="bottom" type="move" x="{0}" y="0"/>
-</contour>
-<contour>
- <point name="top" type="move" x="{0}" y="{1}"/>
-</contour>
-<contour>
- <point name="tonos" type="move" x="{3}" y="{4}"/>
-</contour>'''
-#
 base_anchors = '''
-  <anchor x="{2}" y="0" name="ogonek"/>
-  <anchor x="{0}" y="0" name="bottom"/>
-  <anchor x="{0}" y="{1}" name="top"/>
-  <anchor x="{3}" y="{4}" name="tonos"/>
-  '''
+ <anchor x="{2}" y="0" name="ogonek"/>
+ <anchor x="{0}" y="0" name="bottom"/>
+ <anchor x="{0}" y="{1}" name="top"/>
+ <anchor x="{3}" y="{4}" name="tonos"/>
+'''
 #
 comb_top = ['acutecomb',
 			'tonoscomb',
@@ -896,6 +879,85 @@ def add_components (self, t, o, u_name, comb_bot, comb_bot_rebase, base_conts):
 	return etree_comps_str+match_cont
 	#
 #
+def determine_accent_list(base_glyph, component_glyphs):
+	#	
+	found = set()
+	#
+	for x in component_glyphs:
+		#
+		#
+		for _pos in ["top", "bot"]:
+			#
+			acl = accent_logic(x, _pos)
+			#
+			if len(acl[0]) > 0:
+				#
+				found.add(acl[0])
+				#
+			#
+	#
+	return list(found)
+	#
+#
+def create_base_anchors(accent_list, center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y):
+	#
+	contour_str = '<contour>\n <point name="{0}" type="move" x="{1}" y="{2}"/>\n</contour>'
+	#
+	all_cont_str = ''
+	#
+	if len(accent_list) > 0:
+		#
+		is_accent = set()
+		#
+		for x in accent_list:
+			#
+			if x in comb_top:
+				#
+				if "tonos" in x:
+					#
+					if 'tonos' not in is_accent:
+						#
+						all_cont_str = all_cont_str +'\n'+ contour_str.format('tonos', pos_tonos_x, pos_tonos_y)
+						#
+						is_accent.add('tonos')
+						#
+					#
+				else:
+					#
+					if 'top' not in is_accent:
+						#
+						all_cont_str = all_cont_str +'\n'+ contour_str.format('top', center_pos_x, pos_y)
+						#
+						is_accent.add('top')
+						#
+					#
+			elif x in comb_bot:
+				#
+				if "ogonek" in x:
+					#
+					if 'ogonek' not in is_accent:
+						#
+						all_cont_str = all_cont_str +'\n'+ contour_str.format('ogonek', ogonek_pos_x, 0)
+						#
+						is_accent.add('ogonek')
+						#
+					#
+				else:
+					#
+					if 'bottom' not in is_accent:
+						#
+						all_cont_str = all_cont_str +'\n'+ contour_str.format('bottom', center_pos_x, 0)
+						#
+						is_accent.add('bottom')
+						#
+					#
+				#
+			#
+		#
+	#
+	return '\n'+all_cont_str
+	#
+#
 def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 	#
 	print('COMP: Componentize')
@@ -939,7 +1001,6 @@ def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 		for u,t in get_contours_to_rep.items():
 			#
 			print('\r\t'+'COMP: Base = '+o+', Comp = '+u+flush_space+'\n',end='')
-			#print('\r\t'+'COMP: Base = '+o+', Comp = '+u+flush_space)
 			#
 			u_name = u
 			#
@@ -985,11 +1046,13 @@ def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 		#
 		clean_base_cont = clean_base_contour(base_conts[1])
 		#
+		accent_list = determine_accent_list(o,to_replace)
+		#
 		if (_format == 2):
 			base_anchors_contour_calc = ''
 			base_anchors_calc = base_anchors.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
 		else:
-			base_anchors_contour_calc = base_anchors_contour.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
+			base_anchors_contour_calc = create_base_anchors(accent_list,center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
 			base_anchors_calc = ''
 		#
 		replace_contour(clean_base_cont+base_anchors_contour_calc, os.path.join(self._dir_glif, base_conts[0]), False, True, True)
