@@ -34,6 +34,12 @@ def copy_kerning(self, kerning_type="class", _stream="Downstream"):
 		UFO_kerning_file = os.path.join(self.current_source_ufo, "kerning.plist")
 		EFO_kerning_file = os.path.join( *(self.new_efo_dir, "kerning", kerning_type, self.current_font_file_name+".plist") ) 
 		#
+		if "_krn" in self.current_font_file_name:
+			#
+			self.current_font_file_name = self.current_font_file_name.replace('_krn', '')
+			#
+		#
+		#
 		copyfile(UFO_kerning_file, EFO_kerning_file)
 		#print(self.current_source_ufo, efo_groups_file)
 		#

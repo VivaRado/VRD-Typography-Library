@@ -100,12 +100,14 @@ class TFSSegment(object):
                 
                 if (isinstance(self.points, (list, tuple)) == False):
                 #if type(self.points) not in (types.ListType, types.TupleType):
-                    raise TFSValidationException('Unexpected points type: ' + str(type(self.points)))
+                    pass
+                    #raise TFSValidationException('Unexpected points type: ' + str(type(self.points)))
 
                 for point in self.points:
                     
                     if not isinstance(point, TFSPoint):
-                        raise TFSValidationException('Unexpected points type: ' + str(type(point)))
+                        pass
+                        #raise TFSValidationException('Unexpected points type: ' + str(type(point)))
 
             if not (2 <= len(self.points) <= 4):
                 raise TFSValidationException('Invalid segment')

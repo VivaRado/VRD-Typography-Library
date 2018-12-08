@@ -731,7 +731,7 @@ def concatenatePath(closed, *objs):
         segments.append(TFSSegment(*points))
 
     lastPoint = None
-    for index in xrange(len(objs)):
+    for index in range(len(objs)):
         obj = objs[index]
         if isinstance(obj, TFSPath):
             if lastPoint is not None:

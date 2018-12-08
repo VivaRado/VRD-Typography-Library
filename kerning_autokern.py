@@ -54,7 +54,7 @@ if faults == False:
 	#
 	AUTOKERN.do_kern_for_pairs()
 	#
-	AUTOKERN.flat_kern_to_efo(args.source)
+	AUTOKERN.flat_kern_to_efo(args.source, EFO)
 	#
 #
 

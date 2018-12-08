@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 #
 '''
 Flattens but punctuation is missaligned.
-Intended only for the rendering procedute where the punctuation is ignored and only the number 1 contour is considered.
+Intended only for the rendering procedure where the punctuation is ignored and only the number 1 contour is considered.
 '''
 def flatten_components(ufo_dir):
 	#

@@ -86,8 +86,8 @@ class TFSTesselation(object):
                 if intersection:
                     index0, index1, segment0, segment1, t0, t1, p = intersection
                     if DEBUG_SUBDIVIDE:
-                        print 'index0, index1', index0, index1
-                        print 't0, t1', t0, t1
+                        print ('index0, index1', index0, index1)
+                        print ('t0, t1', t0, t1)
                     subpaths0 = path0.singleSplit(index0, t0, p)
                     subpaths1 = path1.singleSplit(index1, t1, p)
 
@@ -97,9 +97,9 @@ class TFSTesselation(object):
 
         if DEBUG_SUBDIVIDE:
             for path in paths:
-                print 'input path', path.description()
+                print ('input path', path.description())
                 for segment in path:
-                    print '\t\t', segment.description()
+                    print ('\t\t', segment.description())
 
         processed = []
 #        unprocessed = list(paths)
@@ -150,22 +150,22 @@ class TFSTesselation(object):
                 subpaths0, subpaths1, index, p = intersection
 
                 if DEBUG_SUBDIVIDE:
-                    print 'index', index, 'p', p
+                    print ('index', index, 'p', p)
 
                 path1 = unprocessed.pop(index)
 
                 if DEBUG_SUBDIVIDE:
-                    print 'classic cut'
-                    print '\t', 'path0', path0.description()
-                    print '\t', 'path1', path1.description()
+                    print ('classic cut')
+                    print ('\t', 'path0', path0.description())
+                    print ('\t', 'path1', path1.description())
                     for subpath0 in subpaths0:
-                        print '\t', 'subpath0', subpath0.description()
+                        print ('\t', 'subpath0', subpath0.description())
                         for segment in subpath0:
-                            print '\t\t', segment.description()
+                            print ('\t\t', segment.description())
                     for subpath1 in subpaths1:
-                        print '\t', 'subpath1', subpath1.description()
+                        print ('\t', 'subpath1', subpath1.description())
                         for segment in subpath1:
-                            print '\t\t', segment.description()
+                            print ('\t\t', segment.description())
 
                 unprocessed.extend(subpaths0 + subpaths1)
                 intersections.append(p)
@@ -200,16 +200,16 @@ class TFSTesselation(object):
 
         while True:
             if DEBUG_SIMPLIFY_SUBPATHS:
-                print 'simplifySubpath', 'iteration', 'paths', len(paths)
+                print ('simplifySubpath', 'iteration', 'paths', len(paths))
             for tempKey, path in enumerate(paths):
                 path._tempKey = tempKey
 
             endPointSubpathMap = self.buildEndpointSubpathMap(paths)
             if DEBUG_SIMPLIFY_SUBPATHS:
-                print 'endPointSubpathMap', len(endPointSubpathMap)
+                print ('endPointSubpathMap', len(endPointSubpathMap))
                 for endPoint in endPointSubpathMap:
-                    print '\t', endPoint.description(), len(endPointSubpathMap[endPoint])
-                print
+                    print ('\t', endPoint.description(), len(endPointSubpathMap[endPoint]))
+                print ()
             success = False
             for path0 in paths:
                 paths1 = endPointSubpathMap[path0.endPoint()]
@@ -224,9 +224,9 @@ class TFSTesselation(object):
                     paths.append(path01)
 
                     if DEBUG_SIMPLIFY_SUBPATHS:
-                        print 'merging.0', path0.description()
-                        print 'merging.1', path1.description()
-                        print 'merged', path01.description()
+                        print ('merging.0', path0.description())
+                        print ('merging.1', path1.description())
+                        print ('merged', path01.description())
 
                     success = True
                     break
@@ -290,18 +290,18 @@ class TFSTesselation(object):
         def buildMinimumShape(path, endPointSubpathMap, usedSet):
 #            DEBUG_BUILD_SHAPES = True
             if DEBUG_BUILD_SHAPES:
-                print
-                print 'buildMinimumShape'
+                print ()
+                print ('buildMinimumShape')
             lastPath = path
 #            visitedPoints = []
             visitedPaths = []
             for _ in xrange(len(endPointSubpathMap) * 2 + 1):
                 if DEBUG_BUILD_SHAPES:
-                    print
-                    print 'buildMinimumShape cycle', lastPath.description()
+                    print ()
+                    print ('buildMinimumShape cycle', lastPath.description())
                 if lastPath in usedSet:
                     if DEBUG_BUILD_SHAPES:
-                        print 'abandoning redundant shape'
+                        print ('abandoning redundant shape')
                     return None
 #                visitedPoints += [lastPath.startPoint(),]
                 visitedPaths += [lastPath,]
@@ -322,17 +322,17 @@ class TFSTesselation(object):
                     angleDelta = pathEndpointAngleDelta(lastPath, nextPath)
 
                     if DEBUG_BUILD_SHAPES:
-                        print
-                        print '\t', 'angleDelta', angleDelta
-                        print '\t', 'bestAngleDelta', bestAngleDelta
-                        print '\t', 'lastPath', lastPath.description(), 'endTangent', lastPath.endTangent(), lastPath.endTangent().atan2()
-                        print '\t', 'nextPath', nextPath.description(), 'startTangent', nextPath.startTangent(), nextPath.startTangent().atan2()
-                        print '\t', 'p', lastPath.endPoint(), nextPath.startPoint(), lastPath.endPoint() == nextPath.startPoint()
+                        print ()
+                        print ('\t', 'angleDelta', angleDelta)
+                        print ('\t', 'bestAngleDelta', bestAngleDelta)
+                        print ('\t', 'lastPath', lastPath.description(), 'endTangent', lastPath.endTangent(), lastPath.endTangent().atan2())
+                        print ('\t', 'nextPath', nextPath.description(), 'startTangent', nextPath.startTangent(), nextPath.startTangent().atan2())
+                        print ('\t', 'p', lastPath.endPoint(), nextPath.startPoint(), lastPath.endPoint() == nextPath.startPoint())
 
 #                    if (bestNextPath is None) or (angleDelta < bestAngleDelta):
                     if (bestNextPath is None) or (angleDelta > bestAngleDelta):
                         if DEBUG_BUILD_SHAPES:
-                            print '\t\t', 'chosen!'
+                            print ('\t\t', 'chosen!')
 #                        if (bestNextPath is not None):
 #                            print
 #                            print '\t', 'angleDelta', angleDelta
@@ -344,13 +344,13 @@ class TFSTesselation(object):
                 if bestNextPath is None:
                     if ignoreStrayEdges:
                         return None
-                    print 'lastPath', lastPath.description()
-                    print 'endPointSubpathMap'
+                    print ('lastPath', lastPath.description())
+                    print ('endPointSubpathMap')
                     for key in endPointSubpathMap.keys():
-                        print '\t', key, len(endPointSubpathMap[key])
-                    print 'nextPaths', len(nextPaths)
+                        print ('\t', key, len(endPointSubpathMap[key]))
+                    print ('nextPaths', len(nextPaths))
                     for nextPath in nextPaths:
-                        print '\t', nextPath.description()
+                        print ('\t', nextPath.description())
                     raise Exception('Could not find a next path')
 
                 if bestNextPath in visitedPaths:
@@ -361,12 +361,12 @@ class TFSTesselation(object):
 
 #        DEBUG_BUILD_SHAPES = True
         if DEBUG_BUILD_SHAPES:
-            print
+            print ()
             for path in paths:
-                print '\t', 'input path', path.description()
+                print ('\t', 'input path', path.description())
                 for segment in path:
-                    print '\t\t', segment.description()
-            print
+                    print ('\t\t', segment.description())
+            print ()
 #        DEBUG_BUILD_SHAPES = False
 
         endPointSubpathMap = self.buildEndpointSubpathMap(paths)
@@ -385,16 +385,16 @@ class TFSTesselation(object):
 
             if DEBUG_BUILD_SHAPES:
                 pass
-                print
-                print 'endPointSubpathMap'
+                print ()
+                print ('endPointSubpathMap')
                 for key in endPointSubpathMap:
-                    print '\t', 'key', key
+                    print ('\t', 'key', key)
                     for path in endPointSubpathMap[key]:
-                        print '\t\t', 'path', path.description()
+                        print ('\t\t', 'path', path.description())
                         pass
 
             if DEBUG_BUILD_SHAPES:
-                print 'endPointSubpathMap0', len(endPointSubpathMap)
+                print ('endPointSubpathMap0', len(endPointSubpathMap))
 
             shapePaths = buildMinimumShape(path, endPointSubpathMap, usedSet)
             if shapePaths is None:
@@ -406,9 +406,9 @@ class TFSTesselation(object):
             shape = returnArg(concatenatePath(True, *shapePaths))
 
             if DEBUG_BUILD_SHAPES:
-                print 'shape!'
+                print ('shape!')
                 for segment in shape:
-                    print '\t\t', segment.description()
+                    print ('\t\t', segment.description())
 
             result.append(shape)
 
@@ -504,12 +504,12 @@ class TFSTesselation(object):
 
 #        DEBUG_TESSELATE = True
         if DEBUG_TESSELATE:
-            print 'tesselateContours', len(paths)
+            print ('tesselateContours', len(paths))
 #        if reorientPaths:
 #            paths = [orientClosedPathClockwise(path) for path in paths]
 
         if DEBUG_TESSELATE:
-            print 'paths clockwise', len(paths)
+            print ('paths clockwise', len(paths))
 #        return paths, None
         if TIME_TESSELATE:
             import time
@@ -517,9 +517,9 @@ class TFSTesselation(object):
         subpaths, intersections = self.subdividePathWithPaths(paths)
         if TIME_TESSELATE:
             time1 = time.time()
-            print '\t', 'tesselateContours.subdividePathWithPaths', time1 - time0
+            print ('\t', 'tesselateContours.subdividePathWithPaths', time1 - time0)
         if DEBUG_TESSELATE:
-            print 'subpaths', len(subpaths)
+            print ('subpaths', len(subpaths))
 
 #        if debugMode:
 #            return subpaths, intersections
@@ -534,11 +534,11 @@ class TFSTesselation(object):
 #        subpaths = newpaths
 
         if DEBUG_TESSELATE:
-            print
-            print 'decomposed'
+            print ()
+            print ('decomposed')
             for path in subpaths:
-                print '\t', 'subdivided path', path.description()
-            print
+                print ('\t', 'subdivided path', path.description())
+            print ()
 
 #        return subpaths, intersections
         if TIME_TESSELATE:
@@ -546,18 +546,18 @@ class TFSTesselation(object):
         subpaths = self.simplifySubpaths(subpaths)
         if TIME_TESSELATE:
             time1 = time.time()
-            print '\t', 'tesselateContours.simplifySubpaths', time1 - time0
+            print ('\t', 'tesselateContours.simplifySubpaths', time1 - time0)
         if DEBUG_TESSELATE:
-            print 'simplified subpaths', len(subpaths)
+            print ('simplified subpaths', len(subpaths))
 #        return subpaths
 
 
         if DEBUG_TESSELATE:
-            print
-            print 'simplified'
+            print ()
+            print ('simplified')
             for path in subpaths:
-                print '\t', 'subdivided path', path.description()
-            print
+                print ('\t', 'subdivided path', path.description())
+            print ()
 
         if debugMode:
             raise TFSContoursException('argh', subpaths)
@@ -571,18 +571,18 @@ class TFSTesselation(object):
         shapes = self.buildMinimumShapes(subpaths, ignoreStrayEdges=ignoreStrayEdges)
         if TIME_TESSELATE:
             time1 = time.time()
-            print '\t', 'tesselateContours.buildMinimumShapes', time1 - time0
+            print ('\t', 'tesselateContours.buildMinimumShapes', time1 - time0)
         if DEBUG_TESSELATE:
-            print 'shapes', len(shapes)
+            print ('shapes', len(shapes))
 
         if TIME_TESSELATE:
             time0 = time.time()
         shapes = self.cullEmptyAngles(shapes)
         if TIME_TESSELATE:
             time1 = time.time()
-            print '\t', 'tesselateContours.cullEmptyAngles', time1 - time0
+            print ('\t', 'tesselateContours.cullEmptyAngles', time1 - time0)
         if DEBUG_TESSELATE:
-            print 'shapes', len(shapes)
+            print ('shapes', len(shapes))
 #        return shapes, intersections
 
 #        return shapes, intersections
@@ -600,6 +600,6 @@ class TFSTesselation(object):
             shapes = [orientClosedPathClockwise(shape) for shape in shapes]
             if TIME_TESSELATE:
                 time1 = time.time()
-                print '\t', 'tesselateContours.cleanup', time1 - time0
+                print ('\t', 'tesselateContours.cleanup', time1 - time0)
 
         return shapes, intersections

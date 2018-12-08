@@ -83,6 +83,7 @@ class EFO(object):
 		self.EFO_temp = "temp"
 		self.EFO_vectors = "vectors"
 		self.EFO_anchors = "anchors"
+		self.EFO_designspace = "font.designspace"
 		#
 		get_anchor_offsets(self)
 		#
@@ -119,7 +120,7 @@ class EFO(object):
 				#
 			#
 	#
-	def _efo_to_ufos(self, _fonts='', _flatten=False, _kerning_type=""):
+	def _efo_to_ufos(self, _fonts='', _flatten=False, _kerning_type="", _for_var=False):
 		#
 		'''
 		Export UFOs from EFO:
@@ -188,7 +189,7 @@ class EFO(object):
 				print('\n')
 				#
 				generate_fontinfo(self)
-				combine_fea(self)
+				combine_fea(self, _for_var)
 				#
 				kerning_to_copy = _kerning_type # class / flat
 				#
@@ -256,7 +257,9 @@ class EFO(object):
 		#
 		for f in self.font_files:
 			#
+			
 			self.current_font_file_name = f
+			#
 			self.current_font_instance_name = generic_tools.sanitize_string(self.current_font_family_name+' '+self.current_font_file_name)
 			#
 			if _from_compress or _from_components:

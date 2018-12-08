@@ -168,7 +168,10 @@ class TFSFont(object):
         '''
         returns None if pair does not exist.
         '''
-        return self.rffont.kerning[(glyphName0, glyphName1, )]
+        try:
+            return self.rffont.kerning[(glyphName0, glyphName1 )]
+        except Exception as e:
+            return None
 
     def getKerningPairCount(self):
         return len(self.rffont.kerning)

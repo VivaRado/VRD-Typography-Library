@@ -608,9 +608,10 @@ def accent_logic(name,_pos):
 	return accent_name, rebased, name
 	#
 #
-done_accents = []
 #
 def check_accents (self, name, combs, rebase_combs, _dir_glif, glif_width):
+	#
+	done_accents = []
 	#
 	created_accent = ''
 	#
@@ -712,7 +713,7 @@ def check_anchors_exist(_comb_glif, _comb_name):
 		#
 		if anchors == None:
 			#
-			print ("\tCOMB Should Include Anchors: "+_comb_glif+flush_space,end='')
+			print ("\tCOMB Should Include Anchors: "+_comb_glif+flush_space+'\n',end='')
 			#
 			glif_info_width = str(get_base_glif_width(_comb_glif, _comb_name, True)[1] / 2)
 			#
@@ -749,7 +750,11 @@ def check_anchors_exist(_comb_glif, _comb_name):
 				#
 				print ("\t\tAdded Anchors: "+_comb_glif+flush_space,end='')
 				#
-				f.write('<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(tree, encoding="unicode", method='xml'))
+				xml_str = '<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(tree, encoding="unicode", method='xml')
+				#
+				pretty_ = BeautifulSoup(xml_str, "xml").prettify()
+				#
+				f.write(pretty_)
 				f.close()
 				#
 			#

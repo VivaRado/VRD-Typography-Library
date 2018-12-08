@@ -100,7 +100,7 @@ sys.path.append(scripts_path)
 from tfs3.common.TFSFont import *
 from .AutokernSettings import AutokernSettings
 from .AutokernGlyphClasses import *
-#from tfs3.common.TFSSilhouette import *
+from tfs3.common.TFSSilhouette import *
 from tfs3.common.TFTiming import TFTiming
 from tfs3.common.TFSMap import TFSMap
 import tfs3.common.TFSMath as TFSMath
@@ -1302,7 +1302,8 @@ class Autokern(TFSMap):
 			unicodeToGlyphMap[glyph.unicode] = glyph
 
 		#
-
+		print(pairs)
+		#
 		pairTuples = []
 		linkMaps = []
 		for pair in pairs:
@@ -1319,6 +1320,9 @@ class Autokern(TFSMap):
 			ufoglyph1 = unicodeToGlyphMap[unicode1]
 
 			logFilename = self.getKerningPairFilename('basic_pair', ufoglyph0, ufoglyph1, '.html')
+			#
+			print(logFilename)
+			#
 			pairTuples.append( ( pair, ufoglyph0, ufoglyph1, logFilename, ) )
 			linkMaps.append( { 'linkFile': logFilename,
 								'linkName': '%s%s' % ( formatGlyphNameShort(ufoglyph0),
@@ -1330,11 +1334,14 @@ class Autokern(TFSMap):
 		#
 
 		timing = None
-#		  timing = TFTiming()
+		#timing = TFTiming()
 
 		startTime = time.time()
 		lastLogTime = time.time()
 		for index, (pair, ufoglyph0, ufoglyph1, logFilename,) in enumerate(pairTuples):
+			#
+			print(">", logFilename)
+			#
 			now = time.time()
 			if lastLogTime is None or now - lastLogTime > 3.0:
 				remainingTime = (now - startTime) / float(index) * (len(pairTuples) - index)
@@ -2294,7 +2301,7 @@ class Autokern(TFSMap):
 
 		def fillGlyphContours(glyphContours, glyphColor):
 			result = ()
-			tempUfoFont = fontParts.world.NewFont(familyName='ignore', styleName='ignore')
+			tempUfoFont = NewFont(familyName='ignore', styleName='ignore')
 			tempUfoGlyph = tempUfoFont.newGlyph('ignore')
 			tempTFSGlyph = TFSGlyph(tempUfoGlyph)
 			tempTFSGlyph.setContours(glyphContours, correctDirection=True)
@@ -2642,7 +2649,7 @@ class Autokern(TFSMap):
 
 			We don't want to effect the output, so we do this in a temporary font.
 			'''
-			tempUfoFont = fontParts.world.NewFont(familyName='ignore', styleName='ignore')
+			tempUfoFont = NewFont(familyName='ignore', styleName='ignore')
 			tempUfoGlyph = tempUfoFont.newGlyph('ignore')
 			tempTFSGlyph = TFSGlyph(tempUfoGlyph)
 			tempTFSGlyph.setContours(contours, correctDirection=True)

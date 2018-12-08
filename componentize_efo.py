@@ -66,9 +66,6 @@ if faults == False:
 	#
 	EFO._efo_to_ufos(args.fonts, True, "class")
 	#
-	
-	''
-	#
 	f_files_class = []
 	#
 	for x in EFO.all_exported_ufo_dst:
@@ -81,6 +78,7 @@ if faults == False:
 			#
 			f_files_class.append(k+'_compo')
 			#
+			EFO.current_font_file_name = k
 			#
 			UFO_to_COMPUFO = COMPS(args.source, copy_ufo_for_componentization, EFO)
 			#

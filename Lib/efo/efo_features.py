@@ -3,6 +3,7 @@ import os
 import glob
 from pathlib import Path
 import time
+import re
 #
 from Lib.generic import generic_tools
 #
@@ -37,7 +38,7 @@ features_start_end_name = ["Languagesystems", "Classes", "Kerning"] # and other 
 #
 flush_space = '                                                                   '
 #
-def combine_fea(self):
+def combine_fea(self, _for_var):
 	#
 	print('EFO: Combining FEA')
 	#
@@ -64,10 +65,17 @@ def combine_fea(self):
 			#
 			print('\tFOUND FEATURE: ', _fea)
 			#
-			#
 			with open(EFO_features_file, 'r') as fea_file:
 				#
 				data = generic_tools.get_between('# '+_fea+' Start\n', '\n# '+_fea+' End', fea_file.read())
+				#
+				if _fea == "Classes":
+					#
+					if _for_var == True:
+						#
+						data = re.sub('@','@_',data)#data.replace("@", "@_")
+						#
+					#
 				#
 				#print(data)
 				#
@@ -114,12 +122,17 @@ def split_fea(self, _from_compress = False):
 		#
 		for _fea in features_start_end_name:
 			#
-			data = generic_tools.get_between('# '+_fea+' Start', '# '+_fea+' End', fea_data)
+			data = '# '+_fea+' Start'+generic_tools.get_between('# '+_fea+' Start', '# '+_fea+' End', fea_data)+'# '+_fea+' End'
 			#
 			if features_requested_order[x] == "kern_fea":
 				#
 				if _from_compress:
 					self.current_font_file_name = self.current_font_file_name.split('_class')[0]
+					if "_krn" in self.current_font_file_name:
+						#
+						self.current_font_file_name = self.current_font_file_name.replace('_krn', '')
+						#
+					#
 				#
 				current_features_file = os.path.join( *(self.current_source_efo_features_dir, features_requested_order[x], self.current_font_file_name+'.fea') )
 				#

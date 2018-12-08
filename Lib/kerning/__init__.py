@@ -18,22 +18,31 @@ from .AutokernSettings import *
 import tfs3.common.TFSProject as TFSProject
 from tfs3.common.TFSMap import TFSMap
 #
+test_pairs = '''AC
+AG
+AO
+AQ'''
+#
+#
+ignore_glyphs_list = ["brevecomb",
+"caroncomb",
+"circumflexcomb",
+"commaturnedabovecomb",
+"commaturnedbelowcomb",
+"dieresiscomb",
+"dotaccentcomb", 
+"gravecomb",
+"hungarumlautcomb",
+"macroncomb",
+"ringcomb",
+"tildecomb",
+"cedillacomb",
+"ogonekcomb",
+"tonoscomb",
+"acutecomb",
+"dieresistonoscomb"]
+#
 class AUTOKERN(object):
-	#
-	ignore_glyphs_list = ["brevecomb",
-	"caroncomb",
-	"circumflexcomb",
-	"commaturnedabovecomb",
-	"dieresiscomb",
-	"dotaccentcomb", 
-	"gravecomb",
-	"hungarumlautcomb",
-	"macroncomb",
-	"ringcomb",
-	"tildecomb",
-	"cedillacomb",
-	"ogonekcomb"]
-	#
 	def __init__(self, _in, _fonts='', _compress_class_plist='No'):
 		#
 		self._in = _in
@@ -52,6 +61,44 @@ class AUTOKERN(object):
 			#
 		#
 	#
+	def extract_test_pairs(self, test_list, weights):
+		#
+		weights_perm = {}
+		#
+		for z in range(len(weights)):
+			#
+			weights_perm[weights[z]] = []
+			#
+		#
+		x = 0
+		#
+		total_permut = ''
+		#
+		for w in weights:	
+			#
+			self.return_self_dirs(w)
+			#
+			orig_w = w
+			#
+			result_lines = ''
+			result_keys = []
+			#
+			for x in test_list.split('\n'):
+				#
+				permu_list = list(x)
+				#
+				print(permu_list)
+				#
+				permut_str = '"'+permu_list[0]+'","'+permu_list[1]+'"'+'\n'
+				#
+				total_permut = total_permut + permut_str
+				#
+				weights_perm[orig_w].append(permu_list)
+				#
+			#
+		#
+		return weights_perm
+		#
 	#
 	def extract_pairs(self, dir_path, weights):
 		#
@@ -115,12 +162,31 @@ class AUTOKERN(object):
 					#
 				#
 		#
+
+		#
 		data = tuple(filter(None, l))
 		#
 		return data
 		#
 	#
-	def flat_kern_to_efo(self, _source_efo):
+	def flat_kern_to_efo(self, _source_efo, EFO):
+		#
+		new_class_fontinfo = [
+			{
+				"shared_info": {
+					"familyName": ""
+				}
+			},
+			{
+				"font_files": []
+			},
+			{
+				"font_info": []
+			},
+			{
+				"font_kerning_settings": []
+			}
+		]
 		#
 		source_efo_flat_kern_dir = os.path.join(_source_efo, "kerning/flat")
 		source_efo_similarity_kern_plist = os.path.join(_source_efo, "groups/kerning.plist")
@@ -129,7 +195,7 @@ class AUTOKERN(object):
 			#
 			for k, v in x.items():
 				#
-				print(">>", k, v)
+				#print(">>", k, v)
 				#
 				current_font_flat_kerning = os.path.join(v,'kerning'+'.plist')
 				#
@@ -147,6 +213,8 @@ class AUTOKERN(object):
 			#
 			print('Hello')
 			#
+			f_files_class = []
+			#
 			for x in self.all_dst:
 				#
 				for k, v in x.items():
@@ -157,11 +225,35 @@ class AUTOKERN(object):
 					#
 					generic_tools.copyDirectory(v, copy_ufo_for_class_compress)
 					#
+					f_files_class.append(k+'_krn_class')
+					#
 					_COMPRESS = COMPRESS(k,v, copy_ufo_for_class_compress, source_efo_similarity_kern_plist)
 					#EFO = EFO(args.source,EFO_temp)
 					#
 					_COMPRESS.do_class_kern_replacement()
 					#
+			#
+			new_class_fontinfo[0]["shared_info"]["familyName"] = self.current_font_family_name
+			new_class_fontinfo[1]["font_files"] = f_files_class
+			#
+			print(new_class_fontinfo)
+			#
+			c_fontinfo_dir = os.path.join(*(EFO._in,"temp",EFO.current_font_family_name,"fontinfo.json"))
+			#
+			with open(c_fontinfo_dir, 'w') as outfile:
+				#
+				json.dump(new_class_fontinfo, outfile)
+				#
+			#
+			#print(c_fontinfo_dir,args.source)
+			#
+			c_source_ufo_family = os.path.join(*(EFO._in,"temp",EFO.current_font_family_name))
+			#
+			EFO._out = EFO._in
+			EFO._in = c_fontinfo_dir
+			EFO.current_source_ufo_family = c_source_ufo_family
+			#
+			EFO._ufos_to_efo(["kerning","features"], False, True, False)
 			#
 		#
 	#
@@ -185,6 +277,7 @@ class AUTOKERN(object):
 			x = 0
 			#
 			pairlist = self.extract_pairs(self._in, self.given_fonts)
+			#pairlist = self.extract_test_pairs(test_pairs, self.given_fonts)
 			#
 			for gf in self.given_fonts:
 				#
@@ -212,17 +305,25 @@ class AUTOKERN(object):
 								'--precision-ems',
 								str(self.current_kerning_settings["--precision-ems"]),
 								#
+								#'--kerning-threshold-ems',
+								#str(self.current_kerning_settings["--kerning-threshold-ems"]),
+								#
+								'--x-extrema-overlap-scaling',
+								str(self.current_kerning_settings["--x-extrema-overlap-scaling"]),
+								#
 								#'--log-path',
-								#'/media/root/Malysh1/winshm/advent_repo/Advent/scripts/kerning_scripts/kern_log/log',
+								#'VRD_Typography_Library/Lib/kerning/logs/log',
 								#'--log-basic-pairs',
 								#'--write-kerning-pair-logs'
 								)
 				#
 				pairlist_tup = self.pairlist_tuple(pairlist[gf])
 				#
+				#print(pairlist_tup)
 				#parlist_test = ("A","A","A","AE","A","Aacute","A","Abreve","A","Acircumflex","A","Adieresis","A","Agrave","A","Alpha","A","Alphatonos","A","Amacron","A","Aogonek","A","Aring","A","Atilde","A","B","A","Beta","A","C")
 				#
 				pairlist_tuple_to_kern = ('--glyph-pairs-to-kern',*pairlist_tup)
+				ignore = ('--glyphs-to-ignore',*tuple(ignore_glyphs_list))
 				#
 				if len(pairlist[gf]) == 0:
 					#
@@ -231,7 +332,7 @@ class AUTOKERN(object):
 				#
 				autokernArgs = TFSMap()
 				#AutokernSettings(autokernArgs).getCommandLineSettings(*pseudo_argv)
-				AutokernSettings(autokernArgs).getCommandLineSettings(*(pseudo_argv+pairlist_tuple_to_kern))
+				AutokernSettings(autokernArgs).getCommandLineSettings(*(pseudo_argv+pairlist_tuple_to_kern+ignore))
 				autokern = Autokern(autokernArgs)
 				autokern.process()
 				#

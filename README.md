@@ -53,6 +53,10 @@ The endpoints of the Lib so far, as argument functions:
 -s (source EFO)  
 -f (the weights of the font to componentize: "reg,bld,...")
 ```
+**EFO to VAR** 
+```
+-s (source EFO)
+```
 
 **VivaRado is thankful for all your observations :+1: please submit any issues at support@vivarado.com - with Subject: ISSUE:Topic, or send it here on github!**
 
