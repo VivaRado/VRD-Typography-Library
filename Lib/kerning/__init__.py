@@ -18,23 +18,26 @@ from .AutokernSettings import *
 import tfs3.common.TFSProject as TFSProject
 from tfs3.common.TFSMap import TFSMap
 #
-test_pairs_b = '''We
-QV
-QW
-ST
+test_pairs_b = '''ST
 UV
+QY
+We
 QV
 QW
-JA
-KO
-VC
-VG
-AY
 AC
-Va
-Vc
-Vb
-VA'''
+AG
+AO
+AQ
+AT
+AU
+AV
+AW
+AY
+BA
+BE
+BL
+BP'''
+
 test_pairs = '''FG
 ST
 UV
@@ -786,9 +789,9 @@ class AUTOKERN(object):
 								str(self.current_kerning_settings["--x-extrema-overlap-scaling"]),
 								# #
 								'--log-path',
-								os.path.join(*(self._in,"temp","logs", "log")),
-								#'--log-basic-pairs',
-								#'--write-kerning-pair-logs'
+								os.path.join(self._in,"temp","logs","log"),
+								'--log-basic-pairs',
+								'--write-kerning-pair-logs'
 								)
 				#
 				pairlist_tup = self.pairlist_tuple(pairlist[gf])
@@ -807,7 +810,6 @@ class AUTOKERN(object):
 				autokernArgs = TFSMap()
 				#AutokernSettings(autokernArgs).getCommandLineSettings(*pseudo_argv)
 				#
-				#print(*(pseudo_argv+pairlist_tuple_to_kern+ignore))
 				#
 				AutokernSettings(autokernArgs).getCommandLineSettings(*(pseudo_argv+pairlist_tuple_to_kern+ignore))
 				autokern = Autokern(autokernArgs)

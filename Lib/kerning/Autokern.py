@@ -329,7 +329,10 @@ class Autokern(TFSMap):
 											os.path.basename(self.log_path) + '.' + str(index))
 				if not os.path.exists(oldLogsPath):
 					break
+
 			os.rename(self.log_path, oldLogsPath)
+			#
+			#
 			if os.path.exists(self.log_path):
 				raise Exception('Could not rename exists logs folder: ' + self.log_path)
 			print ('Renaming old logs folder to:', oldLogsPath)
@@ -354,7 +357,9 @@ class Autokern(TFSMap):
 		srcCssFile = os.path.abspath(os.path.join(dir_path, 'data', 'styles.css'))
 		dstCssFile = os.path.abspath(os.path.join(self.css_folder, os.path.basename(srcCssFile)))
 		shutil.copy(srcCssFile, dstCssFile)
-
+		#
+		self.log_path = oldLogsPath
+		#
 		self.logFileTuples = []
 
 
@@ -391,8 +396,6 @@ class Autokern(TFSMap):
 
 		self.configureLogging()
 
-		#
-		#print(self.dstUfoFont.units_per_em)
 		#
 		self.units_per_em = int(round(self.dstUfoFont.units_per_em))
 		for key, value in self.argumentsMap.items():
@@ -749,12 +752,6 @@ class Autokern(TFSMap):
 		# mustacheMap['pair_min_distance_in_ems'] = ''#self.argumentsMap["pair_min_distance_in_ems"]
 		# mustacheMap['pair_max_distance_in_ems'] = ''#self.argumentsMap["pair_min_distance_in_ems"]
 		mustacheMap['glyph_count'] = self.glyph_count
-		mustacheMap['src_kerning_value_count'] = ''
-		mustacheMap['kerned_pairs_count'] = self.kerned_pairs_count
-		mustacheMap['valid_kerned_pairs_count'] = self.valid_kerned_pairs_count
-		mustacheMap['final_kerned_pairs_count'] = self.final_kerned_pairs_count
-		mustacheMap['elapsedDatetime'] = self.elapsedDatetime
-		mustacheMap['finishDatetime'] = self.finishDatetime
 
 		vars = (
 				( 'Filename', 'srcFilename',),
@@ -786,9 +783,12 @@ class Autokern(TFSMap):
 
 		varMaps = []
 		for name, key in vars:
-			varMaps.append({'sidebarVarName': name,
-							'sidebarVarValue': mustacheMap[key],
-							})
+			if key not in mustacheMap:
+				pass
+			else:
+				varMaps.append({'sidebarVarName': name,
+								'sidebarVarValue': mustacheMap[key],
+								})
 		mustacheMap['sidebarVars'] = varMaps
 
 		argMaps = []
@@ -1097,7 +1097,11 @@ class Autokern(TFSMap):
 
 		def cmpDisparities(d0, d1):
 			return cmp(d0.disparity, d1.disparity)
-		disparities.sort(cmpDisparities, reverse=True)
+
+		disparities = sorted(disparities, key=functools.cmp_to_key(cmpDisparities), reverse=True)
+		#
+		#disparities.sort(cmpDisparities, reverse=True)
+
 		return disparities
 
 
@@ -1335,7 +1339,7 @@ class Autokern(TFSMap):
 
 		mustache_template_file = os.path.abspath(os.path.join(dir_path, 'data', 'ilovetypography kerning pairs.txt'))
 		with open(mustache_template_file, 'rt') as f:
-			text = f.read().decode('utf8')
+			text = f.read()#.decode('utf8')
 
 		pairs = []
 		for line in text.split('\n'):
@@ -1355,7 +1359,7 @@ class Autokern(TFSMap):
 			unicodeToGlyphMap[glyph.unicode] = glyph
 
 		#
-		#print(pairs)
+		print(pairs)
 		#
 		pairTuples = []
 		linkMaps = []
@@ -1374,7 +1378,7 @@ class Autokern(TFSMap):
 
 			logFilename = self.getKerningPairFilename('basic_pair', ufoglyph0, ufoglyph1, '.html')
 			#
-			#print(logFilename)
+			print(logFilename)
 			#
 			pairTuples.append( ( pair, ufoglyph0, ufoglyph1, logFilename, ) )
 			linkMaps.append( { 'linkFile': logFilename,
@@ -1733,7 +1737,7 @@ class Autokern(TFSMap):
 				rowProtrusion = min(maxRowProtrusion, max(0, +x_offset))
 				intrusionTotal += rowIntrusion
 				protrusionTotal += rowProtrusion
-				TRUSION_POWER = 1.5#1.15
+				TRUSION_POWER = 1.15
 				intrusionPowTotal += pow(rowIntrusion, TRUSION_POWER)
 				protrusionPowTotal += rowProtrusion
 
@@ -2793,7 +2797,7 @@ class Autokern(TFSMap):
 			return {'text': formatUnicodeForHtml(text), 
 					'errorMap': {'text': formatUnicodeForHtml(text), 
 								 'source': source,
-								 'message': e,
+								 'message': str(e),
 								 },
 					}, None
 			
@@ -2953,11 +2957,11 @@ class Autokern(TFSMap):
 		self.updateKerning()
 		self.timing.mark('updateKerning.')
 		#
-		#self.writeSamples()
-		#self.timing.mark('writeSamples.')
+		self.writeSamples()
+		self.timing.mark('writeSamples.')
 
-		#self.logDisparities()
-		#self.timing.mark('logDisparities.')
+		self.logDisparities()
+		self.timing.mark('logDisparities.')
 
 		self.elapsedDatetime = formatTimeDuration(time.time() - startTime)
 		self.finishDatetime = time.strftime('%h. %d, %Y %H:%M:%S', time.localtime())
