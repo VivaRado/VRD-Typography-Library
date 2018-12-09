@@ -733,8 +733,8 @@ class AUTOKERN(object):
 			#
 			x = 0
 			#
-			#pairlist = self.extract_pairs(self._in, self.given_fonts)
-			pairlist = self.extract_test_pairs(test_pairs, self.given_fonts)
+			pairlist = self.extract_pairs(self._in, self.given_fonts)
+			#pairlist = self.extract_test_pairs(test_pairs, self.given_fonts)
 			#
 			for gf in self.given_fonts:
 				#
@@ -769,7 +769,7 @@ class AUTOKERN(object):
 								str(self.current_kerning_settings["--x-extrema-overlap-scaling"]),
 								# #
 								'--log-path',
-								'/media/root/Malysh1/winshm/advent_repo/_/test_efo/advent_efo_e.efo/temp/logs/log',
+								os.path.join(*(self._in,"temp","logs", "log")),
 								'--log-basic-pairs',
 								'--write-kerning-pair-logs'
 								)
@@ -789,6 +789,9 @@ class AUTOKERN(object):
 				#
 				autokernArgs = TFSMap()
 				#AutokernSettings(autokernArgs).getCommandLineSettings(*pseudo_argv)
+				#
+				#print(*(pseudo_argv+pairlist_tuple_to_kern+ignore))
+				#
 				AutokernSettings(autokernArgs).getCommandLineSettings(*(pseudo_argv+pairlist_tuple_to_kern+ignore))
 				autokern = Autokern(autokernArgs)
 				autokern.process()

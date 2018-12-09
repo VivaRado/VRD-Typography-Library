@@ -46,7 +46,7 @@ a small {
 }
 
 .wrapper {
-  width:860px;
+  /*width:860px;*/
   margin:0 auto;
 }
 
@@ -98,7 +98,7 @@ img {
 header {
   width:270px;
   float:left;
-  position:fixed;
+  position:relative;
 }
 
 strong {
@@ -107,7 +107,7 @@ strong {
 }
 
 section {
-  width:500px;
+/*  width:500px;*/
   float:right;
   padding-bottom:50px;
 }

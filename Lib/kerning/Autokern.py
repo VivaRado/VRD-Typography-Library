@@ -1349,7 +1349,7 @@ class Autokern(TFSMap):
 			unicodeToGlyphMap[glyph.unicode] = glyph
 
 		#
-		print(pairs)
+		#print(pairs)
 		#
 		pairTuples = []
 		linkMaps = []
@@ -1368,7 +1368,7 @@ class Autokern(TFSMap):
 
 			logFilename = self.getKerningPairFilename('basic_pair', ufoglyph0, ufoglyph1, '.html')
 			#
-			print(logFilename)
+			#print(logFilename)
 			#
 			pairTuples.append( ( pair, ufoglyph0, ufoglyph1, logFilename, ) )
 			linkMaps.append( { 'linkFile': logFilename,
@@ -1727,7 +1727,7 @@ class Autokern(TFSMap):
 				rowProtrusion = min(maxRowProtrusion, max(0, +x_offset))
 				intrusionTotal += rowIntrusion
 				protrusionTotal += rowProtrusion
-				TRUSION_POWER = 1.15
+				TRUSION_POWER = 1.5#1.15
 				intrusionPowTotal += pow(rowIntrusion, TRUSION_POWER)
 				protrusionPowTotal += rowProtrusion
 
@@ -2474,11 +2474,11 @@ class Autokern(TFSMap):
 				continue
 			kerningTuples.append( ( name0, name1, kerningValue, ) )
 		#
-		print (name0)
-		print (name1)
+		#print (name0)
+		#print (name1)
 		def cmpKerningTuples(value0, value1):
-			print (value0[-1], value1[-1] )
-			print (abs(value0[-1]), abs(value1[-1]))
+			#print (value0[-1], value1[-1] )
+			#print (abs(value0[-1]), abs(value1[-1]))
 			return cmp(abs(value0[-1]), abs(value1[-1]))
 
 		sorted(kerningTuples, key=functools.cmp_to_key(cmpKerningTuples), reverse=True)
@@ -2787,7 +2787,7 @@ class Autokern(TFSMap):
 			return {'text': formatUnicodeForHtml(text), 
 					'errorMap': {'text': formatUnicodeForHtml(text), 
 								 'source': source,
-								 'message': e.message,
+								 'message': e,
 								 },
 					}, None
 			
