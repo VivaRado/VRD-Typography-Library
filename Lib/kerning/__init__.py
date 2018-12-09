@@ -18,6 +18,23 @@ from .AutokernSettings import *
 import tfs3.common.TFSProject as TFSProject
 from tfs3.common.TFSMap import TFSMap
 #
+test_pairs_b = '''We
+QV
+QW
+ST
+UV
+QV
+QW
+JA
+KO
+VC
+VG
+AY
+AC
+Va
+Vc
+Vb
+VA'''
 test_pairs = '''FG
 ST
 UV
@@ -733,8 +750,8 @@ class AUTOKERN(object):
 			#
 			x = 0
 			#
-			pairlist = self.extract_pairs(self._in, self.given_fonts)
-			#pairlist = self.extract_test_pairs(test_pairs, self.given_fonts)
+			#pairlist = self.extract_pairs(self._in, self.given_fonts)
+			pairlist = self.extract_test_pairs(test_pairs_b, self.given_fonts)
 			#
 			for gf in self.given_fonts:
 				#
@@ -770,8 +787,8 @@ class AUTOKERN(object):
 								# #
 								'--log-path',
 								os.path.join(*(self._in,"temp","logs", "log")),
-								'--log-basic-pairs',
-								'--write-kerning-pair-logs'
+								#'--log-basic-pairs',
+								#'--write-kerning-pair-logs'
 								)
 				#
 				pairlist_tup = self.pairlist_tuple(pairlist[gf])

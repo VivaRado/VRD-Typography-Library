@@ -392,7 +392,7 @@ class Autokern(TFSMap):
 		self.configureLogging()
 
 		#
-		print(self.dstUfoFont.units_per_em)
+		#print(self.dstUfoFont.units_per_em)
 		#
 		self.units_per_em = int(round(self.dstUfoFont.units_per_em))
 		for key, value in self.argumentsMap.items():
@@ -749,6 +749,12 @@ class Autokern(TFSMap):
 		# mustacheMap['pair_min_distance_in_ems'] = ''#self.argumentsMap["pair_min_distance_in_ems"]
 		# mustacheMap['pair_max_distance_in_ems'] = ''#self.argumentsMap["pair_min_distance_in_ems"]
 		mustacheMap['glyph_count'] = self.glyph_count
+		mustacheMap['src_kerning_value_count'] = ''
+		mustacheMap['kerned_pairs_count'] = self.kerned_pairs_count
+		mustacheMap['valid_kerned_pairs_count'] = self.valid_kerned_pairs_count
+		mustacheMap['final_kerned_pairs_count'] = self.final_kerned_pairs_count
+		mustacheMap['elapsedDatetime'] = self.elapsedDatetime
+		mustacheMap['finishDatetime'] = self.finishDatetime
 
 		vars = (
 				( 'Filename', 'srcFilename',),
@@ -2947,11 +2953,11 @@ class Autokern(TFSMap):
 		self.updateKerning()
 		self.timing.mark('updateKerning.')
 		#
-		self.writeSamples()
-		self.timing.mark('writeSamples.')
+		#self.writeSamples()
+		#self.timing.mark('writeSamples.')
 
-		self.logDisparities()
-		self.timing.mark('logDisparities.')
+		#self.logDisparities()
+		#self.timing.mark('logDisparities.')
 
 		self.elapsedDatetime = formatTimeDuration(time.time() - startTime)
 		self.finishDatetime = time.strftime('%h. %d, %Y %H:%M:%S', time.localtime())
