@@ -80,11 +80,31 @@ from TFSGlyph import TFSGlyph
 
 class TFSFont(object):
 
-    def __init__(self, rffont):
+    def __init__(self, rffont, filepath):
         self.rffont = rffont
 
-    ascender = property(lambda self: self.rffont.info.ascender)
-    descender = property(lambda self: self.rffont.info.descender)
+        self.units_per_em = self.rffont.info.unitsPerEm
+        self.info = self.rffont.info
+
+        self.ascender = self.rffont.info.ascender
+        self.descender = self.rffont.info.descender
+
+        self.info.fullName = self.info.familyName + '-' + self.info.styleName
+        self.info.fontName = self.info.fullName.replace(' ', '')
+
+        self.info.srcFilename = os.path.basename(filepath)
+        self.info.units_per_em = self.rffont.info.unitsPerEm
+        self.info.ascender_ems = self.ascender
+        self.info.descender_ems = self.descender
+        #
+
+        # print('_______')
+        # print('_______')
+        # print('_______')
+        # print(self.rffont.info)
+        # print('_______')
+        # print('_______')
+        # print('_______')
 
     def clearKerning(self):
         self.rffont.kerning.clear()
@@ -120,8 +140,10 @@ class TFSFont(object):
     def getGlyphs(self):
         return [TFSGlyph(glyph) for glyph in self.rffont]
 
-    units_per_em = property(lambda self: self.rffont.info.unitsPerEm)
-    info = property(lambda self: self.rffont.info)
+    
+    #
+    
+    #
 #    ascender = property(lambda self: self.rffont.info.ascender)
 #    descender = property(lambda self: self.rffont.info.descender)
 #    xHeight = property(lambda self: self.rffont.info.xHeight)
@@ -231,4 +253,4 @@ def TFSFontFromFile(filepath):
 
 #    print 'filepath', filepath
     rffont = OpenFont(filepath)
-    return TFSFont(rffont)
+    return TFSFont(rffont, filepath)

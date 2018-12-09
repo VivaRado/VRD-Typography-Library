@@ -144,11 +144,11 @@ DEFAULT_SAMPLE_TEXTS = (
 				'pqpiitt',
 				'ijiJn.',
 				'N-N=NtN',
-				'TaLTLYPJ', # x-extrema overlap
+				'TaLTLUPJ', # x-extrema overlap # 'TaLTLYPJ'
 				'VAWML4TO',
 				'hhnnhn',
 				'JFrf',
-				'WaToYaVa',
+				'WaToUaVa',#'WaToYaVa',
 #					 'Alphabet',
 				
 'MOUNTAIN',
@@ -391,7 +391,9 @@ class Autokern(TFSMap):
 
 		self.configureLogging()
 
-
+		#
+		print(self.dstUfoFont.units_per_em)
+		#
 		self.units_per_em = int(round(self.dstUfoFont.units_per_em))
 		for key, value in self.argumentsMap.items():
 			if key.endswith('_ems'):
@@ -733,6 +735,21 @@ class Autokern(TFSMap):
 		return formatEms(value / float(self.units_per_em))
 
 	def addSidebarMustacheMap(self, mustacheMap, kerned, complete=False):
+
+		# print(self.argumentsMap)
+		# print('___')
+		# print(self.argumentsMap["min_distance_ems"])
+		#
+		for x,y in self.argumentsMap.items():
+			mustacheMap[x] = y
+		#
+		# mustacheMap['precision_ems'] = self.argumentsMap["precision_ems"]
+		# mustacheMap['min_distance_ems'] = self.argumentsMap["min_distance_ems"]
+		# mustacheMap['max_distance_ems'] = self.argumentsMap["max_distance_ems"]
+		# mustacheMap['pair_min_distance_in_ems'] = ''#self.argumentsMap["pair_min_distance_in_ems"]
+		# mustacheMap['pair_max_distance_in_ems'] = ''#self.argumentsMap["pair_min_distance_in_ems"]
+		mustacheMap['glyph_count'] = self.glyph_count
+
 		vars = (
 				( 'Filename', 'srcFilename',),
 				( 'Family', 'familyName',),
@@ -775,17 +792,18 @@ class Autokern(TFSMap):
 				continue
 			if value is None:
 				continue
-			if type(value) == types.BooleanType:
+			if isinstance(type(value), (bool)):# type(value) == types.BooleanType:
 				if value:
 					argMaps.append({'sidebarVarName': '--' + key.replace('_', '-'),
 									'sidebarVarValue': '',
 									})
 				continue
-			elif type(value) in ( types.ListType, types.TupleType, ):
+			elif isinstance(type(value), (list,tuple)):#type(value) in ( types.ListType, types.TupleType, ):
 				value = ', '.join([str(item) for item in value])
 			argMaps.append({'sidebarVarName': '--' + key.replace('_', '-'),
 							'sidebarVarValue': value,
 							})
+
 		mustacheMap['sidebarArgs'] = argMaps
 
 
@@ -794,11 +812,12 @@ class Autokern(TFSMap):
 		mustacheMap = {}
 
 		def addToMustacheMap(key, value):
-			if type(value) not in ( types.IntType,
-									types.LongType,
-									types.FloatType,
-									types.UnicodeType,
-									types.StringType, ):
+			# if type(value) not in ( types.IntType,
+			# 						types.LongType,
+			# 						types.FloatType,
+			# 						types.UnicodeType,
+			# 						types.StringType, ):
+			if isinstance(type(value), (int,float, str)) == False:
 				return
 
 			if type(value) in ( types.IntType,
@@ -809,11 +828,16 @@ class Autokern(TFSMap):
 				mustacheMap[key] = value
 
 		for key, value in self.items():
+			#
+			#print("IS:")
+			#print( isinstance(type(value), (int,float)) ) 
+			#
 			if key.endswith('_ems'):
 				value = formatEms(value)
-			elif type(value) in ( types.IntType,
-									types.FloatType,
-									types.LongType,):
+			elif isinstance(type(value), (int,float)):
+			# elif type(value) in ( types.IntType,
+			# 						types.FloatType,
+			# 						types.LongType,):
 				emsKey = key + '_in_ems'
 				emsValue = formatEms(value / float(self.units_per_em))
 				addToMustacheMap(emsKey, emsValue)
@@ -821,22 +845,43 @@ class Autokern(TFSMap):
 
 		if localsMap:
 			for key, value in localsMap.items():
-				if type(value) in ( types.IntType,
-									types.FloatType,
-									types.LongType,):
+				if isinstance(type(value), (int,float)):
 					emsKey = key + '_in_ems'
 					emsValue = formatEms(value / float(self.units_per_em))
 					addToMustacheMap(emsKey, emsValue)
 				addToMustacheMap(key, value)
 
+		#
+		#print(self.dstUfoFont.info)
+		#
+		'''
+		( 'Filename', 'srcFilename',),
+		( 'Family', 'familyName',),
+		( 'Style', 'styleName',),
+		( 'Units per em', 'units_per_em',),
+		( 'Ascender', 'ascender_ems',),
+		( 'Descender', 'descender_ems',),
+		( 'Precision', 'precision_ems',),
+		( 'Total Glyphs', 'glyph_count',),
+		'''
 		for key in (
 					 'unitsPerEm',
 					 'familyName',
 					 'styleName',
 					 'fullName',
 					 'fontName',
+					 'srcFilename',
+					 'units_per_em',
+					 'ascender_ems',
+					 'descender_ems'
 					):
+			#try:
+			
 			mustacheMap[key] = getattr(self.dstUfoFont.info, key)
+				
+			#except Exception as e:
+
+			#	mustacheMap[key] = ''
 
 		return mustacheMap
 
@@ -1221,7 +1266,9 @@ class Autokern(TFSMap):
 			def formatSectionVariable(variableTuple):
 				if len(variableTuple) == 2:
 					name, var = variableTuple
-					return {'varName': name, 'varValue':mustacheMap[var],}
+					if var in mustacheMap:
+						
+						return {'varName': name, 'varValue':mustacheMap[var],}
 				else:
 					return {'varName': variableTuple[0], 'varValue':variableTuple[1],}
 
@@ -2869,7 +2916,8 @@ class Autokern(TFSMap):
 
 		logFile = os.path.abspath(os.path.join(self.html_folder, logFilename))
 		with open(logFile, 'wt') as f:
-			 #TODO: explicitly encode unicode
+			#TODO: explicitly encode unicode
+
 			f.write(logHtml)
 
 		if groupName is not None:

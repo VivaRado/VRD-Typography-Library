@@ -69,7 +69,7 @@ import sys
 import math
 
 from TFSMath import *
-from TFSIntersection import *
+import TFSIntersection
 from TFSPoint import *
 from TFSMap import TFSMap
 from TFSSegment import *
@@ -743,7 +743,7 @@ def concatenatePath(closed, *objs):
                 appendSegmentPoints(lastPoint, obj.startPoint())
                 lastPoint = None
             segments.append(obj.copy())
-        elif isinstance(obj, TFSPoint):
+        elif str(type(obj)) == "<class 'tfs3.common.TFSPoint.TFSPoint'>":#isinstance(obj, TFSPoint):
             if lastPoint is not None:
                 appendSegmentPoints(lastPoint, obj)
                 lastPoint = None
@@ -753,6 +753,7 @@ def concatenatePath(closed, *objs):
             else:
                 lastPoint = obj
         else:
+            print(type(obj))
             raise Exception('Unknown argument: ' + str(type(obj)))
 
     return connectSegments(segments, closed)
