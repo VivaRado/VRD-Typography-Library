@@ -358,7 +358,7 @@ class Autokern(TFSMap):
 		dstCssFile = os.path.abspath(os.path.join(self.css_folder, os.path.basename(srcCssFile)))
 		shutil.copy(srcCssFile, dstCssFile)
 		#
-		self.log_path = oldLogsPath
+		#self.log_path = oldLogsPath
 		#
 		self.logFileTuples = []
 
@@ -1359,7 +1359,7 @@ class Autokern(TFSMap):
 			unicodeToGlyphMap[glyph.unicode] = glyph
 
 		#
-		print(pairs)
+		#print(pairs)
 		#
 		pairTuples = []
 		linkMaps = []
@@ -1378,7 +1378,7 @@ class Autokern(TFSMap):
 
 			logFilename = self.getKerningPairFilename('basic_pair', ufoglyph0, ufoglyph1, '.html')
 			#
-			print(logFilename)
+			#print(logFilename)
 			#
 			pairTuples.append( ( pair, ufoglyph0, ufoglyph1, logFilename, ) )
 			linkMaps.append( { 'linkFile': logFilename,
@@ -1901,7 +1901,7 @@ class Autokern(TFSMap):
 
 	def processKerningPair(self, ufoglyph0, ufoglyph1):
 		'''
-		returns True iff pair is kerned.
+		returns True if pair is kerned.
 		'''
 
 		self.timing.mark('processKerningPair.0.')
