@@ -235,8 +235,6 @@ class COMPRESS(object):
 	#
 	def do_fea_kern_file(self, final_class_kern_pairs):
 		#
-		#do_fea_kern = 'feature kern {\n'
-		#
 		for y in final_class_kern_pairs:
 			#
 			k_dir = y[3]
@@ -245,18 +243,10 @@ class COMPRESS(object):
 			let_a = self.get_kern_name_and_dir(y[0])
 			let_b = self.get_kern_name_and_dir(y[1])
 			#
-			#print(let_a, let_b)
-			#
 			fea_line = fea_pos_line.format('@_'+let_a[0], '@_'+let_b[0]+'1', str(k_int))
-			#
-			#do_fea_kern = do_fea_kern +'    '+fea_line + '\n'
 			#
 			self.final_class_kerning.append(fea_line)
 			#
-		#
-		#do_fea_kern = do_fea_kern + '} kern;'
-		#
-		#return final_class_kerning
 		#
 	#
 	def fea_kern_list_to_file(self, final_kerning_list):
@@ -270,8 +260,6 @@ lookup kern1 {\n'''
 		for y in final_kerning_list:
 			#
 			kern_strings = kern_strings +'    '+y + '\n'
-			#
-			#final_class_kerning.append(fea_line)
 			#
 		#
 		kern_strings = kern_strings + '''}kern1;
@@ -318,10 +306,11 @@ lookup kern1;
 						#
 					#
 			#
+		#
 		g_plist_permut.sort()
-
+		#
 		result_permut = list(g_plist_permut for g_plist_permut,_ in itertools.groupby(g_plist_permut))
-
+		#
 		return result_permut
 		#
 	#
@@ -384,8 +373,6 @@ lookup kern1;
 	#
 	def do_fea_kern_file_additions(self, final_class_kern_pairs):
 		#
-		#do_fea_kern = 'feature kern {\n'
-		#
 		for k,y in final_class_kern_pairs.items():
 			#
 			for x,z in y.items():
@@ -410,15 +397,9 @@ lookup kern1;
 				#
 				fea_add_line = fea_pos_line.format(let_a, let_b, str(k_int))
 				#
-				#
-				#do_fea_kern = do_fea_kern +'    '+fea_add_line + '\n'
-				#
 				self.final_class_kerning.append(fea_add_line)
+				#
 			#
-		#
-		#do_fea_kern = do_fea_kern + '} kern;'
-		#
-		#return final_class_kerning
 		#
 	#
 	def do_compress(self, p_groups, p_kerning, dir_to_comp_ufo_file):
@@ -502,6 +483,134 @@ lookup kern1;
 		dstFile = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join(dir_to_comp_ufo_file,k_c_temp)))
 		plistlib.writePlist(class_kerning_plist, dstFile)
 		#
+		self.compressed_plist = dstFile
+		#
+	#
+	#
+	def test_compress(self, flat, comp, file_base_group):
+		#
+		'''
+		compress logic:
+
+			get sim list
+				sim list includes L and R sim groups
+				
+				group to group:
+					permute L side with any R side from simex
+					for items in permut list
+						gather int value from flat list provided L and R
+						get unique group items of simex L and R groups
+						remove the group contents from the flat list that are in L R simex unique group
+					
+
+				group to letter:
+					list simex keys with L
+					for L simex keys
+						gather values from flat kerning provided key L
+						remove values from flat kerning provided key L
+
+				
+				letter to group:
+					list simex keys with R
+					gather groups that include key R from flat kerning
+					get keys from those groups
+					permute flat keys on left side with key R
+					for items in permut list
+						gather values from flat kerning
+						remove the values gathered from flat list and values in simex R group items
+
+				remains:
+
+				letter to letter:
+					whatever key remains in flat list and is not key in simex
+
+		'''
+		#
+		p_f = plistlib.readPlist(flat)
+		p_c = plistlib.readPlist(comp)
+		p_g = plistlib.readPlist(file_base_group)
+		#
+		p_f_combine = []
+		#
+		for k,v in p_f.items():
+			#
+			for x in v:
+				#
+				p_f_combine.append([k,x])
+				#
+			#
+		#
+		#print(p_f_combine)
+		print('===================================')
+		print("Original Pairs:" ,len(p_f_combine))
+		#
+		#
+		p_c_combine = []
+		#
+		for k,v in p_c.items():
+			#
+			for x in v:
+				#
+				try:
+					#
+					items_in_group = p_g[x]
+					#
+				except Exception as e:
+					#
+					items_in_group = []
+					#
+				#
+				if len(items_in_group) > 0:
+					#
+					for y in items_in_group:
+						#
+						p_c_combine.append([k,y])
+						#
+					#
+				else:
+					#
+					p_c_combine.append([k,x])
+					#
+				#
+			#
+		#
+		#
+		print('===================================')
+		print("Reduced Pairs:" ,len(p_c_combine))
+		#
+		clean_p_c_items = []
+		#
+		for p_c_itm in p_c_combine:
+			#
+			clean_p_c_itm = []
+			#
+			for x in p_c_itm:
+				#
+				c_itm = x
+				#
+				if '@MMK_' in x:
+					#
+					c_itm = self.get_kern_name_and_dir(x)[0]
+					#
+				#
+				clean_p_c_itm.append(c_itm)
+				#
+			#
+			clean_p_c_items.append(clean_p_c_itm)
+			#
+		#
+		void = []
+		#
+		for x in p_f_combine:
+			#
+			if x not in p_c_combine:
+				#
+				void.append(x)
+				#
+			#
+		#
+		print(len(void))
+		#
 	#
 	def do_class_kern_replacement(self):
 		#
@@ -516,5 +625,7 @@ lookup kern1;
 		print('Compressing:', self._current_font_instance_weight)
 		#
 		self.do_compress(file_base_group, dir_flat_ufo_file_kern, dir_to_comp_ufo_file)
+		#
+		#self.test_compress(dir_flat_ufo_file_kern, self.compressed_plist, file_base_group)
 		#
 	#
