@@ -1,9 +1,12 @@
 Compress Kerning
 ===================
 
-Compress Flat Kerning to Component Based Kerning
+Compress Flat Kerning to Component Based Kerning.
 
-Logic:
+We create a copy of the flat dictionary and while getting the values we need - residing in the SIMEX groups/kerning.plist - we perform delete operations on this copy.
+At the end we can see that the only values left in this are Letter to Letter. This leads me to believe - !without actually providing any proof at the moment! - that the operations are correct and we are not losing any kerning values from the flat kerning file.
+
+Compression Logic:
 ------
  - #### Group to Group (GG): 
 	 - permute L side with any R side from simex.
