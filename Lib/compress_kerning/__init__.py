@@ -543,15 +543,62 @@ lookup kern1;
 		return clean_data
 		#
 	#
-	def transfer_delete_kern_value(self, _p_f, _pair, _g_items):
+	def get_group_items(self, _dict, _letter):
 		#
-		
+		'''
+		get group items from simex group list for letter
+		'''
 		#
-		pair_L = _pair[0].split("@MMK_L_")[1]
-		pair_R = _pair[1].split("@MMK_R_")[1]
+		g_lst = []
 		#
-		print('===')
-		print("PROCESSING PAIR:", ",".join(_pair))
+		for k,v in _dict.items():
+			#
+			if k == _letter:
+				#
+				g_lst.extend(v)
+				#
+			#
+		#
+		return g_lst
+		#
+	#
+	def transfer_delete_kern_value(self, _p_f, _input, _g_items, _type):
+		#
+		if isinstance(_input, list):
+			#
+			p_L = _input[0]
+			p_R = _input[1]
+
+			if _type == "GG":
+
+				pair_L = p_L.split("@MMK_L_")[1]
+
+			else:
+				
+				pair_L = p_L
+
+			#
+			pair_R = p_R.split("@MMK_R_")[1]
+			#
+			if _type == "GG":
+				op_long = "GROUP TO GROUP"
+			elif _type == "LG":
+				op_long = "LETTER TO GROUP"
+			#
+			print('===')
+			print("PROCESSING "+op_long+":", ",".join(_input))
+			#
+		else:
+			#
+			p_L = _input
+			p_R = False
+			pair_L = p_L.split("@MMK_L_")[1]
+			pair_R = False
+			#_type = "GL"
+			#
+			print('===')
+			print("PROCESSING GROUP TO ANY LETTER:", p_L)
+			#
 		#
 		for k,v in _p_f.items():
 			#
@@ -561,45 +608,63 @@ lookup kern1;
 				#
 				for x in v:
 					#
-					if x == pair_R:
+					if p_R == False:
 						#
-						print('===')
+						pair_R = x
+						p_R = x
+						#
+					#
+					if x == pair_R:
 						#
 						if x in self.p_f_copy[k]:
 							#
+							print('===')
+							#
 							k_int = int(self.p_f_copy[k][x])
 							#
-							print("\tTRANSFERING: ", _pair[0], _pair[1], "VALUE: ", k_int)
+							print("\tTRANSFERING: ", p_L, p_R, "VALUE: ", k_int)
 							#
 							# transfer pair and value to compressed dictionary
-							if _pair[0] in self.p_c:
+							if p_L in self.p_c[_type]:
 								#
-								self.p_c[_pair[0]].update( {_pair[1]:k_int} )
+								self.p_c[_type][p_L].update( {p_R:k_int} ) #0003 #0006
 								#
 							else:
 								#
-								self.p_c[_pair[0]] = {_pair[1]:k_int}
+								self.p_c[_type][p_L] = {p_R:k_int} #0003 #0006
 								#
 							#
-							# delete item from flat copy dictionary
-							print("\t\tDELETING:", k, x)
+							# delete item from flat copy dictionary #0004
+							print("\t\tDELETING:", k +' > '+ x)
 							del self.p_f_copy[k][x]
 							#
-							# delete item from group items list
-							_g_items.remove(x)
-							#
+							if len(_g_items) > 0:
+								#
+								if x in _g_items:
+									# delete item from group items list
+									_g_items.remove(x)
+								#
+					#
+					if _type == "GL":
+						#
+						p_R = False
+						#
 					#
 				#
-				for y in _g_items:
+				#print(_g_items)
+				#
+				if len(_g_items) > 0:
 					#
-					print("\t\tDELETING:", k, y)
-					#
-					# delete group items list item from flat copy dictionary
-					if y in self.p_f_copy[k]:
+					for y in _g_items:
 						#
-						del self.p_f_copy[k][y]
+						print("\t\tDELETING:", k +' > '+ y)
 						#
-					#
+						# delete group items list item from flat copy dictionary
+						if y in self.p_f_copy[k]:
+							#
+							del self.p_f_copy[k][y] #0004
+							#
+						#
 				#
 				print("\tFLAT COPY LENGTH:", "Before:", len_before, "After:", len(self.p_f_copy[k]))
 				#
@@ -615,39 +680,41 @@ lookup kern1;
 			get sim list
 				sim list includes L and R sim groups
 				
-				group to group:
+				Group to Group (GG): 
 					permute L side with any R side from simex #0001
 					for items in permut list
 						get unique group items of simex L and R groups #0002
-						gather int value from flat list provided L and R
-						remove the group contents from the flat list that are in L R simex unique group
-					
+						gather int value from flat list provided L and R #0003
+						remove the group contents from the flat list that are in L R simex unique group #0004
+					# deleting from flat_copy in matches of permut list, the group items of both simex groups since they are covered by the both group contents
 
-				group to letter:
-					list simex keys with L
+				Group to Letter (GL):
+					list simex keys with L #0005
 					for L simex keys
-						gather values from flat kerning provided key L
-						remove values from flat kerning provided key L
+						gather values from flat kerning provided key L #0006
+						remove values from flat kerning provided key L #0007
+						remove group items included in flat groups
+					# deleting from flat_copy in matches of permut list, the group items of L simex group since they are covered by Group to Group
 
-				
-				letter to group:
-					list simex keys with R
+				Letter to Group (LG):
+					list simex keys with R #0008
 					gather groups that include key R from flat kerning
 					get keys from those groups
-					permute flat keys on left side with key R
+					permute flat keys on left side not in simex group keys and not in all simex group items with key R
 					for items in permut list
 						gather values from flat kerning
 						remove the values gathered from flat list and values in simex R group items
+					# deleting from flat_copy in matches of permut list, the group items of R simex group since they are covered by the R group contents
 
-				remains:
 
-				letter to letter:
+				Letter to Letter (LL):
 					whatever key remains in flat list and is not key in simex
+					# deleting all simex group items that are keys in flat_copy because they are covered in GG or GL #0009
 
 		'''
 		#
 		#
-		self.p_c = {}
+		self.p_c = {"GG":{},"GL":{},"LG":{},"LL":{}}
 		#
 		p_f = plistlib.readPlist(flat)
 		#
@@ -655,6 +722,12 @@ lookup kern1;
 		#
 		p_g = plistlib.readPlist(simex_groups)
 		#
+		all_group_items = []
+		#
+		#
+
+
+		# \/ Group to Group (GG)
 		#
 		# #\/0001
 		p_g_keys = list(p_g.keys())
@@ -667,20 +740,91 @@ lookup kern1;
 			#
 			group_items_for_pair = self.get_group_items_unique_keep_order(p_g,x)
 			#
-			self.transfer_delete_kern_value(p_f,x, group_items_for_pair)
+			all_group_items.extend(group_items_for_pair)
+			#
+			self.transfer_delete_kern_value(p_f, x, group_items_for_pair, "GG")
 			#
 		# #/\0002
 		#
+		# /\
+
+
+		# \/ Group to Letter (GL)
 		#
-		print(p_g_keys)
+		#
+		p_g_keys_L = [x for x in p_g_keys if x.startswith('@MMK_L_')] #0005
+		#
+		for y in p_g_keys_L:
+			#
+			group_items_for_L = self.get_group_items(p_g,y)
+			#
+			self.transfer_delete_kern_value(p_f, y, group_items_for_L, "GL")
+			#
+		#
+		# /\
+
+
+		# \/ Letter to Group (LG)
+		#
+		p_g_keys_R = [x for x in p_g_keys if x.startswith('@MMK_R_')] #0008
+		#
+		p_f_LG_permut = []
+		#
+		p_f_keys = list(p_f.keys())
+		#
+		for k,v in self.p_f_copy.items():
+			#
+			if "@MMK_L_"+k not in p_g_keys and "@MMK_R_"+k not in p_g_keys: # dealt with on GG
+					
+				for d in p_g_keys_R:
+					#
+					if k not in all_group_items: # dealt with on GG
+						#
+						p_f_LG_permut.append([k,d])
+						#
+					#
+				#
+			#
+		#
+		for z in p_f_LG_permut:
+			#
+			group_items_for_R = self.get_group_items(p_g,z)
+			#
+			self.transfer_delete_kern_value(p_f, z, group_items_for_R,"LG")
+			#
+		#
+		# /\
+
+
+		# \/ Letter to Letter (LL)
+		#
+		# #0009
+		for q in all_group_items: 
+			#
+			if q in list(self.p_f_copy.keys()):
+				#
+				del self.p_f_copy[q]
+				#
+			#
+		#
+		# /\
+
+
+		#print(p_g_keys_L)
 		print('=========')
 		#
 		print("=====")
-		pprint.pprint(self.p_c)
+		#pprint.pprint(self.p_c)
+		#
+		print("=====")
+		print("=====")
+		print("=====")
+		#print(p_f_LG_permut)
+		print("=====")
+		
+		pprint.pprint(self.p_f_copy)
 		#
 		p_f_combine = []
-		#
-		
 		#
 	#
 	def do_class_kern_replacement(self):
