@@ -36,6 +36,7 @@ import copy
 #
 import difflib
 import plistlib
+import pprint
 #import json
 #
 import collections
@@ -486,8 +487,127 @@ lookup kern1;
 		self.compressed_plist = dstFile
 		#
 	#
+	def permute_direction(self,l):
+		#
+		'''
+		split the simex group keys list to Left and Right lists
+		'''
+		#
+		directional_permute = []
+		#
+		avoid_r = []
+		#
+		for _left in l:
+			#
+			for _right in l:
+				#
+				if "@MMK_L_" in _right or "@MMK_R_" in _left: # if left in right or right in left pass
+					#
+					pass
+					#
+				else:
+					#
+					directional_permute.append([_left,_right])
+					#
+				#
+			#
+		#
+		dups = sum(y for y in Counter(tuple(x) for x in directional_permute).values() if y > 1)
+		#
+		print("Directional Permutation Result Size:", len(directional_permute), "Duplicates:", dups)
+		#
+		return directional_permute
+		#
 	#
-	def test_compress(self, flat, comp, file_base_group):
+	def get_group_items_unique_keep_order(self, _dict, _pair):
+		#
+		'''
+		get group items from simex group list for each given pair,
+		keep order and combine each items pair.
+		'''
+		#
+		g_lst = []
+		#
+		for k,v in _dict.items():
+			#
+			if k == _pair[0] or k == _pair[1]:
+				#
+				g_lst.append(v)
+				#
+			#
+		#
+		ts = set()
+		rm_duplicate = lambda l:[x for x in l if not (x in ts or ts.add(x))]
+		clean_data = rm_duplicate(g_lst[1])+[i for i in rm_duplicate(g_lst[0]) if i not in g_lst[1]]
+		#
+		return clean_data
+		#
+	#
+	def transfer_delete_kern_value(self, _p_f, _pair, _g_items):
+		#
+		
+		#
+		pair_L = _pair[0].split("@MMK_L_")[1]
+		pair_R = _pair[1].split("@MMK_R_")[1]
+		#
+		print('===')
+		print("PROCESSING PAIR:", ",".join(_pair))
+		#
+		for k,v in _p_f.items():
+			#
+			if k == pair_L:
+				#
+				len_before = len(self.p_f_copy[k])
+				#
+				for x in v:
+					#
+					if x == pair_R:
+						#
+						print('===')
+						#
+						if x in self.p_f_copy[k]:
+							#
+							k_int = int(self.p_f_copy[k][x])
+							#
+							print("\tTRANSFERING: ", _pair[0], _pair[1], "VALUE: ", k_int)
+							#
+							# transfer pair and value to compressed dictionary
+							if _pair[0] in self.p_c:
+								#
+								self.p_c[_pair[0]].update( {_pair[1]:k_int} )
+								#
+							else:
+								#
+								self.p_c[_pair[0]] = {_pair[1]:k_int}
+								#
+							#
+							# delete item from flat copy dictionary
+							print("\t\tDELETING:", k, x)
+							del self.p_f_copy[k][x]
+							#
+							# delete item from group items list
+							_g_items.remove(x)
+							#
+					#
+				#
+				for y in _g_items:
+					#
+					print("\t\tDELETING:", k, y)
+					#
+					# delete group items list item from flat copy dictionary
+					if y in self.p_f_copy[k]:
+						#
+						del self.p_f_copy[k][y]
+						#
+					#
+				#
+				print("\tFLAT COPY LENGTH:", "Before:", len_before, "After:", len(self.p_f_copy[k]))
+				#
+			#
+		#
+	#
+	def test_compress(self, flat, simex_groups):
+		#
 		#
 		'''
 		compress logic:
@@ -496,10 +616,10 @@ lookup kern1;
 				sim list includes L and R sim groups
 				
 				group to group:
-					permute L side with any R side from simex
+					permute L side with any R side from simex #0001
 					for items in permut list
+						get unique group items of simex L and R groups #0002
 						gather int value from flat list provided L and R
-						get unique group items of simex L and R groups
 						remove the group contents from the flat list that are in L R simex unique group
 					
 
@@ -526,90 +646,41 @@ lookup kern1;
 
 		'''
 		#
+		#
+		self.p_c = {}
+		#
 		p_f = plistlib.readPlist(flat)
-		p_c = plistlib.readPlist(comp)
-		p_g = plistlib.readPlist(file_base_group)
+		#
+		self.p_f_copy = copy.deepcopy(p_f)
+		#
+		p_g = plistlib.readPlist(simex_groups)
+		#
+		#
+		# #\/0001
+		p_g_keys = list(p_g.keys())
+		permute_directional= self.permute_direction(p_g_keys)
+		# #/\0001
+		#
+		#
+		# #\/0002
+		for x in permute_directional:
+			#
+			group_items_for_pair = self.get_group_items_unique_keep_order(p_g,x)
+			#
+			self.transfer_delete_kern_value(p_f,x, group_items_for_pair)
+			#
+		# #/\0002
+		#
+		#
+		print(p_g_keys)
+		print('=========')
+		#
+		print("=====")
+		pprint.pprint(self.p_c)
 		#
 		p_f_combine = []
 		#
-		for k,v in p_f.items():
-			#
-			for x in v:
-				#
-				p_f_combine.append([k,x])
-				#
-			#
-		#
-		#print(p_f_combine)
-		print('===================================')
-		print("Original Pairs:" ,len(p_f_combine))
-		#
-		#
-		p_c_combine = []
-		#
-		for k,v in p_c.items():
-			#
-			for x in v:
-				#
-				try:
-					#
-					items_in_group = p_g[x]
-					#
-				except Exception as e:
-					#
-					items_in_group = []
-					#
-				#
-				if len(items_in_group) > 0:
-					#
-					for y in items_in_group:
-						#
-						p_c_combine.append([k,y])
-						#
-					#
-				else:
-					#
-					p_c_combine.append([k,x])
-					#
-				#
-			#
-		#
-		#
-		print('===================================')
-		print("Reduced Pairs:" ,len(p_c_combine))
-		#
-		clean_p_c_items = []
-		#
-		for p_c_itm in p_c_combine:
-			#
-			clean_p_c_itm = []
-			#
-			for x in p_c_itm:
-				#
-				c_itm = x
-				#
-				if '@MMK_' in x:
-					#
-					c_itm = self.get_kern_name_and_dir(x)[0]
-					#
-				#
-				clean_p_c_itm.append(c_itm)
-				#
-			#
-			clean_p_c_items.append(clean_p_c_itm)
-			#
-		#
-		void = []
-		#
-		for x in p_f_combine:
-			#
-			if x not in p_c_combine:
-				#
-				void.append(x)
-				#
-			#
-		#
-		print(len(void))
+		
 		#
 	#
 	def do_class_kern_replacement(self):
@@ -620,12 +691,12 @@ lookup kern1;
 		#
 		dir_flat_ufo_file_kern=os.path.join(dir_flat_ufo_file,'kerning.plist')
 		#
-		copyfile(file_base_group, os.path.join(dir_to_comp_ufo_file,'groups.plist'))
+		#copyfile(file_base_group, os.path.join(dir_to_comp_ufo_file,'groups.plist'))
 		#
 		print('Compressing:', self._current_font_instance_weight)
 		#
-		self.do_compress(file_base_group, dir_flat_ufo_file_kern, dir_to_comp_ufo_file)
+		#self.do_compress(file_base_group, dir_flat_ufo_file_kern, dir_to_comp_ufo_file)
 		#
-		#self.test_compress(dir_flat_ufo_file_kern, self.compressed_plist, file_base_group)
+		self.test_compress(dir_flat_ufo_file_kern, file_base_group)
 		#
 	#
