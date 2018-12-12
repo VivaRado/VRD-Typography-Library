@@ -808,19 +808,6 @@ lookup kern1;
 			#
 		#
 		# /\
-
-
-		#print(p_g_keys_L)
-		print('=========')
-		#
-		print("=====")
-		#pprint.pprint(self.p_c)
-		#
-		print("=====")
-		print("=====")
-		print("=====")
-		#print(p_f_LG_permut)
-		print("=====")
 		
 		pprint.pprint(self.p_f_copy)
 		#
