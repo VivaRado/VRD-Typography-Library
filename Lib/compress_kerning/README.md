@@ -36,6 +36,7 @@ Compression Logic:
 ------
  - #### Letter to Letter (LL):
     > deleting all simex group items that are keys in flat_copy because they are covered in GG or GL.
+    > deleting all simex group items that are items in flat_copy because they are covered in GG or GL.
 
     whatever key remains in flat list and is not key in simex.
 

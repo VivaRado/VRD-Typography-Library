@@ -6,10 +6,10 @@
 #
 import os
 import sys
-from os.path import dirname, join, abspath
-from pathlib import Path
 import copy
 import json
+from pathlib import Path
+from os.path import dirname, join, abspath
 #
 from .efo_features import combine_fea
 from .efo_features import split_fea
@@ -223,7 +223,7 @@ class EFO(object):
 			print('\tGIVEN FONTS INCONSISTENT ABORTING')
 			#
 		#
-	#
+	# EFO._ufos_to_efo(["kerning","features"], False, True, False)
 	def _ufos_to_efo(self, _to_copy=["metainfo","features","glyphs","fontinfo","kerning","lib"], _ufos_to_temp=True, _from_compress=False, _from_components=False):
 		#
 		read_efo_json_fontinfo(self, "Upstream")
@@ -333,7 +333,10 @@ class EFO(object):
 				#
 				if "kerning" in _to_copy:
 					#
-					copy_kerning(self, "flat","Upstream")
+					if _from_compress:
+						copy_kerning(self, "class","Upstream")
+					else:
+						copy_kerning(self, "flat","Upstream")
 					#
 				#
 			#
