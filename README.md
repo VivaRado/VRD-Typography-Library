@@ -10,7 +10,7 @@ Exporting and Importing for FontLab and Illustrator.
 The endpoints of the VRD TYPL so far, as argument functions:  
 
 [**EFO to UFOs:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
-```
+```bash
 efo_to_ufos.py
 
 -s (source EFO)  
@@ -19,61 +19,61 @@ efo_to_ufos.py
 -k (what kerning to export / "flat" or "comp")
 ```
 [**UFOs to EFO:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
-```
-**ufos_to_efo.py**
+```bash
+ufos_to_efo.py
 
-**-s** (source fontinfo.JSON)
-**-o** (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide)
+-s (source fontinfo.JSON)
+-o (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide)
 ```
 [**EFO to VAR:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
-```
-**efo_to_var.py**
+```bash
+efo_to_var.py
 
-**-s** (source EFO)
-**-o** (output file: name.ttf, name.otf ...)
+-s (source EFO)
+-o (output file: name.ttf, name.otf ...)
 ```
 [**EFO to SVGs:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
-```
-**efo_to_svgs.py**
+```bash
+efo_to_svgs.py
 
-**-s** (source EFO)  
-**-f** (the weights of the font to convert: "reg,bld,...")  
+-s (source EFO)  
+-f (the weights of the font to convert: "reg,bld,...")  
 ```
 [**SVGs to EFO:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
-```
-**svgs_to_efo.py**
+```bash
+svgs_to_efo.py
 
-**-s** (source EFO)
-**-f** (the weights of the font to convert: "reg,bld,...")  
+-s (source EFO)  
+-f (the weights of the font to convert: "reg,bld,...")  
 ```
 [**Kerning Extract Similarity**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/similarity_extractor)
-```
-**kerning_extract_similarity.py**
+```bash
+kerning_extract_similarity.py
 
-**-s** (source EFO)  
-**-f** (the weights of the font to extract similarity from - just needs one weight)  
-**-p** (purpose - Either for Components or Kerning: "comp" or "kern")
+-s (source EFO)  
+-f (the weights of the font to extract similarity from - just needs one weight)  
+-p (purpose - Either for Components or Kerning: "comp" or "kern")
 ```
 [**Kerning Autokern:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/kerning)
-```
-**kerning_autokern.py**
+```bash
+kerning_autokern.py
 
-**-s** (source fontinfo.JSON)  
-**-o** (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide) 
+-s (source fontinfo.JSON)  
+-o (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide) 
 ```
 [**Kerning Compress Flat:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/compress_kerning)
-```
-**kerning_compress_flat.py**
+```bash
+kerning_compress_flat.py
 
-**-s** (source EFO)  
-**-f** (the weights of the font to compress: "reg,bld,...") 
+-s (source EFO)  
+-f (the weights of the font to compress: "reg,bld,...") 
 ```
 [**Componentize EFO:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/components)
-```
-**componentize_efo.py**
+```bash
+componentize_efo.py
 
-**-s** (source EFO)  
-**-f** (the weights of the font to componentize: "reg,bld,...")
+-s (source EFO)  
+-f (the weights of the font to componentize: "reg,bld,...")
 ```
 
 **VivaRado is thankful for all your observations :+1: please submit any issues at support@vivarado.com - with Subject: ISSUE:Topic, or send it here on github!**
