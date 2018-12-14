@@ -32,7 +32,7 @@ from os.path import dirname, join, abspath
 #
 ignore_glyphs = []
 #
-fea_pos_line = '''pos {0} {1} {2};'''
+fea_pos_line = '''    pos {0} {1} {2};'''
 #
 #flc_file_header = '''%%FONTLAB CLASSES\n\n'''
 #
@@ -121,6 +121,8 @@ class COMPRESS(object):
 			#
 			for _k, _v in self.p_c[k].items():
 				#
+				
+				#
 				if z == 0:
 					#
 					all_kern_fea_str = all_kern_fea_str + kern_feature_header.format(k,type_long)
@@ -131,6 +133,8 @@ class COMPRESS(object):
 				#
 				#
 				for __k, __v in self.p_c[k][_k].items():
+					#
+					self.stats[k] = self.stats[k]+1
 					#
 					L_pair = _k
 					R_pair = __k
@@ -151,9 +155,14 @@ class COMPRESS(object):
 						let_b = '@_'+ltkd_b[0]+'1'
 						#
 					#
-					fea_line = fea_pos_line.format(let_a, let_b, str(__v))
 					#
-					fea_lines.append(fea_line)
+					__v = self.round_to_nearest(__v, 15)
+					#
+					if __v != 0:
+						#
+						fea_line = fea_pos_line.format(let_a, let_b, str(__v))
+						#
+						fea_lines.append(fea_line)
 					#
 					y = y + 1
 					#
@@ -392,6 +401,10 @@ class COMPRESS(object):
 			#
 		#
 	#
+	def round_to_nearest(self, n, m):
+		r = n % m
+		return n + m - r if r + r >= m else n - r
+	#
 	def make_kern_plist(self):
 		#
 		self.p_uni_c = collections.OrderedDict()
@@ -408,7 +421,12 @@ class COMPRESS(object):
 				#
 				for __k,__v in self.p_c[k][_k].items():
 					#
-					self.p_uni_c[_k].update({__k:__v})
+					__v = self.round_to_nearest(__v, 15)
+					#
+					if __v != 0:
+						#
+						self.p_uni_c[_k].update({__k:__v})
+						#
 					#
 				#
 			#
@@ -467,6 +485,7 @@ class COMPRESS(object):
 	#
 	def test_compress(self, flat, simex_groups):
 		#
+		self.stats = {"GG":0,"GL":0,"LG":0,"LL":0}
 		#
 		'''
 		compress logic:
@@ -505,7 +524,9 @@ class COMPRESS(object):
 					whatever key remains in flat list and is not key in simex
 					# deleting all simex group items that are keys in flat_copy because they are covered in GG or GL #0009
 					# deleting all simex group items that are items in flat_copy because they are covered in GG or GL #0010
-
+				
+				Rounding has been also applied.
+				
 		'''
 		#
 		#
@@ -629,10 +650,12 @@ class COMPRESS(object):
 		# meaning bigger numbers, 
 		# break kerning on other letters
 		#
+		do_patch = True
+		#
 		kerning_patch_list = [
 			['@MMK_L_A', '@MMK_R_V', 62, "it"],
 			['@MMK_L_A', '@MMK_R_V', 62, "it"],
-			['@MMK_L_V', '@MMK_R_A', -62, "it"],
+			['@MMK_L_V', '@MMK_R_A', -72, "it"],
 			#['@MMK_L_A', '@MMK_R_U', 10, "it"],
 			#['@MMK_L_U', '@MMK_R_A', -20, "it"],
 			['@MMK_L_F', '@MMK_R_A', -20, "it"],
@@ -646,30 +669,73 @@ class COMPRESS(object):
 			['@MMK_L_A', 'u', 20, "it"]
 		]
 		#
-		for k,v in self.p_c.items():
+		if do_patch == True:
 			#
-			for _k,_v in self.p_c[k].items():
+			#
+			for k,v in self.p_c.items():
 				#
-				#
-				for __k,__v in self.p_c[k][_k].items():
+				for _k,_v in self.p_c[k].items():
 					#
-					for x in kerning_patch_list:
+					#
+					for __k,__v in self.p_c[k][_k].items():
 						#
-						if x[3] in self._current_font_instance_weight:
+						for x in kerning_patch_list:
 							#
-							if [_k,__k] == [x[0], x[1]]:
+							if x[3] in self._current_font_instance_weight:
 								#
-								self.p_c[k][_k].update({__k:self.p_c[k][_k][__k] + x[2]})
+								if [_k,__k] == [x[0], x[1]]:
+									#
+									self.p_c[k][_k].update({__k:self.p_c[k][_k][__k] + x[2]})
+									#
+									print('= PATCHING KERNING =')
+									print(_k,__k, __v )
+									#
 								#
-								print('= PATCHING KERNING =')
-								print(_k,__k, __v )
-								#
-							#
-						# 
+							# 
+						#
 					#
 				#
+		#
+		# if self._compress_pattern:
+		# 	#
+		# 	self.p_c_copy = copy.deepcopy(self.p_c)
+		# 	#
+		# 	'''
+		# 	Keep kerning file structure exactly the same as the pattern, just change the values
+		# 	'''
+		# 	#
+		# 	self.p_p = plistlib.readPlist(self._compress_pattern)
+		# 	#
+		# 	for k,v in self.p_c.items():
+		# 		#
+		# 		for _k,_v in self.p_c[k].items():
+		# 			#
+		# 			#
+		# 			for __k,__v in self.p_c[k][_k].items():
+		# 				#
+		# 				if __k in self.p_p[_k]:
+		# 					#
+		# 					pass
+		# 				# 	#
+		# 				else:
+		# 					#
+		# 					if __k in self.p_c[k][_k]:
+		# 						#
+		# 						self.p_c_copy[k][_k][__k] = 0
+		# 						#
+		# 					else:
+		# 						#
+		# 						pass
+		# 						#
+		# 					#
+		# 				#
+		# 			#
+		# 		#
+		# 	#
+		# 	self.p_c = copy.deepcopy(self.p_c_copy)
+		# 	#
+		#
 			#
-		# 
 		self.make_kern_plist()
 		#
 		self.make_kern_fea_lines()
@@ -688,6 +754,22 @@ class COMPRESS(object):
 		print('Compressing:', self._current_font_instance_weight)
 		#
 		self.test_compress(dir_flat_ufo_file_kern, file_base_group)
+		#
+		#
+		total_pairs = 0
+		#
+		for x in self.stats:
+			#
+			total_pairs = total_pairs + self.stats[x]
+			#
+		#
+		print("=======================================")
+		print("RESULTS:")
+		#
+		pprint.pprint(self.stats)
+		#
+		print("Total Pairs",total_pairs)
+		print("=======================================")
 		#
 	#
 #

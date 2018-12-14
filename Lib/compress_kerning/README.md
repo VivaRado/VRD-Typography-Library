@@ -42,4 +42,8 @@ Compression Logic:
 
 ------
 
+> Rounding has been applied as well.
+
+------
+
 [By VivaRado](https://www.vivarado.com)

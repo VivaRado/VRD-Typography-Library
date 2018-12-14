@@ -315,14 +315,14 @@ class AUTOKERN(object):
 								#
 								# '--kerning-strength',
 								# str(0.1),
-								'--log-path',
-								os.path.join(self._in,"temp","logs","log"),
-								'--log-basic-pairs',
-								'--write-kerning-pair-logs'
+								# '--log-path',
+								# os.path.join(self._in,"temp","logs","log"),
+								# '--log-basic-pairs',
+								# '--write-kerning-pair-logs'
 								)
 				#
-				#pairlist = self.extract_pairs(self._in, self.given_fonts)
-				pairlist = self.extract_test_pairs(test_pairs_b, self.given_fonts)
+				pairlist = self.extract_pairs(self._in, self.given_fonts)
+				#pairlist = self.extract_test_pairs(test_pairs_b, self.given_fonts)
 				pairlist_tup = self.pairlist_tuple(pairlist[gf])
 				#
 				pairlist_tuple_to_kern = ('--glyph-pairs-to-kern',*pairlist_tup)
