@@ -71,12 +71,14 @@ kern_feature_footer = '''
 #
 class COMPRESS(object):
 	#
-	def __init__(self, _f_name, _temp_source, _temp_source_copy, _source_efo_similarity_kern_plist):
+	def __init__(self, _f_name, _temp_source, _temp_source_copy, _source_efo_similarity_kern_plist, _compress_pattern = False):
 		#
 		self._current_font_instance_weight = _f_name
 		self._temp_source = _temp_source
 		self._temp_source_copy = _temp_source_copy
 		self._source_efo_similarity_kern_plist = _source_efo_similarity_kern_plist
+		#
+		self._compress_pattern = _compress_pattern
 		#
 	#
 	#
@@ -98,7 +100,7 @@ class COMPRESS(object):
 	def make_kern_fea_lines(self):
 		#
 		#
-		all_values = []
+		p_uni_calues = []
 		fea_kerning_lines = []
 		#
 		all_kern_fea_str = kern_header
@@ -392,30 +394,32 @@ class COMPRESS(object):
 	#
 	def make_kern_plist(self):
 		#
-		all_v = {}
+		self.p_uni_c = collections.OrderedDict()
 		# combining all GG,GL,LG,LL to one PLIST
 		#
 		for k,v in self.p_c.items():
 			#
 			for _k,_v in self.p_c[k].items():
 				#
-				if _k not in all_v:
+				if _k not in self.p_uni_c:
 					#
-					all_v.update({_k: {}})
+					self.p_uni_c.update({_k: {}})
 					#
 				#
 				for __k,__v in self.p_c[k][_k].items():
 					#
-					all_v[_k].update({__k:__v})
+					self.p_uni_c[_k].update({__k:__v})
 					#
 				#
 			#
 		#
+		# save kern plist
 		k_c_temp = 'kerning'+'.plist'
 		dstFile = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.path.join(self._temp_source_copy,k_c_temp)))
 		#
-		plistlib.writePlist(all_v, dstFile)
+		plistlib.writePlist(self.p_uni_c, dstFile)
 		#
+		
 	#
 	def make_classes_fea(self):
 		#
@@ -505,7 +509,8 @@ class COMPRESS(object):
 		'''
 		#
 		#
-		self.p_c = {"GG":{},"GL":{},"LG":{},"LL":{}}
+		self.p_c = collections.OrderedDict()
+		self.p_c.update({"GG":{},"GL":{},"LG":{},"LL":{}})
 		#
 		p_f = plistlib.readPlist(flat)
 		#
@@ -619,8 +624,81 @@ class COMPRESS(object):
 		#
 		# /\
 		#
+		# Patch Fix Pair Kerning
+		#
+		kerning_patch_list = [
+			['@MMK_L_A', '@MMK_R_V', 62, "it"],
+			['@MMK_L_A', '@MMK_R_V', 62, "it"],
+			['@MMK_L_V', '@MMK_R_A', -52, "it"],
+			['@MMK_L_A', '@MMK_R_U', 72, "it"],
+			['@MMK_L_F', '@MMK_R_A', -20, "it"]
+		]
+		#
+		for k,v in self.p_c.items():
+			#
+			for _k,_v in self.p_c[k].items():
+				#
+				#
+				for __k,__v in self.p_c[k][_k].items():
+					#
+					for x in kerning_patch_list:
+						#
+						if x[3] in self._current_font_instance_weight:
+							#
+							if [_k,__k] == [x[0], x[1]]:
+								#
+								self.p_c[k][_k].update({__k:self.p_c[k][_k][__k] + x[2]})
+								#
+								print('==============')
+								print(_k,__k, __v )
+								print('==============')
+
+						# 
+					#
+				#
+			#
+		# if self._compress_pattern:
+		# 	#
+		# 	self.p_c_copy = copy.deepcopy(self.p_c)
+		# 	#
+		# 	'''
+		# 	Keep kerning file structure exactly the same as the pattern, just change the values
+		# 	'''
+		# 	#
+		# 	self.p_p = plistlib.readPlist(self._compress_pattern)
+		# 	#
+		# 	for k,v in self.p_c.items():
+		# 		#
+		# 		for _k,_v in self.p_c[k].items():
+		# 			#
+		# 			#
+		# 			for __k,__v in self.p_c[k][_k].items():
+		# 				#
+		# 				if __k in self.p_p[_k]:
+		# 					#
+		# 					pass
+		# 				# 	#
+		# 				else:
+		# 					#
+		# 					if __k in self.p_c[k][_k]:
+		# 						#
+		# 						self.p_c_copy[k][_k][__k] = 0
+		# 						#
+		# 					else:
+		# 						#
+		# 						pass
+		# 						#
+		# 					#
+		# 				#
+		# 			#
+		# 		#
+		# 	#
+		# 	self.p_c = copy.deepcopy(self.p_c_copy)
+		# 	#
+		# #
 		#
 		self.make_kern_plist()
+		#
 		self.make_kern_fea_lines()
 		#
 		p_f_combine = []

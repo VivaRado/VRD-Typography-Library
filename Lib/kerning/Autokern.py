@@ -2032,7 +2032,7 @@ class Autokern(TFSMap):
 		'''
 		2. Make sure advance is at least the "minimum advance."
 		'''
-		advance = maxAdvance(advance, minDistanceAdvance, minmax0.maxX + pair_min_distance - minmax1.minX)
+		advance = maxAdvance(advance, minDistanceAdvance, minmax0.maxX + pair_min_distance - minmax1.minX) #maxAdvance(advance, minDistanceAdvance, minmax0.maxX + pair_min_distance - minmax1.minX)
 
 		'''
 		3. Add the "tracking" value.
@@ -2644,6 +2644,7 @@ class Autokern(TFSMap):
 			'''
 			rightSideBearing = int(round(rightSideBearing))
 			leftSideBearing = int(round(leftSideBearing))
+			#
 			if self.allow_negative_side_bearings:
 				'''
 				Check that the side bearings are not "negative", ie. do not

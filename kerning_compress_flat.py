@@ -17,8 +17,8 @@ parser.add_argument("-s", "--source", dest="source",
 					help="Source EFO", metavar="FILE")
 parser.add_argument("-f", "--fonts", dest="fonts", 
 					help="UFO Fonts to Automatically Kern, comma separated")
-# parser.add_argument("-c", "--compress_class_plist", dest="compress_class_plist", 
-# 					help="Similarity Plist to Use for Compression to Class Based Kerning")
+parser.add_argument("-p", "--compress_pattern", dest="compress_pattern", 
+					help="Use a already existing compressed kerning plist as Pattern - for proper kerning iterpolation")
 #
 args = parser.parse_args()
 #
@@ -77,7 +77,7 @@ if faults == False:
 			#
 			f_files_class.append(k+'_class')
 			#
-			_COMPRESS = COMPRESS(k,v, copy_ufo_for_class_compress, source_efo_similarity_kern_plist)
+			_COMPRESS = COMPRESS(k,v, copy_ufo_for_class_compress, source_efo_similarity_kern_plist, args.compress_pattern)
 			#
 			_COMPRESS.do_class_kern_replacement()
 			#

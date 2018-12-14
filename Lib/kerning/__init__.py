@@ -18,22 +18,9 @@ from .AutokernSettings import *
 import tfs3.common.TFSProject as TFSProject
 from tfs3.common.TFSMap import TFSMap
 #
-test_pairs_b = '''ST
-UV
-OY
-OW
-OV
-QY
-We
-QV
-QW
-AC
-AG
-AO
-AQ
-AT
-AU
+test_pairs_b = '''WA
 AV
+VA
 AW
 AY
 BA
@@ -325,15 +312,17 @@ class AUTOKERN(object):
 								#
 								'--x-extrema-overlap-scaling',
 								str(self.current_kerning_settings["--x-extrema-overlap-scaling"]),
-								# #
-								# '--log-path',
-								# os.path.join(self._in,"temp","logs","log"),
-								# '--log-basic-pairs',
-								# '--write-kerning-pair-logs'
+								#
+								# '--kerning-strength',
+								# str(0.1),
+								'--log-path',
+								os.path.join(self._in,"temp","logs","log"),
+								'--log-basic-pairs',
+								'--write-kerning-pair-logs'
 								)
 				#
-				pairlist = self.extract_pairs(self._in, self.given_fonts)
-				#pairlist = self.extract_test_pairs(test_pairs_b, self.given_fonts)
+				#pairlist = self.extract_pairs(self._in, self.given_fonts)
+				pairlist = self.extract_test_pairs(test_pairs_b, self.given_fonts)
 				pairlist_tup = self.pairlist_tuple(pairlist[gf])
 				#
 				pairlist_tuple_to_kern = ('--glyph-pairs-to-kern',*pairlist_tup)
