@@ -7,37 +7,36 @@ Includes Autokerning(Class based and Flat), Componentization, Conversion of UFO 
 Old Scripts Include
 Exporting and Importing for FontLab and Illustrator.
 
+The endpoints of the VRD TYPL so far, as argument functions:  
 
-The endpoints of the Lib so far, as argument functions:  
-
-**EFO to SVGs**
+**EFO to SVGs:**
 ```
 -s (source EFO)  
 -f (the weights of the font to convert: "reg,bld,...")  
 ```
-**SVGs to EFO**
+**SVGs to EFO:**
 ```
 -s (source EFO)  
 -f (the weights of the font to convert: "reg,bld,...")  
 ```
-**EFO to UFOs**
+**EFO to UFOs:**
 ```
 -s (source EFO)  
 -o (output directory)
 -f (the weights of the font to convert)  
 -k (what kerning to export / "flat" or "comp")
 ```
-**UFOs to EFO** 
+**UFOs to EFO:** 
 ```
 -s (source fontinfo.JSON)
 -o (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide)
 ```
-**Kerning Autokern**
+**Kerning Autokern:**
 ```
 -s (source fontinfo.JSON)  
 -o (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide) 
 ```
-**Kerning Compress Flat**
+**Kerning Compress Flat:**
 ```
 -s (source EFO)  
 -f (the weights of the font to compress: "reg,bld,...") 
@@ -48,12 +47,12 @@ The endpoints of the Lib so far, as argument functions:
 -f (the weights of the font to extract similarity from - just needs one weight)  
 -p (purpose - Either for Components or Kerning: "comp" or "kern")
 ```
-**Componentize EFO** 
+**Componentize EFO:** 
 ```
 -s (source EFO)  
 -f (the weights of the font to componentize: "reg,bld,...")
 ```
-**EFO to VAR** 
+**EFO to VAR:** 
 ```
 -s (source EFO)
 -o (output file: name.ttf, name.otf ...)
