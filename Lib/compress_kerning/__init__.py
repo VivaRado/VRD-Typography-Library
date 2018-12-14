@@ -624,14 +624,26 @@ class COMPRESS(object):
 		#
 		# /\
 		#
-		# Patch Fix Pair Kerning
+		# Patch Fix Pair Kerning : 
+		# More precise adjustments than those, 
+		# meaning bigger numbers, 
+		# break kerning on other letters
 		#
 		kerning_patch_list = [
 			['@MMK_L_A', '@MMK_R_V', 62, "it"],
 			['@MMK_L_A', '@MMK_R_V', 62, "it"],
-			['@MMK_L_V', '@MMK_R_A', -52, "it"],
-			['@MMK_L_A', '@MMK_R_U', 72, "it"],
-			['@MMK_L_F', '@MMK_R_A', -20, "it"]
+			['@MMK_L_V', '@MMK_R_A', -62, "it"],
+			#['@MMK_L_A', '@MMK_R_U', 10, "it"],
+			#['@MMK_L_U', '@MMK_R_A', -20, "it"],
+			['@MMK_L_F', '@MMK_R_A', -20, "it"],
+			['@MMK_L_A', '@MMK_R_d', 20, "it"],
+			['@MMK_L_A', '@MMK_R_e', 20, "it"],
+			['@MMK_L_A', '@MMK_R_g', 20, "it"],
+			['@MMK_L_A', '@MMK_R_o', 20, "it"],
+			['@MMK_L_A', 'p', 20, "it"],
+			['@MMK_L_A', 'q', 20, "it"],
+			['@MMK_L_A', 't', 20, "it"],
+			['@MMK_L_A', 'u', 20, "it"]
 		]
 		#
 		for k,v in self.p_c.items():
@@ -649,54 +661,15 @@ class COMPRESS(object):
 								#
 								self.p_c[k][_k].update({__k:self.p_c[k][_k][__k] + x[2]})
 								#
-								print('==============')
+								print('= PATCHING KERNING =')
 								print(_k,__k, __v )
-								print('==============')
-
+								#
+							#
 						# 
 					#
 				#
 			#
-		# if self._compress_pattern:
-		# 	#
-		# 	self.p_c_copy = copy.deepcopy(self.p_c)
-		# 	#
-		# 	'''
-		# 	Keep kerning file structure exactly the same as the pattern, just change the values
-		# 	'''
-		# 	#
-		# 	self.p_p = plistlib.readPlist(self._compress_pattern)
-		# 	#
-		# 	for k,v in self.p_c.items():
-		# 		#
-		# 		for _k,_v in self.p_c[k].items():
-		# 			#
-		# 			#
-		# 			for __k,__v in self.p_c[k][_k].items():
-		# 				#
-		# 				if __k in self.p_p[_k]:
-		# 					#
-		# 					pass
-		# 				# 	#
-		# 				else:
-		# 					#
-		# 					if __k in self.p_c[k][_k]:
-		# 						#
-		# 						self.p_c_copy[k][_k][__k] = 0
-		# 						#
-		# 					else:
-		# 						#
-		# 						pass
-		# 						#
-		# 					#
-		# 				#
-		# 			#
-		# 		#
-		# 	#
-		# 	self.p_c = copy.deepcopy(self.p_c_copy)
-		# 	#
-		# #
-		#
+		# 
 		self.make_kern_plist()
 		#
 		self.make_kern_fea_lines()
@@ -717,3 +690,45 @@ class COMPRESS(object):
 		self.test_compress(dir_flat_ufo_file_kern, file_base_group)
 		#
 	#
+#
+'''IGNORE'''
+#if self._compress_pattern:
+# 	#
+# 	self.p_c_copy = copy.deepcopy(self.p_c)
+# 	#
+# 	'''
+# 	Keep kerning file structure exactly the same as the pattern, just change the values
+# 	'''
+# 	#
+# 	self.p_p = plistlib.readPlist(self._compress_pattern)
+# 	#
+# 	for k,v in self.p_c.items():
+# 		#
+# 		for _k,_v in self.p_c[k].items():
+# 			#
+# 			#
+# 			for __k,__v in self.p_c[k][_k].items():
+# 				#
+# 				if __k in self.p_p[_k]:
+# 					#
+# 					pass
+# 				# 	#
+# 				else:
+# 					#
+# 					if __k in self.p_c[k][_k]:
+# 						#
+# 						self.p_c_copy[k][_k][__k] = 0
+# 						#
+# 					else:
+# 						#
+# 						pass
+# 						#
+# 					#
+# 				#
+# 			#
+# 		#
+# 	#
+# 	self.p_c = copy.deepcopy(self.p_c_copy)
+# 	#
+# #
+#
