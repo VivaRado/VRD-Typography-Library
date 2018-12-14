@@ -1,4 +1,4 @@
-VRD (VivaRado) Typography Library
+VRD TYPL (VivaRado Typography Library)
 ===================
 
 The library that VRD's Typography Department is using for authoring fonts.
