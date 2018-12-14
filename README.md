@@ -78,6 +78,6 @@ componentize_efo.py
 
 ------
 
-<small>VivaRado is thankful for all your observations :+1: please submit any issues at support@vivarado.com - with Subject: ISSUE:Topic, or send it here on github!</small>
+<sup>VivaRado is thankful for all your observations :+1: please submit any issues at support@vivarado.com - with Subject: ISSUE:Topic, or send it here on github!</sup>
 
 [By VivaRado](https://www.vivarado.com)
