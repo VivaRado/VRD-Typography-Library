@@ -9,50 +9,59 @@ Exporting and Importing for FontLab and Illustrator.
 
 The endpoints of the VRD TYPL so far, as argument functions:  
 
-**EFO to UFOs:** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
+**EFO to UFOs:** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
 ```
 -s (source EFO)  
 -o (output directory)
 -f (the weights of the font to convert)  
 -k (what kerning to export / "flat" or "comp")
 ```
-**UFOs to EFO:** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
+**UFOs to EFO:** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
 ```
 -s (source fontinfo.JSON)
 -o (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide)
 ```
-**EFO to VAR:** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
+**EFO to VAR:** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
 ```
 -s (source EFO)
 -o (output file: name.ttf, name.otf ...)
 ```
-**EFO to SVGs:** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
+**EFO to SVGs:** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
 ```
 -s (source EFO)  
 -f (the weights of the font to convert: "reg,bld,...")  
 ```
-**SVGs to EFO:** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
+**SVGs to EFO:** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/efo)
 ```
 -s (source EFO)  
 -f (the weights of the font to convert: "reg,bld,...")  
 ```
-**Kerning Extract Similarity** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/similarity_extractor)
+**Kerning Extract Similarity** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/similarity_extractor)
 ```
 -s (source EFO)  
 -f (the weights of the font to extract similarity from - just needs one weight)  
 -p (purpose - Either for Components or Kerning: "comp" or "kern")
 ```
-**Kerning Autokern:** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/kerning)
+**Kerning Autokern:** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/kerning)
 ```
 -s (source fontinfo.JSON)  
 -o (Optional, Default Output Directory for EFO is fontinfo.JSON Directory or Provide) 
 ```
-**Kerning Compress Flat:** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/compress_kerning)
+**Kerning Compress Flat:** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/compress_kerning)
 ```
 -s (source EFO)  
 -f (the weights of the font to compress: "reg,bld,...") 
 ```
-**Componentize EFO:** [➤](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/components)
+**Componentize EFO:** 
+###### [🔗](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/components)
 ```
 -s (source EFO)  
 -f (the weights of the font to componentize: "reg,bld,...")
