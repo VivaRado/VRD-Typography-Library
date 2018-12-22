@@ -9,6 +9,8 @@
 		classes = {
 			base: "kern_adjust",
 			content: "kern_adjust-content",
+			glyph: "char",
+			glyph_base: "glyph",
 			//bar: "kern_adjust-bar",
 			//track: "kern_adjust-track",
 			//handle: "kern_adjust-handle",
@@ -82,15 +84,15 @@
 		return $items;
 	}
 	//
-	function determine_pair_kerning(_class, _a, _b) {
+	function determine_pair_kerning( _a, _b) {
 		//
-		itm = $('.'+_class+_a)
+		itm = $('.'+classes.glyph+_a)
 		//
-		a_width = $('.'+_class+_a).width()
-		a_init_width = $('.'+_class+_a).attr("data-init-width")
-		b_width = $('.'+_class+_b).width()
+		a_width = $('.'+classes.glyph+_a).width()
+		a_init_width = $('.'+classes.glyph+_a).attr("data-init-width")
+		b_width = $('.'+classes.glyph+_b).width()
 		//
-		$('.'+_class+_a).find('i').css({"width":a_init_width - a_width, "right":-(a_init_width - a_width)})
+		$('.'+classes.glyph+_a).find('i').css({"width":a_init_width - a_width, "right":-(a_init_width - a_width)})
 		//
 	}
 	//
@@ -100,10 +102,10 @@
 		//
 	}
 	//
-	function arranger(data, t, splitter, _class, after) {
-		var a = data.$initial_text.split(splitter), inject = '';
-		var classes = []
-		var inject = ''
+	function arranger(data, t, splitter) {
+		//
+		var a = data.$initial_text.split(splitter);
+		//
 		if (a.length) {
 			//
 			if (data.$fragment_map.length == 0) { // if we have a fragment_map dont render the elements again.
@@ -112,7 +114,7 @@
 				//
 				for (var i = 0; i < a.length; i++) {
 					//
-					f_string = '<span class="'+_class+(i+1)+'" data-init-width="0">'+a[i]+'<i></i></span>'
+					f_string = '<span class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" data-init-width="0">'+a[i]+'<i></i></span>'
 					//
 					frag = fragmentFromString(f_string);
 					//
@@ -121,7 +123,7 @@
 					//
 					data.$fragment_temp.appendChild(frag)
 					//
-					data.$fragment_map.push([i+1,f_w])
+					data.$fragment_map.push([i+1,f_w,0,0])
 					//
 				}
 				//
@@ -133,7 +135,7 @@
 				//
 				for (var i = 0; i < data.$fragment_map.length; i++) {
 					//
-					elem = $('.'+_class+data.$fragment_map[i][0]);
+					elem = $('.'+classes.glyph+data.$fragment_map[i][0]);
 					//
 					e_w = elem.clone().hide().appendTo('.calc').width() // re render width
 					elem.attr("data-init-width", e_w)
@@ -150,7 +152,7 @@
 				//
 				if (data.$fragment_map[i+1]) {
 					//
-					determine_pair_kerning(_class,data.$fragment_map[i][0],data.$fragment_map[i+1][0])
+					determine_pair_kerning(data.$fragment_map[i][0],data.$fragment_map[i+1][0])
 					//
 				}
 				//
@@ -224,13 +226,16 @@
 				//
 			});
 			//
-			arranger(data,$kern_adjust, '', 'char', '');
+			arranger(data,$kern_adjust, '');
 			//
 			console.log(data.$initial_text)
 			//
 			pub.reset.apply($kern_adjust);
 			//
 		}
+		//
+		variable_axes(data)
+		arranger(data,data.$kern_adjust, '');
 		//
 		interact(data)
 		//
@@ -239,6 +244,7 @@
 	function interact(data){
 		//
 		function var_sliders(data){
+			//
 			var i, l;
 			for (i=0, l=data.$inputs.length; i<l; i++) {
 				$(data.$inputs[i]).on('input', function(){
@@ -246,12 +252,24 @@
 				});
 				$(data.$inputs[i]).on('change', function(){
 					variable_axes(data) // dont do on input
-					arranger(data,data.$kern_adjust, '', 'char', ''); // could on input, but would be laggy because it takes time to get new widths
+					arranger(data,data.$kern_adjust, ''); // could on input, but would be laggy because it takes time to get new widths
 				}); // .on 'input' 
 			}
-		}
+			//
+		};
 		//
-		var_sliders(data)
+		var_sliders(data);
+		//
+		for (var i = 0; i < data.$fragment_map.length; i++) {
+			
+			elem_glyph = $('.'+classes.glyph+data.$fragment_map[i][0]);
+
+			elem_glyph.bind( "click", function() {
+
+				console.log($(this))
+
+			});
+		};
 		//
 	}
 	//

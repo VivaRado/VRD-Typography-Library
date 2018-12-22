@@ -285,8 +285,16 @@ input[type=range]::-moz-range-thumb {
 .loaded_kern .kern {
 	opacity: 1;
 }
-.loaded_kern .kern span {
+.loaded_kern .kern .glyph {
 	display: inline;
 	float: none;
-	position: relative
+	position: relative;
+	cursor: pointer;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -o-user-select: none;
+    -moz-user-select: none;
 }
