@@ -13,11 +13,16 @@
 			glyph_base: "glyph",
 			//bar: "kern_adjust-bar",
 			//track: "kern_adjust-track",
-			//handle: "kern_adjust-handle",
+			handle: "kern_adjust-handle",
 			//isHorizontal: "kern_adjust-horizontal",
 			//isVertical: "kern_adjust-vertical",
 			isSetup: "kern_adjust-setup",
 			isActive: "kern_adjust-active"
+		},
+		events = {
+			start: "touchstart." + namespace + " mousedown." + namespace,
+			move: "touchmove." + namespace + " mousemove." + namespace,
+			end: "touchend." + namespace + " mouseup." + namespace
 		};
 	//
 	var options = {
@@ -54,7 +59,7 @@
 					//
 					data.$kern_adjust.addClass(classes.isSetup);
 					//
-					$kern_adjust.empty()
+					//data.$kern_adjust.empty()
 					//
 					data.$kern_adjust.removeClass(classes.isSetup);
 					//
@@ -82,6 +87,10 @@
 		}
 		//
 		return $items;
+	}
+	//////
+	function classify(text) {
+		return "." + text;
 	}
 	//
 	function determine_pair_kerning( _a, _b) {
@@ -187,13 +196,6 @@
 		//
 		var dims = [];
 		//
-		if (opts.horizontal == true) {
-			dims.push("horizontal");
-		}
-		if(opts.vertical == true) {
-			dims.push("vertical")	
-		}
-		//
 		//
 		if (!$kern_adjust.hasClass(classes.base)) {
 			// EXTEND OPTIONS
@@ -207,8 +209,15 @@
 				$inputs:'',
 				$outputs:'',
 				$fragment_temp: document.createDocumentFragment(),
-				$fragment_map: []
+				$fragment_map: [],
+				$handle: ''
 			}, opts);
+			//
+			data.handleBounds = {};
+			data.handleTop = 0;
+			data.handleLeft = 0;
+			//
+			$kern_adjust.data(namespace, data)
 			//
 			document.querySelectorAll('.typeface:not(.loaded_kern)').forEach(function(li) {
 				//
@@ -264,12 +273,177 @@
 			
 			elem_glyph = $('.'+classes.glyph+data.$fragment_map[i][0]);
 
-			elem_glyph.bind( "click", function() {
-
-				console.log($(this))
-
+			elem_glyph.bind(events.start, classify(classes.handle+'-h'), function(e){
+				//
+				data.$handle = $(this);
+				//
+				onHandleDown(e,data)
+				//
 			});
+			//
 		};
+		//
+	}
+	//
+	function onStart(data) {
+		//
+		console.log('start')
+		//
+		//data.$content.off( classify(namespace) );
+		//
+		$('.kern').bind(events.move, function(e){
+			//
+			console.log("moving")
+			//
+			onMouseMove(data, e)
+			//
+		}).bind(events.end, function(e){
+			//
+			onMouseUp(data, e)
+			//
+		});
+		//
+	}
+	//
+	function findPos(obj) {
+		var curleft = curtop = 0;
+		if (obj.offsetParent) {
+			do {
+				curleft += obj.offsetLeft;
+				curtop += obj.offsetTop;
+			} while (obj = obj.offsetParent);
+			return { x: curleft, y: curtop };
+		}
+	}
+	//
+	function onHandleDown(e, data) {
+		//
+		//elem_glyph = $(e.target)
+		//
+		e.preventDefault();
+		e.stopPropagation();
+		//
+		console.log(data.$handle)
+		//
+		var oe = e.originalEvent,
+			touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
+			pageX = (touch) ? touch.pageX : e.clientX,
+			pageY = (touch) ? touch.pageY : e.clientY;
+		//
+		var the_class = $(e.target).attr('class');
+		var is_dim = the_class.substring(the_class.lastIndexOf("-") + 1);
+		//
+		//
+		data.$handle.addClass('active_handle');
+		//
+		data.handleLeft = (pageX - data.$handle.position().left)
+		//
+		onStart(data, elem_glyph);
+		//
+	}
+	//
+	var _ratio = 0.5;
+	//
+	function onMouseMove(data, e) {
+		//
+		e.preventDefault();
+		e.stopPropagation();
+		//
+		var oe = e.originalEvent,
+			touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
+			pageX = (touch) ? touch.pageX : e.clientX,
+			pageY = (touch) ? touch.pageY : e.clientY;
+		//
+		data.mouseStart = e.clientX;
+		//
+		var pos = ( pageX - data.handleLeft - data.$handle.position().left ) + parseInt(data.$handle.css("left"))
+		//
+		position(data, pos);
+		//
+	}
+
+	//
+	function onMouseUp(data, e) {
+		//
+		e.preventDefault();
+		e.stopPropagation();
+		//
+		data.$handle.removeClass('active_handle');
+		//
+		$(".kern").unbind(events.move);
+		//
+		data.mouseStart = 0;
+		//
+	}
+	//
+	//
+	function position(data, pos) {
+		//
+		var check_bounds = function(_pos){
+			//
+			var has_bound = false;
+			//
+			//if (dim == 'h') {
+				//
+				//if (_pos < data.handleBounds.left) {
+					//
+					//var has_bound = true;
+					//var new_pos = data.handleBounds.left;
+					//
+				//} else if (_pos > data.handleBounds.right) {
+					//
+				//	var has_bound = true;
+				//	var new_pos = data.handleBounds.right;
+					//
+				//}
+				//
+			/*} else if (dim == 'v'){
+				//
+				if (_pos < data.handleBounds.top) {
+					//
+					var has_bound = true;
+					var new_pos = data.handleBounds.top;
+					//
+				} else if (_pos > data.handleBounds.bottom) {
+					//
+					var has_bound = true;
+					var new_pos = data.handleBounds.bottom;
+					//
+				}
+				//
+			}*/
+			//
+			if (has_bound) {
+				//
+				return new_pos;
+				//
+			} else {
+				//
+				return _pos;
+				//
+			}
+			//
+		};
+		//
+		var run_pos = function(pos){
+			//
+			var _direct = 'left';
+			var h_num = 0;
+			//
+			var scroll_ammount = pos;// * _ratio;
+			//
+			var style_handle  = {};
+			style_handle[_direct] = pos;
+			//
+			var style_content  = {};
+			style_content[_direct] = scroll_ammount;
+			//
+			data.$handle.css(style_handle);
+			//
+		}
+		//
+		var pos = check_bounds(pos);
+		run_pos(pos);
 		//
 	}
 	//
