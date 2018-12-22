@@ -494,7 +494,14 @@ def do_repos_anchors(self,name, _type, _comb_name=""):
 			
 		#
 	#
-	_x = _x + self.anchor_offsets[self.current_font_name]["metric"]["x_offset"]
+	add_italic_x_offset = 0
+	#
+	if "_it" in self.current_font_name: # if is italic
+		#
+		add_italic_x_offset = self.anchor_offsets[self.current_font_name]["metric"]["it_x_offset"]
+		#
+	#
+	_x = _x + self.anchor_offsets[self.current_font_name]["metric"]["x_offset"] + add_italic_x_offset
 	_y = _y + self.anchor_offsets[self.current_font_name]["metric"]["y_offset"] # 
 	#
 	return _x, _y
@@ -904,7 +911,7 @@ def determine_accent_list(base_glyph, component_glyphs):
 	return list(found)
 	#
 #
-def create_base_anchors(accent_list, center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y):
+def create_base_anchors(self, accent_list, center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y):
 	#
 	contour_str = '<contour>\n <point name="{0}" type="move" x="{1}" y="{2}"/>\n</contour>'
 	#
@@ -916,13 +923,21 @@ def create_base_anchors(accent_list, center_pos_x, pos_y, ogonek_pos_x, pos_tono
 		#
 		for x in accent_list:
 			#
+			#
+			add_italic_x_offset = 0
+			#
+			if "_it" in self.current_font_name: # if is italic
+				#
+				add_italic_x_offset = self.anchor_offsets[self.current_font_name]["metric"]["it_x_offset"]
+				#
+			#
 			if x in comb_top:
 				#
 				if "tonos" in x:
 					#
 					if 'tonos' not in is_accent:
 						#
-						all_cont_str = all_cont_str +'\n'+ contour_str.format('tonos', pos_tonos_x, pos_tonos_y)
+						all_cont_str = all_cont_str +'\n'+ contour_str.format('tonos', pos_tonos_x + add_italic_x_offset, pos_tonos_y)
 						#
 						is_accent.add('tonos')
 						#
@@ -931,18 +946,20 @@ def create_base_anchors(accent_list, center_pos_x, pos_y, ogonek_pos_x, pos_tono
 					#
 					if 'top' not in is_accent:
 						#
-						all_cont_str = all_cont_str +'\n'+ contour_str.format('top', center_pos_x, pos_y)
+						all_cont_str = all_cont_str +'\n'+ contour_str.format('top', center_pos_x + add_italic_x_offset, pos_y)
 						#
 						is_accent.add('top')
 						#
 					#
+				#
+				#
 			elif x in comb_bot:
 				#
 				if "ogonek" in x:
 					#
 					if 'ogonek' not in is_accent:
 						#
-						all_cont_str = all_cont_str +'\n'+ contour_str.format('ogonek', ogonek_pos_x, 0)
+						all_cont_str = all_cont_str +'\n'+ contour_str.format('ogonek', ogonek_pos_x - add_italic_x_offset, 0)
 						#
 						is_accent.add('ogonek')
 						#
@@ -951,7 +968,7 @@ def create_base_anchors(accent_list, center_pos_x, pos_y, ogonek_pos_x, pos_tono
 					#
 					if 'bottom' not in is_accent:
 						#
-						all_cont_str = all_cont_str +'\n'+ contour_str.format('bottom', center_pos_x, 0)
+						all_cont_str = all_cont_str +'\n'+ contour_str.format('bottom', center_pos_x - add_italic_x_offset, 0)
 						#
 						is_accent.add('bottom')
 						#
@@ -1057,7 +1074,7 @@ def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 			base_anchors_contour_calc = ''
 			base_anchors_calc = base_anchors.format(center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
 		else:
-			base_anchors_contour_calc = create_base_anchors(accent_list,center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
+			base_anchors_contour_calc = create_base_anchors(self, accent_list,center_pos_x, pos_y, ogonek_pos_x, pos_tonos_x, pos_tonos_y)
 			base_anchors_calc = ''
 		#
 		replace_contour(clean_base_cont+base_anchors_contour_calc, os.path.join(self._dir_glif, base_conts[0]), False, True, True)

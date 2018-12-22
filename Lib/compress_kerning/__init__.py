@@ -69,6 +69,8 @@ kern_feature_footer = '''
     }} kern_{0};
 '''
 #
+features_display_style = "@" # @ or MMK : only @ style compiles on variable
+#
 class COMPRESS(object):
 	#
 	def __init__(self, _f_name, _temp_source, _temp_source_copy, _source_efo_similarity_kern_plist, _compress_pattern = False):
@@ -142,36 +144,42 @@ class COMPRESS(object):
 					let_a = L_pair
 					let_b = R_pair
 					#
-					if "MMK_" in L_pair:
+					if features_display_style == "@":
 						#
-						ltkd_a = self.get_kern_name_and_dir(L_pair)
-						let_a = '@_'+ltkd_a[0]
+						if "MMK_" in L_pair:
+							#
+							ltkd_a = self.get_kern_name_and_dir(L_pair)
+							let_a = '@_'+ltkd_a[0]
+							#
+						#
+						if "MMK_" in R_pair:
+							#
+							ltkd_b = self.get_kern_name_and_dir(R_pair)
+							#
+							let_b = '@_'+ltkd_b[0]+'1'
+							#
 						#
 					#
-					if "MMK_" in R_pair:
-						#
-						ltkd_b = self.get_kern_name_and_dir(R_pair)
-						#
-						let_b = '@_'+ltkd_b[0]+'1'
-						#
+					#__v = self.round_to_nearest(__v, 15)
+
+					#if __v != 0:
 					#
+					fea_line = fea_pos_line.format(let_a, let_b, str(__v))
 					#
-					__v = self.round_to_nearest(__v, 15)
-					#
-					if __v != 0:
-						#
-						fea_line = fea_pos_line.format(let_a, let_b, str(__v))
-						#
-						fea_lines.append(fea_line)
+					fea_lines.append(fea_line)
 					#
 					y = y + 1
 					#
 				#
 				z = z + 1
 				#
+				#
 				if z == len(self.p_c[k].items()):
 					#
-					type_kern_fea_lines = self.fea_kern_list_to_strings(sorted(fea_lines, key=lambda x: x.count('@_')))
+					sorted_fea = sorted(fea_lines, key=lambda x: x.count('@_'))
+					#
+					#
+					type_kern_fea_lines = self.fea_kern_list_to_strings(sorted_fea)
 					#
 					all_kern_fea_str = all_kern_fea_str + type_kern_fea_lines + kern_feature_footer.format(type_long)
 					#
@@ -194,7 +202,7 @@ class COMPRESS(object):
 		#
 		for y in kern_fea_list:
 			#
-			kern_strings = kern_strings +'    '+y + '\n'
+			kern_strings = kern_strings + '    '+y+'\n'
 			#
 		#
 		return kern_strings
@@ -205,6 +213,7 @@ class COMPRESS(object):
 		#
 		'''
 		split the simex group keys list to Left and Right lists
+		ignore same to same
 		'''
 		#
 		directional_permute = []
@@ -216,6 +225,10 @@ class COMPRESS(object):
 			for _right in l:
 				#
 				if "@MMK_L_" in _right or "@MMK_R_" in _left: # if left in right or right in left pass
+					#
+					pass
+					#
+				elif self.get_kern_name_and_dir(_left)[0] == self.get_kern_name_and_dir(_right)[0]: # if the same letter ignore
 					#
 					pass
 					#
@@ -421,12 +434,12 @@ class COMPRESS(object):
 				#
 				for __k,__v in self.p_c[k][_k].items():
 					#
-					__v = self.round_to_nearest(__v, 15)
+					#__v = self.round_to_nearest(__v, 15)
 					#
-					if __v != 0:
-						#
-						self.p_uni_c[_k].update({__k:__v})
-						#
+					#if __v != 0:
+					#
+					self.p_uni_c[_k].update({__k:__v})
+					#
 					#
 				#
 			#
@@ -449,7 +462,7 @@ class COMPRESS(object):
 			kern_name = k_spl[0]
 			kern_dir = k_spl[1]
 			#
-			v.sort()
+			#v.sort()
 			#
 			try:
 				#
@@ -463,15 +476,30 @@ class COMPRESS(object):
 			#
 			v.pop(0)
 			#
-			num_dir = ''
-			#
-			if kern_dir == 'R':
+			if features_display_style == "@":
 				#
-				num_dir = '1'
+				num_dir = ''
+				#
+				if kern_dir == 'R':
+					#
+					num_dir = '1'
+					#
+				#
+				new_fea_line = fea_class_content.format(kern_name+num_dir, kern_name, ' '.join(v), kern_dir)
+				#
+			else:
+				#
+				num_dir = 'L'
+				#
+				if kern_dir == 'R':
+					#
+					num_dir = 'R'
+					#
+				#
+				new_fea_line = fea_class_content.format("MMK_"+num_dir+'_'+kern_name, kern_name, ' '.join(v), kern_dir)
 				#
 			#
-			all_kern_flc = all_kern_flc + fea_class_content.format(kern_name+num_dir, kern_name, ' '.join(v), kern_dir)
-			#
+			all_kern_flc = all_kern_flc + new_fea_line
 		#
 		#
 		fea_classes = '# Classes Start\n'+all_kern_flc+'# Classes End\n\n'
@@ -526,12 +554,13 @@ class COMPRESS(object):
 					# deleting all simex group items that are items in flat_copy because they are covered in GG or GL #0010
 				
 				Rounding has been also applied.
-				
+
 		'''
 		#
 		#
 		self.p_c = collections.OrderedDict()
 		self.p_c.update({"GG":{},"GL":{},"LG":{},"LL":{}})
+		#self.p_c.update({"GG":{}})
 		#
 		p_f = plistlib.readPlist(flat)
 		#
@@ -553,7 +582,10 @@ class COMPRESS(object):
 		#
 		#
 		# #\/0002
+		y = 0
 		for x in permute_directional:
+			#
+			#if y < 250:
 			#
 			group_items_for_pair = self.get_group_items_unique_keep_order(self.p_g,x)
 			#
@@ -561,10 +593,14 @@ class COMPRESS(object):
 			#
 			self.transfer_delete_kern_value(p_f, x, group_items_for_pair, "GG")
 			#
+			#y = y + 1
+			#
 		# #/\0002
 		#
 		# /\
-
+		
+		
+		
 
 		# \/ Group to Letter (GL)
 		#
@@ -642,7 +678,9 @@ class COMPRESS(object):
 			#
 		#
 		self.p_c["LL"].update(self.p_f_copy)
-		#
+		# 
+		
+
 		# /\
 		#
 		# Patch Fix Pair Kerning : 
@@ -650,7 +688,7 @@ class COMPRESS(object):
 		# meaning bigger numbers, 
 		# break kerning on other letters
 		#
-		do_patch = True
+		do_patch = False
 		#
 		kerning_patch_list = [
 			['@MMK_L_A', '@MMK_R_V', 62, "it"],
@@ -676,7 +714,6 @@ class COMPRESS(object):
 				#
 				for _k,_v in self.p_c[k].items():
 					#
-					#
 					for __k,__v in self.p_c[k][_k].items():
 						#
 						for x in kerning_patch_list:
@@ -696,46 +733,35 @@ class COMPRESS(object):
 					#
 				#
 		#
-		# if self._compress_pattern:
-		# 	#
-		# 	self.p_c_copy = copy.deepcopy(self.p_c)
-		# 	#
-		# 	'''
-		# 	Keep kerning file structure exactly the same as the pattern, just change the values
-		# 	'''
-		# 	#
-		# 	self.p_p = plistlib.readPlist(self._compress_pattern)
-		# 	#
-		# 	for k,v in self.p_c.items():
-		# 		#
-		# 		for _k,_v in self.p_c[k].items():
-		# 			#
-		# 			#
-		# 			for __k,__v in self.p_c[k][_k].items():
-		# 				#
-		# 				if __k in self.p_p[_k]:
-		# 					#
-		# 					pass
-		# 				# 	#
-		# 				else:
-		# 					#
-		# 					if __k in self.p_c[k][_k]:
-		# 						#
-		# 						self.p_c_copy[k][_k][__k] = 0
-		# 						#
-		# 					else:
-		# 						#
-		# 						pass
-		# 						#
-		# 					#
-		# 				#
-		# 			#
-		# 		#
-		# 	#
-		# 	self.p_c = copy.deepcopy(self.p_c_copy)
-		# 	#
-		#
+		if self._compress_pattern:
 			#
+			self.p_c_copy = copy.deepcopy(self.p_c)
+			#
+			'''
+			Keep kerning file structure exactly the same as the pattern, just change the values, for kerning interpolation
+			'''
+			#
+			self.p_p = collections.OrderedDict()
+			self.p_p.update( plistlib.readPlist(self._compress_pattern))
+			self.p_p_copy = copy.deepcopy(self.p_p)
+			#
+			for k,v in self.p_c.items():
+				#
+				for _k,_v in self.p_c[k].items():
+					#
+					for __k,__v in self.p_c[k][_k].items():
+						#
+						if __k not in self.p_p[_k]:
+							#
+							self.p_c[k][_k][__k] = 0
+							#
+						#
+					self.p_c[k][_k].update(self.p_p[_k])
+					#
+			
+			self.p_c = self.p_c_copy
+			#
+		#
 		self.make_kern_plist()
 		#
 		self.make_kern_fea_lines()

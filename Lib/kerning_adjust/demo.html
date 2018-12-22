@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<title>Kern Adjuster</title>
+	<meta content="Advent Pro Variable." name="description">
+	<link href="assets/css/font-face.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/style.css" rel="stylesheet" type="text/css">
+	<script src="assets/scripts/jquery-3.3.1.min.js">
+	</script>
+</head>
+<body>
+	<div class="typeface" id="advent_thnregbld">
+		<div class="details">
+			<form class="controls">
+				<table>
+					<tr>
+						<th><label for="advent_thnregbld-wght">Weight:</label></th>
+						<td class="val min_val">100</td>
+						<td class="slider"><input class="wght" data-typeface="advent_thnregbld" id="advent_thnregbld-wght" max="700" min="100" name="wght" step="0.1" type="range" value="100"></td>
+						<td class="val max_val">700</td>
+					</tr>
+					<tr>
+						<th><label for="advent_thnregbld-ital">Italic:</label></th>
+						<td class="val min_val">0</td>
+						<td class="slider"><input class="ital" data-typeface="advent_thnregbld" id="advent_thnregbld-ital" max="1" min="0" name="ital" step="0.01" type="range" value="0"></td>
+						<td class="val max_val">1</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		<div class="fonts" style="font-variation-settings: 'wght' 100;">
+			<div class="font">
+				<div class="sample M L XL" style="font-family: 'AdventProVar'; font-weight: 100;">
+					<div class="kern">
+						ÆÆ ÆA AV VA AU UA AW WA LY ST UV QY QV QW A' AC AG AO AQ AT
+						ÆÆ ÆA AV VA AU UA AW WA LY ST UV QY QV QW A' AC AG AO AQ AT
+						ÆÆ ÆA AV VA AU UA AW WA LY ST UV QY QV QW A' AC AG AO AQ AT
+						ÆÆ ÆA AV VA AU UA AW WA LY ST UV QY QV QW A' AC AG AO AQ AT
+						ÆÆ ÆA AV VA AU UA AW WA LY ST UV QY QV QW A' AC AG AO AQ AT
+						ÆÆ ÆA AV VA AU UA AW WA LY ST UV QY QV QW A' AC AG AO AQ AT
+					</div>
+					<div class="calc"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="jquery-3.3.1.min.js">
+	</script> <!-- <script src="kerning.js"></script> -->
+	 
+	<script src="assets/scripts/kern_adjuster.js">
+	</script> 
+	<script type="text/javascript">
+		$(document).ready(function() {
+			setTimeout(function(){
+			 	//
+				$(".kern").kern_adjust();
+				//
+			},100)
+		});
+	</script>
+</body>
+</html>

@@ -73,7 +73,7 @@ def combine_fea(self, _for_var):
 					#
 					if _for_var == True:
 						#
-						data = re.sub('@','@_',data)#data.replace("@", "@_")
+						data = re.sub('@','@_',data)
 						#
 					#
 				#
