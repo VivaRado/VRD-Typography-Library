@@ -9,11 +9,11 @@
 		classes = {
 			base: "kern_adjust",
 			content: "kern_adjust-content",
-			bar: "kern_adjust-bar",
-			track: "kern_adjust-track",
-			handle: "kern_adjust-handle",
-			isHorizontal: "kern_adjust-horizontal",
-			isVertical: "kern_adjust-vertical",
+			//bar: "kern_adjust-bar",
+			//track: "kern_adjust-track",
+			//handle: "kern_adjust-handle",
+			//isHorizontal: "kern_adjust-horizontal",
+			//isVertical: "kern_adjust-vertical",
 			isSetup: "kern_adjust-setup",
 			isActive: "kern_adjust-active"
 		};
@@ -100,7 +100,7 @@
 		//
 	}
 	//
-	function injector(data, t, splitter, _class, after) {
+	function arranger(data, t, splitter, _class, after) {
 		var a = data.$initial_text.split(splitter), inject = '';
 		var classes = []
 		var inject = ''
@@ -160,7 +160,7 @@
 		//
 	}
 	//
-	function doAxes(data) {
+	function variable_axes(data) {
 		//
 		inputs = data.$inputs
 		outputs = data.$outputs
@@ -224,7 +224,7 @@
 				//
 			});
 			//
-			injector(data,$kern_adjust, '', 'char', '');
+			arranger(data,$kern_adjust, '', 'char', '');
 			//
 			console.log(data.$initial_text)
 			//
@@ -242,11 +242,11 @@
 			var i, l;
 			for (i=0, l=data.$inputs.length; i<l; i++) {
 				$(data.$inputs[i]).on('input', function(){
-					doAxes(data)
+					variable_axes(data)
 				});
 				$(data.$inputs[i]).on('change', function(){
-					doAxes(data) // dont do on input
-					injector(data,data.$kern_adjust, '', 'char', ''); // could fo on input, but would be laggy because it takes time to get new widths
+					variable_axes(data) // dont do on input
+					arranger(data,data.$kern_adjust, '', 'char', ''); // could on input, but would be laggy because it takes time to get new widths
 				}); // .on 'input' 
 			}
 		}
