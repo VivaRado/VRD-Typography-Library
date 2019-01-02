@@ -265,23 +265,42 @@ input[type=range]::-moz-range-thumb {
   opacity: 0;
 }
 .kern i:hover,
-.kern i {
+.kern i,
+.kern b{
 
+	/*
+	transitions make the recalcualtion of i and b elements inside the glyphs delay and set to wrong positions
 	-moz-transition: width 0.1s, right 0.1s, opacity 0.5s;
 	-webkit-transition: width 0.1s, right 0.1s, opacity 0.5s;
-	transition: width 0.1s, right 0.1s, opacity 0.5s;
+	transition: width 0.1s, right 0.1s, opacity 0.5s;*/
+
+	-moz-transition: opacity 0.5s;
+	-webkit-transition: opacity 0.5s;
+	transition: opacity 0.5s;
 }
-.kern i {
+
+.kern i,
+.kern b{
 	height: 100%;
-	background: rgba(115, 166, 255, 0.2);
 	top: 0;
-	z-index: 999;
+	z-index: -1;
 	position: absolute;
-  	cursor: pointer;
+	cursor: pointer;
+}
+
+.kern i {
+	background: rgba(166, 166, 255, 0.8);
+}
+
+.kern b.diff_neg {
+	background: rgba(255, 166, 166, 0.8);
+}
+.kern b.diff_pos {
+	background: rgba(166, 255, 166, 0.8);
 }
 
 .kern i:hover {
-	background: rgba(115, 166, 255, 0.5);
+	background: rgba(166, 166, 255, 0.5);
 }
 
 .loaded_kern .kern {
@@ -292,11 +311,17 @@ input[type=range]::-moz-range-thumb {
 	float: none;
 	position: relative;
 	cursor: pointer;
+	z-index: 1;
 
-    user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    -webkit-touch-callout: none;
-    -o-user-select: none;
-    -moz-user-select: none;
+	user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	-webkit-touch-callout: none;
+	-o-user-select: none;
+	-moz-user-select: none;
+}
+
+.kern.guides_hide i,
+.kern.guides_hide b{
+	opacity: 0;
 }

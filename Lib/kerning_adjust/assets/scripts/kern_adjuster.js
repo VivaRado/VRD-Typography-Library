@@ -43,8 +43,7 @@
 				if (data) {
 					data.$kern_adjust.removeClass( [data.customClass, classes.base, classes.isActive].join(" ") );
 
-					data.$kern_adjust.off( classify(namespace) )
-								  .removeData(namespace);
+					data.$kern_adjust.off( classify(namespace) ).removeData(namespace);
 				}
 			});
 		},
@@ -70,7 +69,7 @@
 	//
 	function init(opts) {
 		//
-		console.log("kern_adjuster")
+		//console.log("kern_adjuster")
 		//
 		// Local options
 		opts = $.extend({}, options, opts || {});
@@ -95,13 +94,56 @@
 	//
 	function determine_pair_kerning( _a, _b) {
 		//
-		itm = $('.'+classes.glyph+_a)
+		itm = $('.'+classes.glyph+_a);
 		//
-		a_width = $('.'+classes.glyph+_a).width()
-		a_init_width = $('.'+classes.glyph+_a).attr("data-init-width")
-		b_width = $('.'+classes.glyph+_b).width()
+		a_width = parseInt($('.'+classes.glyph+_a).width());
+		a_init_width = parseInt($('.'+classes.glyph+_a).attr("data-init-width"));
+		//b_width = $('.'+classes.glyph+_b).width()
 		//
-		$('.'+classes.glyph+_a).find('i').css({"width":a_init_width - a_width, "right":-(a_init_width - a_width)})
+		$('.'+classes.glyph+_a).find('i').css({"width":Math.abs(a_init_width - a_width), "right":-(Math.abs(a_init_width - a_width))});
+		//
+	}
+	//
+	function set_pair_kern_diff(glyph){
+		//
+		g_left = parseCeilInt(glyph.css("left"));
+		//
+		if (g_left == 0) {
+			//
+			g_left = parseCeilInt(glyph.css("margin-left"));
+			//
+		}
+		//
+		//console.log(g_left)
+		//
+		_neg = "diff_neg";
+		_pos = "diff_pos";
+		_b = glyph.find('b');
+		_i = glyph.find('i');
+		_i_prev = glyph.prev().find('i');
+		//
+		a_left = Math.abs(g_left);
+		a_init_width = Math.abs(glyph.attr("data-init-width"));
+		//
+		if (g_left < 0) {
+			//
+			diff_class = _neg;
+			//
+			a_init_width = Math.abs(glyph.width() - Math.abs(a_left))
+			//
+		} else {
+			//
+			diff_class = _pos;
+			//
+			a_init_width = Math.abs(glyph.width()) - Math.abs( parseInt( _i_prev.width() ) );
+			//
+		}
+		//
+		//
+		_b.removeClass(_pos);
+		_b.removeClass(_neg);
+		_b.addClass(diff_class);
+		_b.css({"width":a_left, "right": a_init_width });
 		//
 	}
 	//
@@ -111,23 +153,46 @@
 		//
 	}
 	//
+	function get_tex_size(txt, font) {
+		//
+        this.element = document.createElement('canvas');
+        this.context = this.element.getContext("2d");
+        this.context.font = font;
+        return this.context.measureText(txt).width;
+    }
+	//
 	function arranger(data, t, splitter) {
+		//
+		var kern_tag_now = '<i></i>';
+		var kern_tag_alt = '<b></b>';
 		//
 		var a = data.$initial_text.split(splitter);
 		//
 		if (a.length) {
 			//
-			if (data.$fragment_map.length == 0) { // if we have a fragment_map dont render the elements again.
+			//
+			if (data.$fragment_map.length == 0) { // if we have a fragment_map dont place the elements again.
 				//
 				t.empty()
 				//
+				get_px_fontsize = undefined;
+				//	
 				for (var i = 0; i < a.length; i++) {
 					//
-					f_string = '<span class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" data-init-width="0">'+a[i]+'<i></i></span>'
+					f_string = '<span class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" data-init-width="0">'+a[i]+kern_tag_now+kern_tag_alt+'</span>'
 					//
 					frag = fragmentFromString(f_string);
 					//
-					f_w = $(f_string).hide().appendTo('.calc').width() // render width
+					if (i == 0) {
+
+						// append just one to get the em to pixel ratio
+						f_w = $(f_string).hide().appendTo('.calc')//.width() // render width
+						get_px_fontsize = parseFloat(getComputedStyle($(".calc span")[0]).fontSize)
+						
+					}
+					//
+					var f_w = get_tex_size(a[i], get_px_fontsize+"px AdventProVar");
+					//
 					frag.firstChild.setAttribute("data-init-width", f_w)
 					//
 					data.$fragment_temp.appendChild(frag)
@@ -142,11 +207,13 @@
 				//
 			} else { // just re render without kerning and get their widths
 				//
+				get_px_fontsize = parseFloat(getComputedStyle($(".sample .kern span")[0]).fontSize)
+				//
 				for (var i = 0; i < data.$fragment_map.length; i++) {
 					//
-					elem = $('.'+classes.glyph+data.$fragment_map[i][0]);
+					var e_w = get_tex_size(elem.text(), get_px_fontsize+"px AdventProVar"); // render width with canvas
+					//var e_w = elem.clone().hide().appendTo('.calc').width() // render width by placing fragment in doc
 					//
-					e_w = elem.clone().hide().appendTo('.calc').width() // re render width
 					elem.attr("data-init-width", e_w)
 					//
 					data.$fragment_map[i][1] = e_w
@@ -163,6 +230,9 @@
 					//
 					determine_pair_kerning(data.$fragment_map[i][0],data.$fragment_map[i+1][0])
 					//
+					elem = $('.'+classes.glyph+data.$fragment_map[i][0]);
+					set_pair_kern_diff(elem);
+					//
 				}
 				//
 			}
@@ -178,6 +248,9 @@
 		//
 		var i, l, axes = {}, ffs = [];
 		for (i=0, l=inputs.length; i<l; i++) {
+			//
+			//console.log(inputs[i].value)
+			//
 			axes[inputs[i].name] = inputs[i].value;
 		}
 		for (i in axes) {
@@ -191,6 +264,66 @@
 			outputs[i].style.fontVariationSettings = ffs;
 		}
 	}
+	//
+	function transfer_to_left(_t){
+		//
+		var _t_l = parseCeilInt(_t.css("margin-left"))
+		//
+		_t.css({"left":_t_l, "margin-left": 0 })
+		//
+	}
+	//
+	function transfer_to_margin(_t){
+		//
+		//
+		var _t_l = parseCeilInt(_t.css("left"))
+		//
+		////console.log("transfer_t_m", _t_l)
+		//
+		_t.css({"left":0, "margin-left": _t_l })
+		//
+	}
+	//
+	function parseCeilInt(num){
+		//
+		return Math.ceil(parseFloat(num))
+		//
+	}
+	//
+	function check_bounds(data,_pos){
+		//
+		var has_bound = false;
+		//
+		var new_pos = _pos;
+		//
+		if (data.d_left > _pos) {
+			//
+			has_bound = true;
+			new_pos = data.d_left
+			//
+		} else if ( _pos > data.d_right ) {
+			//
+			has_bound = true;
+			new_pos = data.d_right
+			//
+		}
+		//
+		return new_pos;
+		//
+	};
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 	//
 	function build($kern_adjust, opts) {
 		//
@@ -210,25 +343,26 @@
 				$outputs:'',
 				$fragment_temp: document.createDocumentFragment(),
 				$fragment_map: [],
-				$handle: ''
+				$glyph: ''
 			}, opts);
 			//
 			data.handleBounds = {};
-			data.handleTop = 0;
-			data.handleLeft = 0;
+			data.glyph_left = 0;
 			//
 			$kern_adjust.data(namespace, data)
 			//
 			document.querySelectorAll('.typeface:not(.loaded_kern)').forEach(function(li) {
 				//
-				console.log('#' + li.id + ' input', '#' + li.id + ' .sample')
-				//
 				li.className += ' loaded_kern';
 				var sliders = '#' + li.id + ' input';
 				var samples = '#' + li.id + ' .sample';
 				//
+				//console.log(sliders)
+				//
 				var inputs = document.querySelectorAll(sliders);
 				var outputs = document.querySelectorAll(samples);
+				//
+				//console.log(inputs)
 				//
 				data.$inputs = inputs;
 				data.$outputs = outputs;
@@ -236,8 +370,6 @@
 			});
 			//
 			arranger(data,$kern_adjust, '');
-			//
-			console.log(data.$initial_text)
 			//
 			pub.reset.apply($kern_adjust);
 			//
@@ -259,9 +391,10 @@
 				$(data.$inputs[i]).on('input', function(){
 					variable_axes(data)
 				});
-				$(data.$inputs[i]).on('change', function(){
-					variable_axes(data) // dont do on input
-					arranger(data,data.$kern_adjust, ''); // could on input, but would be laggy because it takes time to get new widths
+				$(data.$inputs[i]).on('input', function(){
+					variable_axes(data) // dont do on input do change // now rendering with canvas instead of placing the object in dom
+					//console.log($(this).val())
+					arranger(data,data.$kern_adjust, ''); // could on input, but would be laggy because it takes time to get new initial widths
 				}); // .on 'input' 
 			}
 			//
@@ -270,12 +403,12 @@
 		var_sliders(data);
 		//
 		for (var i = 0; i < data.$fragment_map.length; i++) {
-			
+			//
 			elem_glyph = $('.'+classes.glyph+data.$fragment_map[i][0]);
-
+			//
 			elem_glyph.bind(events.start, classify(classes.handle+'-h'), function(e){
 				//
-				data.$handle = $(this);
+				data.$glyph = $(this);
 				//
 				onHandleDown(e,data)
 				//
@@ -287,13 +420,10 @@
 	//
 	function onStart(data) {
 		//
-		console.log('start')
-		//
-		//data.$content.off( classify(namespace) );
+		$(".kern").unbind(events.move);
+		$(".kern").unbind(events.end);
 		//
 		$('.kern').bind(events.move, function(e){
-			//
-			console.log("moving")
 			//
 			onMouseMove(data, e)
 			//
@@ -303,27 +433,32 @@
 			//
 		});
 		//
-	}
-	//
-	function findPos(obj) {
-		var curleft = curtop = 0;
-		if (obj.offsetParent) {
-			do {
-				curleft += obj.offsetLeft;
-				curtop += obj.offsetTop;
-			} while (obj = obj.offsetParent);
-			return { x: curleft, y: curtop };
-		}
+		$('.fonts').mouseleave(function() {
+			//
+			//setTimeout(function(){
+			
+				$(".kern").unbind(events.move);
+
+			//},100);
+			//
+		});
+		//
+		$("html").mouseleave(function() {
+			//
+			//setTimeout(function(){
+			
+				$(".kern").unbind(events.move);
+
+			//},100);
+			//
+		});
+		//
 	}
 	//
 	function onHandleDown(e, data) {
 		//
-		//elem_glyph = $(e.target)
-		//
 		e.preventDefault();
 		e.stopPropagation();
-		//
-		console.log(data.$handle)
 		//
 		var oe = e.originalEvent,
 			touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
@@ -333,16 +468,30 @@
 		var the_class = $(e.target).attr('class');
 		var is_dim = the_class.substring(the_class.lastIndexOf("-") + 1);
 		//
+		data.$glyph.next().attr("data-original-margin", parseCeilInt(data.$glyph.next().css("margin-left")))
+		data.$glyph.next().css({"margin-left": parseCeilInt(data.$glyph.css("margin-left")) + parseCeilInt(data.$glyph.next().attr("data-original-margin")) })
 		//
-		data.$handle.addClass('active_handle');
+		transfer_to_left(data.$glyph)
 		//
-		data.handleLeft = (pageX - data.$handle.position().left)
+		data.$glyph.addClass('active_handle');
+		//
+		if (data.$glyph.prev().length == 0 ) { return; }
+		// calculate bounds before moving
+		data.d_right = parseCeilInt(data.$glyph.next().position().left) + parseCeilInt(data.$glyph.next().css("left")) - parseCeilInt(data.$glyph.position().left );
+		data.d_left = parseCeilInt(data.$glyph.prev().position().left) - parseCeilInt(data.$glyph.prev().css("left")) - parseCeilInt(data.$glyph.position().left );
+		//
+		pos = parseCeilInt(pageX) - parseCeilInt(data.$glyph.position().left)
+		//
+		data.glyph_left = pos;
 		//
 		onStart(data, elem_glyph);
 		//
 	}
 	//
 	var _ratio = 0.5;
+	//var direction = "";
+
+	//var oldx = 0;
 	//
 	function onMouseMove(data, e) {
 		//
@@ -356,21 +505,35 @@
 		//
 		data.mouseStart = e.clientX;
 		//
-		var pos = ( pageX - data.handleLeft - data.$handle.position().left ) + parseInt(data.$handle.css("left"))
 		//
-		position(data, pos);
+		var pos = parseCeilInt(pageX) - parseCeilInt(data.glyph_left) - parseCeilInt(data.$glyph.position().left) + parseCeilInt(data.$glyph.css("left") )
+		//
+		var _pos = check_bounds(data, pos);
+		//
+
+		//
+		//console.log(_pos, pos)
+		//
+		position(data, _pos);
+		//
+		set_pair_kern_diff(data.$glyph);
 		//
 	}
-
+	//
 	//
 	function onMouseUp(data, e) {
 		//
 		e.preventDefault();
 		e.stopPropagation();
 		//
-		data.$handle.removeClass('active_handle');
+		data.$glyph.removeClass('active_handle');
 		//
 		$(".kern").unbind(events.move);
+		$(".kern").unbind(events.end);
+		//
+		data.$glyph.next().css({"margin-left": parseCeilInt( data.$glyph.next().attr("data-original-margin")) })
+		//
+		transfer_to_margin(data.$glyph)
 		//
 		data.mouseStart = 0;
 		//
@@ -379,71 +542,14 @@
 	//
 	function position(data, pos) {
 		//
-		var check_bounds = function(_pos){
-			//
-			var has_bound = false;
-			//
-			//if (dim == 'h') {
-				//
-				//if (_pos < data.handleBounds.left) {
-					//
-					//var has_bound = true;
-					//var new_pos = data.handleBounds.left;
-					//
-				//} else if (_pos > data.handleBounds.right) {
-					//
-				//	var has_bound = true;
-				//	var new_pos = data.handleBounds.right;
-					//
-				//}
-				//
-			/*} else if (dim == 'v'){
-				//
-				if (_pos < data.handleBounds.top) {
-					//
-					var has_bound = true;
-					var new_pos = data.handleBounds.top;
-					//
-				} else if (_pos > data.handleBounds.bottom) {
-					//
-					var has_bound = true;
-					var new_pos = data.handleBounds.bottom;
-					//
-				}
-				//
-			}*/
-			//
-			if (has_bound) {
-				//
-				return new_pos;
-				//
-			} else {
-				//
-				return _pos;
-				//
-			}
-			//
-		};
+		var _direct = 'left';
 		//
-		var run_pos = function(pos){
-			//
-			var _direct = 'left';
-			var h_num = 0;
-			//
-			var scroll_ammount = pos;// * _ratio;
-			//
-			var style_handle  = {};
-			style_handle[_direct] = pos;
-			//
-			var style_content  = {};
-			style_content[_direct] = scroll_ammount;
-			//
-			data.$handle.css(style_handle);
-			//
-		}
+		var style_handle  = {};
+		style_handle[_direct] = pos;
 		//
-		var pos = check_bounds(pos);
-		run_pos(pos);
+		data.$glyph.css(style_handle);
+		//
+		
 		//
 	}
 	//

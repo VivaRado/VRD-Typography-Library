@@ -6,54 +6,68 @@
 	<title>Kern Adjuster</title>
 	<meta content="Advent Pro Variable." name="description">
 	<link href="assets/css/font-face.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/rangeslider.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/triggerswitch.css" rel="stylesheet" type="text/css">
 	<link href="assets/css/style.css" rel="stylesheet" type="text/css">
 	<script src="assets/scripts/jquery-3.3.1.min.js"></script>
-	<script src="assets/scripts/jquery.mousewheel.min.js"></script>
 </head>
 <body>
-	<div class="typeface" id="advent_thnregbld">
+	<div class="typeface" id="advent">
 		<div class="details">
 			<form class="controls">
-				<table>
-					<tr>
-						<th><label for="advent_thnregbld-wght">Weight:</label></th>
-						<td class="val min_val">100</td>
-						<td class="slider"><input class="wght" data-typeface="advent_thnregbld" id="advent_thnregbld-wght" max="700" min="100" name="wght" step="0.1" type="range" value="100"></td>
-						<td class="val max_val">700</td>
-					</tr>
-					<tr>
-						<th><label for="advent_thnregbld-ital">Italic:</label></th>
-						<td class="val min_val">0</td>
-						<td class="slider"><input class="ital" data-typeface="advent_thnregbld" id="advent_thnregbld-ital" max="1" min="0" name="ital" step="0.01" type="range" value="0"></td>
-						<td class="val max_val">1</td>
-					</tr>
-				</table>
+				<div class="rangeslider-container">
+					<div class="rangeslider-wrap">
+						<label for="advent-wght">Weight:</label>
+						<input type="range" 
+							   class="range_slider" 
+							   name="wght"
+							   data-typeface="advent" 
+							   id="advent-wght" 
+							   min="100" 
+							   max="700" 
+							   step="0.1" 
+							   labels="100, 200, 300, 400, 500, 600, 700">
+					</div>
+				</div>
+				<div class="rangeslider-container">
+					<div class="rangeslider-wrap">
+						<label for="advent-ital">Italic:</label>
+						<input type="range" 
+							   class="range_slider" 
+							   name="ital"
+							   data-typeface="advent" 
+							   id="advent-ital" 
+							   min="0" 
+							   max="1" 
+							   step="0.01" 
+							   labels="0, 1">
+					</div>
+				</div>
+				<div class="guides-container">
+					
+					<label for="advent-ital">Guides:</label>
+					<div class="onoffswitch">
+						<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+						<label class="onoffswitch-label" for="myonoffswitch">
+							<span class="onoffswitch-inner"></span>
+							<span class="onoffswitch-switch"></span>
+						</label>
+					</div>
+				</div>
+
 			</form>
 		</div>
 		<div class="fonts" style="font-variation-settings: 'wght' 100;">
 			<div class="font">
-				<div class="sample M L XL" style="font-family: 'AdventProVar'; font-weight: 100;">
-					<div class="kern">
-						AVAWALYHAHHHHBHHHHCHHHHDHHHHEHHHHFHHHHGHHHHHHHHHIHHHHJHHHHKHHHHLHHHHMHHHHNHHHHOHHHHPHHHHQHHHHRHHHHSHHHHTHHHHUHHHHVHHHHWHHHHXHHHHYHHHHZHHnnannnnbnnnncnnnndnnnnennnnfnnnngnnnnhnnnninnnnjnnnnknnnnlnnnnmnnnnnnnnnonnnnpnnnnqnnnnrnnnnsnnnntnnnnunnnnvnnnnwnnnnxnnnnynnnnznn
-					</div>
+				<div class="sample" style="font-family: 'AdventProVar'; font-weight: 100;">
+					<div class="kern">AVAWALYHAHHHHBHHHHCHHHHDHHHHEHHHHFHHHHGHHHHHHHHHIHHHHJHHHHKHHHHLHHHHMHHHHNHHHHOHHHHPHHHHQHHHHRHHHHSHHHHTHHHHUHHHHVHHHHWHHHHXHHHHYHHHHZHHnnannnnbnnnncnnnndnnnnennnnfnnnngnnnnhnnnninnnnjnnnnknnnnlnnnnmnnnnnnnnnonnnnpnnnnqnnnnrnnnnsnnnntnnnnunnnnvnnnnwnnnnxnnnnynnnnznn</div>
 					<div class="calc"></div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<script src="jquery-3.3.1.min.js">
-	</script> <!-- <script src="kerning.js"></script> -->
-	 
-	<script src="assets/scripts/kern_adjuster.js">
-	</script> 
-	<script type="text/javascript">
-		$(document).ready(function() {
-			setTimeout(function(){
-			 	//
-				$(".kern").kern_adjust();
-				//
-			},100)
-		});
-	</script>
+	<script src="assets/scripts/kern_adjuster.js"></script> 
+	<script src="assets/scripts/rangeslider.js"></script> 
+	<script src="assets/scripts/index.js"></script> 
 </body>
 </html>
