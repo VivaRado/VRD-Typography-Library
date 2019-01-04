@@ -187,11 +187,12 @@
 
 						// append just one to get the em to pixel ratio
 						f_w = $(f_string).hide().appendTo('.calc')//.width() // render width
-						get_px_fontsize = parseFloat(getComputedStyle($(".calc span")[0]).fontSize)
+						get_px_fontsize = parseInt(getComputedStyle($(".calc span")[0]).fontSize);
+						get_fontfamily = getComputedStyle($(".calc span")[0]).fontFamily;
 						
 					}
 					//
-					var f_w = get_tex_size(a[i], get_px_fontsize+"px AdventProVar");
+					var f_w = parseInt(get_tex_size(a[i], get_px_fontsize+"px "+get_fontfamily));
 					//
 					frag.firstChild.setAttribute("data-init-width", f_w)
 					//
@@ -207,12 +208,13 @@
 				//
 			} else { // just re render without kerning and get their widths
 				//
-				get_px_fontsize = parseFloat(getComputedStyle($(".sample .kern span")[0]).fontSize)
+				get_px_fontsize = parseInt(getComputedStyle($(".sample .kern span")[0]).fontSize)
+				get_fontfamily = getComputedStyle($(".sample .kern span")[0]).fontFamily
 				//
 				for (var i = 0; i < data.$fragment_map.length; i++) {
 					//
-					var e_w = get_tex_size(elem.text(), get_px_fontsize+"px AdventProVar"); // render width with canvas
-					//var e_w = elem.clone().hide().appendTo('.calc').width() // render width by placing fragment in doc
+					//var e_w = parseInt(get_tex_size(elem.text(), get_px_fontsize+"px "+get_fontfamily)); // render width with canvas
+					var e_w = elem.clone().hide().appendTo('.calc').width() // render width by placing fragment in doc
 					//
 					elem.attr("data-init-width", e_w)
 					//
@@ -249,9 +251,8 @@
 		var i, l, axes = {}, ffs = [];
 		for (i=0, l=inputs.length; i<l; i++) {
 			//
-			//console.log(inputs[i].value)
-			//
 			axes[inputs[i].name] = inputs[i].value;
+			//
 		}
 		for (i in axes) {
 			if (i.length === 4) {
@@ -275,10 +276,7 @@
 	//
 	function transfer_to_margin(_t){
 		//
-		//
 		var _t_l = parseCeilInt(_t.css("left"))
-		//
-		////console.log("transfer_t_m", _t_l)
 		//
 		_t.css({"left":0, "margin-left": _t_l })
 		//
@@ -460,10 +458,16 @@
 		e.preventDefault();
 		e.stopPropagation();
 		//
+		this_pos_top = data.$glyph.position().top;
+		next_pos_top = data.$glyph.next().position().top;
+		//
+		if (this_pos_top != next_pos_top) { return; } // avoid last letter in each line miscalculation
+		if (data.$glyph.prev().length == 0 ) { return; } // avoid first letter in each line miscalculation
+		//
 		var oe = e.originalEvent,
 			touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
-			pageX = (touch) ? touch.pageX : e.clientX,
-			pageY = (touch) ? touch.pageY : e.clientY;
+			pageX = (touch) ? touch.pageX : e.clientX;
+			//pageY = (touch) ? touch.pageY : e.clientY;
 		//
 		var the_class = $(e.target).attr('class');
 		var is_dim = the_class.substring(the_class.lastIndexOf("-") + 1);
@@ -475,7 +479,6 @@
 		//
 		data.$glyph.addClass('active_handle');
 		//
-		if (data.$glyph.prev().length == 0 ) { return; }
 		// calculate bounds before moving
 		data.d_right = parseCeilInt(data.$glyph.next().position().left) + parseCeilInt(data.$glyph.next().css("left")) - parseCeilInt(data.$glyph.position().left );
 		data.d_left = parseCeilInt(data.$glyph.prev().position().left) - parseCeilInt(data.$glyph.prev().css("left")) - parseCeilInt(data.$glyph.position().left );
@@ -500,8 +503,8 @@
 		//
 		var oe = e.originalEvent,
 			touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
-			pageX = (touch) ? touch.pageX : e.clientX,
-			pageY = (touch) ? touch.pageY : e.clientY;
+			pageX = (touch) ? touch.pageX : e.clientX;
+			//pageY = (touch) ? touch.pageY : e.clientY;
 		//
 		data.mouseStart = e.clientX;
 		//

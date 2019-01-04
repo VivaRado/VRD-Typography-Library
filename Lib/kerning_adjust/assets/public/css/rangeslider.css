@@ -31,7 +31,7 @@
   box-sizing: border-box;
 }
 
-.rangeslider-container {
+.rangeslider-container.container {
   
   padding: 1rem 1rem 4rem 1rem;
   border-bottom: 1px solid #ccc; 
@@ -112,6 +112,7 @@
   width: 25px;
   font-family: monospace;
   cursor: pointer;
+  text-align: center;
 }
 .rangeslider__labels__label:before {
   position: absolute;

@@ -63,16 +63,16 @@
 	right: 0px; 
 }
 
-.guides-container {
+.guides-container.container {
   
   padding: 1rem 1rem 2rem 1rem;
   border-bottom: 1px solid #ccc; 
 }
 
 .guides-container > label {
-    position: relative;
-    left: 0px;
-    display: block;
-    margin-bottom: 1rem;
-    text-align: left;
+	position: relative;
+	left: 0px;
+	display: block;
+	margin-bottom: 1rem;
+	text-align: left;
 }

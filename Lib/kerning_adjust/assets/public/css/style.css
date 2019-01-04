@@ -27,10 +27,9 @@ display: block;
 }
 
 html, body {
-  /*overflow: hidden;*/
-  text-wrap: none;
-  text-align: center;
-  background: #fff;
+	/*overflow: hidden;*/
+	text-wrap: none;
+	background: #fff;
 }
 
 #main {
@@ -249,20 +248,22 @@ input[type=range]::-moz-range-thumb {
 /**/
 
 .calc{
-  font-size: 6.2rem;
-  font-family: "AdventProVar";
-  font-feature-settings: "kern" 1;
-  font-weight: 100;
+	font-size: 6.2rem;
+	/*font-size: 8rem;*/
+	font-family: "AdventProVar";
+	font-feature-settings: "kern" 1;
+	font-weight: 100;
 }
 
 .kern {
 
-  font-size: 6.2rem;
-  font-family: "AdventProVar";
-  font-feature-settings: "kern" 1;
-  font-weight: 100;
-  word-break: break-all;
-  opacity: 0;
+	font-size: 6.2rem;
+	/*font-size: 8rem;*/
+	font-family: "AdventProVar";
+	font-feature-settings: "kern" 1;
+	font-weight: 100;
+	word-break: break-all;
+	opacity: 0;
 }
 .kern i:hover,
 .kern i,
@@ -324,4 +325,21 @@ input[type=range]::-moz-range-thumb {
 .kern.guides_hide i,
 .kern.guides_hide b{
 	opacity: 0;
+}
+
+/**/
+
+.controls label.label {
+	position: relative;
+	left: 0px;
+	display: block;
+	margin-bottom: 1rem;
+	text-align: left;
+}
+
+.container {
+  
+  padding: 1rem 1rem 1rem 1rem;
+  border-bottom: 1px solid #ccc; 
+
 }

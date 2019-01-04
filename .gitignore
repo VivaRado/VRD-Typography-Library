@@ -1,8 +1,12 @@
 __pycache__*
 __pycache__/
+node_modules*
+node_modules/
 logs*
 logs/
 log*
 log/
+_old*
+_old/
 *.pyc
 *.pyo
