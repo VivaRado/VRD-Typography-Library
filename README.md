@@ -81,9 +81,7 @@ cd "/kerning_adjust"
 
 npm install
 
-node app.js
-
---source (source EFO)
+node app.js --source (source EFO)
 ```
 ------
 
