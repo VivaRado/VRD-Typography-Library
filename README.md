@@ -77,6 +77,8 @@ componentize_efo.py
 ```
 [**Kerning Adjust UI:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/kerning_adjust)
 ```
+npm install
+
 node app.js
 
 --source (source EFO)
