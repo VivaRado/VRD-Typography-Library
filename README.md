@@ -75,7 +75,7 @@ componentize_efo.py
 -s (source EFO)  
 -f (the weights of the font to componentize: "reg,bld,...")
 ```
-[**Kerning Adjust UI:**](VRD-Typography-Library/Lib/kerning_adjust/)
+[**Kerning Adjust UI:**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/kerning_adjust)
 ```
 node app.js
 
