@@ -2,7 +2,7 @@ Kerning Adjust (alpha)
 ===================
 
 Kerning Adjustment interface for variable EFO.
-The interface is server through NodeJS, alongside a Flask server.
+The interface is served through NodeJS, alongside a Flask server.
 The Flask server is communicating over Socket.io with the NodeJS interface.
 Flask is multi-threaded so you can work on multiple fonts at the same time.
 
