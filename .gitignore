@@ -4,6 +4,8 @@ node_modules*
 node_modules/
 logs*
 logs/
+flask_session*
+flask_session/
 log*
 log/
 _old*

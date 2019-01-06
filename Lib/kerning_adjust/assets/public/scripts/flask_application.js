@@ -1,0 +1,27 @@
+
+$(document).ready(function(){
+    //connect to the socket server.
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+    var numbers_received = [];
+
+    //receive details from server
+    socket.on('flask_message_log', function(msg) {
+        //maintain a list of ten numbers
+        console.log(msg)
+        //
+        if (msg.text) {
+            
+            console.log("Received number" + msg.text);
+            if (numbers_received.length >= 10){
+                numbers_received.shift()
+            }            
+            numbers_received.push(msg.text);
+            numbers_string = '';
+            for (var i = 0; i < numbers_received.length; i++){
+                numbers_string = numbers_string + '<p>' + numbers_received[i].toString() + '</p>';
+            }
+            $('#log').html(numbers_string);
+        }
+    });
+
+});

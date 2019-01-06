@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="{{ url_for('static', filename='scripts/jquery-3.3.1.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='scripts/socket.io.js') }}"></script>
+		<script src="{{ url_for('static', filename='scripts/flask_application.js') }}"></script>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/flask_application.css') }}"/>
+	</head>
+	<body>
+		<div class="container" id="content">
+			<div class="row">
+				<h3>flask log:</h3>
+				<div id="log">
+				</div> <!-- /#log -->
+			</div>
+		</div>
+	</body>
+</html>

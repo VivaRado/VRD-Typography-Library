@@ -21,6 +21,7 @@ parser.add_argument("-k", "--kerning_type", dest="kerning_type",
                     help='Kerning Type to copy to UFOs')
 #
 args = parser.parse_args()
+
 #
 dir_path = os.path.dirname(os.path.realpath(__file__))
 #
