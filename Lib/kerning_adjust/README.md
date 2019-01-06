@@ -23,7 +23,8 @@ NodeJS is also starting the Flask server, which logs all the threads visit: ```h
 
 ### Usage
 
-```cd "/kerning_adjust"
+```
+cd "/kerning_adjust"
 
 npm install
 
