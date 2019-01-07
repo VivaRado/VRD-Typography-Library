@@ -4,13 +4,10 @@ function display_alert(alert_text, target_container, animation){
 	console.log("alert_text")
 	console.log(alert_text)
 	//
-	//alert_text = "success_test"
-	//
 	if (alert_text) {
 		//
 		var alert_text = alert_text.toString();
 		var target_alert = target_container;
-		//
 		//
 		alert_class = alert_text.substring(alert_text.indexOf('_'),0);
 		display_data = toTitleCase(alert_text.substring(alert_text.indexOf('_')+1).toString().replace(/_/g,' '), true)
@@ -26,8 +23,7 @@ function display_alert(alert_text, target_container, animation){
 			//
 			target_alert.find('ul').append('<li class="'+alert_class+'">'+display_data+'</li>');
 			target_alert.removeClass('hide').addClass('active_alert').show();
-			
-			//return	
+			//
 		} else {
 			//
 			target_alert.empty();
@@ -100,8 +96,6 @@ $(document).ready(function() {
 		var socket_node = io.connect('http://localhost:8008');
 		var socket_flask = io.connect('http://localhost:5000/test');
 		//
-		
-		//
 		socket_node.on('connect', function () { 
 			//
 			console.log('SOCKET CONNECTED NODEJS')
@@ -120,8 +114,6 @@ $(document).ready(function() {
 		//
 		socket_node.on('message',function(log){
 			//
-			console.log(log)
-			console.log("=====")
 			display_alert(log, $(".display_alert"), "static")
 			//
 		});
@@ -131,10 +123,10 @@ $(document).ready(function() {
 			console.log('SOCKET CONNECTED FLASK')
 			display_alert("success_flask_socket_connected", $(".display_alert"), "static")
 			//
-			//
 			socket_flask.on('disconnected', function() {
 				//
 				console.log('SOCKET DISCONNECTED FLASK')
+				//
 			});
 			//
 			socket_ids.socket_flask_id = socket_flask.id;
@@ -147,11 +139,13 @@ $(document).ready(function() {
 		//
 		socket_flask.on('flask_message', function(msg) {
 			//
-			console.log("got_message_for_relay")
+			if (msg.thread_state == "aborted" || msg.thread_state == "ended") {
+				//
+				$('.thread_abort').addClass("hide");
+				//
+			}
 			//
-			console.log("Received number: " + msg.number);
 			display_alert(msg.text, $(".display_alert"), "static");
-			//
 			//
 		});
 		//
@@ -188,8 +182,6 @@ $(document).ready(function() {
 			timeout : 100000,
 			error: function(xhr) {
 				//
-				//console.log(xhr, '');
-				console.log(xhr.responseText, '');
 				display_alert(xhr.responseText, $(".display_alert"), "static");
 				//
 			},
@@ -213,8 +205,6 @@ $(document).ready(function() {
 			t_label = labels.eq(index)
 			t_label_val = parseInt(t_label.attr("data-val"))
 			//
-			//console.log(t_label_val, cur_val)
-			//
 			if (cur_val >= t_label_val) {
 				//
 				t_label.addClass("_c")
@@ -230,49 +220,39 @@ $(document).ready(function() {
 	}
 	//
 	$('input[type="range"].range_slider').rangeslider({
-		// Feature detection the default is `true`.
+		//
+		polyfill: false,
+		rangeClass: 'rangeslider',
+		disabledClass: 'rangeslider--disabled',
+		horizontalClass: 'rangeslider--horizontal',
+		fillClass: 'rangeslider__fill',
+		handleClass: 'rangeslider__handle',
+		onInit: function(value) {
+			$rangeEl = this.$range;
 			//
-			polyfill: false,
-			// Default CSS classes
-			rangeClass: 'rangeslider',
-			disabledClass: 'rangeslider--disabled',
-			horizontalClass: 'rangeslider--horizontal',
-			fillClass: 'rangeslider__fill',
-			handleClass: 'rangeslider__handle',
-
-			// Callback function
-			onInit: function(value) {
-				$rangeEl = this.$range;
+			var rangeLabels = this.$element.attr('labels');
+			rangeLabels = rangeLabels.split(', ');
+			//
+			// add labels
+			$rangeEl.append('<div class="rangeslider__labels"></div>');
+			//
+			$(rangeLabels).each(function(index, value) {
 				//
-				var rangeLabels = this.$element.attr('labels');
-				rangeLabels = rangeLabels.split(', ');
+				$rangeEl.find('.rangeslider__labels').append('<span class="rangeslider__labels__label" data-val="'+value+'">' + value + '</span>');
 				//
-				// add labels
-				$rangeEl.append('<div class="rangeslider__labels"></div>');
-				//
-				$(rangeLabels).each(function(index, value) {
-					//
-					$rangeEl.find('.rangeslider__labels').append('<span class="rangeslider__labels__label" data-val="'+value+'">' + value + '</span>');
-					//
-				});
-				//
-				range_laber_coverage(this.$range, this.value)
-				//
-			},
-
-			// Callback function
-			onSlide: function(position, value) {
-				//
-				range_laber_coverage(this.$range, value)
-				//
-				/*var $handle = this.$range.find('.rangeslider__handle__value');
-				$handle.text(this.value);*/
-			}//,
-
-			// Callback function
-			/*onSlideEnd: function(position, value) {
-				range_laber_coverage(this.$range, value)
-			}*/
+			});
+			//
+			range_laber_coverage(this.$range, this.value)
+			//
+		},
+		onSlide: function(position, value) {
+			//
+			range_laber_coverage(this.$range, value)
+			//
+		}//,
+		/*onSlideEnd: function(position, value) {
+			//
+		}*/
 	});
 	//
 	$('.rangeslider__labels__label').on("click", function(e){

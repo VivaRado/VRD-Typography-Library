@@ -57,11 +57,6 @@ class FlaskThread(Thread):
 					#
 				#
 			#
-			if x == 2:
-				#
-				clients[self._id]["thread_state"] = "aborted"
-				#
-			#
 			if x == 5:
 				#
 				socketio.emit('flask_message', {'number': 0, "text": "success_flask_thread_finished", "thread_state": "ended", "thread_id": self._id }, namespace='/test', room=self._id)

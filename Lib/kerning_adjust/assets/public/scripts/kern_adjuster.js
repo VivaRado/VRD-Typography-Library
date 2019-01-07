@@ -11,11 +11,7 @@
 			content: "kern_adjust-content",
 			glyph: "char",
 			glyph_base: "glyph",
-			//bar: "kern_adjust-bar",
-			//track: "kern_adjust-track",
 			handle: "kern_adjust-handle",
-			//isHorizontal: "kern_adjust-horizontal",
-			//isVertical: "kern_adjust-vertical",
 			isSetup: "kern_adjust-setup",
 			isActive: "kern_adjust-active"
 		},
@@ -58,8 +54,6 @@
 					//
 					data.$kern_adjust.addClass(classes.isSetup);
 					//
-					//data.$kern_adjust.empty()
-					//
 					data.$kern_adjust.removeClass(classes.isSetup);
 					//
 				}
@@ -68,8 +62,6 @@
 	};
 	//
 	function init(opts) {
-		//
-		//console.log("kern_adjuster")
 		//
 		// Local options
 		opts = $.extend({}, options, opts || {});
@@ -310,19 +302,6 @@
 		//
 	};
 	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
 	function build($kern_adjust, opts) {
 		//
 		var dims = [];
@@ -391,7 +370,7 @@
 				});
 				$(data.$inputs[i]).on('input', function(){
 					variable_axes(data) // dont do on input do change // now rendering with canvas instead of placing the object in dom
-					//console.log($(this).val())
+					//
 					arranger(data,data.$kern_adjust, ''); // could on input, but would be laggy because it takes time to get new initial widths
 				}); // .on 'input' 
 			}
@@ -433,21 +412,13 @@
 		//
 		$('.fonts').mouseleave(function() {
 			//
-			//setTimeout(function(){
-			
-				$(".kern").unbind(events.move);
-
-			//},100);
+			$(".kern").unbind(events.move);
 			//
 		});
 		//
 		$("html").mouseleave(function() {
 			//
-			//setTimeout(function(){
-			
-				$(".kern").unbind(events.move);
-
-			//},100);
+			$(".kern").unbind(events.move);
 			//
 		});
 		//
@@ -467,7 +438,6 @@
 		var oe = e.originalEvent,
 			touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
 			pageX = (touch) ? touch.pageX : e.clientX;
-			//pageY = (touch) ? touch.pageY : e.clientY;
 		//
 		var the_class = $(e.target).attr('class');
 		var is_dim = the_class.substring(the_class.lastIndexOf("-") + 1);
@@ -504,18 +474,12 @@
 		var oe = e.originalEvent,
 			touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
 			pageX = (touch) ? touch.pageX : e.clientX;
-			//pageY = (touch) ? touch.pageY : e.clientY;
 		//
 		data.mouseStart = e.clientX;
-		//
 		//
 		var pos = parseCeilInt(pageX) - parseCeilInt(data.glyph_left) - parseCeilInt(data.$glyph.position().left) + parseCeilInt(data.$glyph.css("left") )
 		//
 		var _pos = check_bounds(data, pos);
-		//
-
-		//
-		//console.log(_pos, pos)
 		//
 		position(data, _pos);
 		//
