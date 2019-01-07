@@ -105,7 +105,7 @@ if (argv.source) {
 	//
 	console.log("STARTING FLASK")
 	//
-	py.PythonShell.run('main.py', options, function (err, results) {
+	/*py.PythonShell.run('main.py', options, function (err, results) {
 		//
 		if(err){
 			//
@@ -113,7 +113,7 @@ if (argv.source) {
 			//
 		}
 		//
-	});
+	});*/
 	//
 	//
 } else {

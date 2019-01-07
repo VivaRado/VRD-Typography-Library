@@ -19,7 +19,7 @@ cors = CORS(app, resources={r"localhost*": {"origins": "*"}})
 Session(app)
 socketio = SocketIO(app)
 #
-clients = []
+clients = {}
 #
 thread = Thread()
 thread_stop_event = Event()
@@ -37,16 +37,12 @@ class FlaskThread(Thread):
 		self.delay = 1
 		self._id = _id
 		super(FlaskThread, self).__init__(name=_id)
-
-	def interrupt(self):
-		global thread
-		thread.cancel()
-
-	def randomNumberGenerator(self):
+	#
+	def run_function_thread(self):
 		#
 		x = 0
 		#
-		while not thread_stop_event.isSet():
+		while clients[self._id]["thread_state"] not in ["ended", "aborted"]:
 			#
 			if x < 5:
 				#
@@ -54,27 +50,31 @@ class FlaskThread(Thread):
 				#
 				res = some_function(self._id)
 				#
-				socketio.emit('flask_message', {'number': number, "text": "success_flask_thread_counting", "thread_state": "active", "thread_id": self._id } , namespace='/test', room=self._id)
-				socketio.emit('flask_message_log', {'number': number, "text": "success_flask_thread_counting_for_"+self._id, "thread_state": "active", "thread_id": self._id } , namespace='/test')
+				if clients[self._id]["thread_state"] not in ["ended", "aborted"]:
+					#
+					socketio.emit('flask_message', {'number': number, "text": "success_flask_thread_counting", "thread_state": "active", "thread_id": self._id } , namespace='/test', room=self._id)
+					socketio.emit('flask_message_log', {'number': number, "text": "success_flask_thread_counting_for_"+self._id, "thread_state": "active", "thread_id": self._id } , namespace='/test')
+					#
+				#
+			#
+			if x == 2:
+				#
+				clients[self._id]["thread_state"] = "aborted"
 				#
 			#
 			if x == 5:
 				#
 				socketio.emit('flask_message', {'number': 0, "text": "success_flask_thread_finished", "thread_state": "ended", "thread_id": self._id }, namespace='/test', room=self._id)
-				socketio.emit('flask_message_log', {'number': number, "text": "success_flask_thread_finished_for_"+self._id, "thread_state": "active", "thread_id": self._id } , namespace='/test')
-				sleep(1)
-				socketio.emit('flask_message', {'number': 0, "text": "error_flask_threading_interrupted", "thread_state": "ended", "thread_id": self._id }, namespace='/test', room=self._id)
-				socketio.emit('flask_message_log', {'number': number, "text": "error_flask_threading_interrupted_for_"+self._id, "thread_state": "active", "thread_id": self._id } , namespace='/test')
+				socketio.emit('flask_message_log', {'number': number, "text": "success_flask_thread_finished_for_"+self._id, "thread_state": "ended", "thread_id": self._id } , namespace='/test')
 				#
-				#
-				self.interrupt()
+				clients[self._id]["thread_state"] = "ended"
 				#
 			#
 			x = x + 1
 			#
 		#
 	def run(self):
-		self.randomNumberGenerator()
+		self.run_function_thread()
 #
 @app.route('/')
 def index():
@@ -83,11 +83,16 @@ def index():
 #
 @socketio.on('join', namespace='/test')
 def on_join(data):
-
+	#
+	if data["room"] not in clients.keys():
+		#
+		clients[data["room"]] = {"thread_state":"null"}
+		#
+	#
 	socketio.emit('flask_message_log', {"text":"success_flask_joined_"+data["room"], "thread_state": "standby", "thread_id": "null"}, namespace='/test')
-
+	#
 	join_room(data["room"], namespace='/test')
-
+	#
 @socketio.on('connect', namespace='/test')
 def test_connect():
 	#
@@ -102,26 +107,53 @@ def postdata():
 	#
 	print("CLIENTS",clients)
 	#
-	#
 	status = 400
 	delay = 1
 	data = request.data
 	dataDict = json.loads(data)
 	#
-	
 	_id = dataDict["id"]
+	_tell = dataDict["tell"]
 	session['id'] = _id
 	#
-	clients.append(session['id'])
-	#
-	request.sid = _id
-	#
-	thread = FlaskThread(_id)
-	thread.start()
-	status = 200
-	message = "success_flask_thread_started"
-	#
-	response = app.response_class(response=message+'_'+session['id'], status=status, mimetype='application/json')
-	#
-	return response
-	#
+	if clients[_id]:
+		#
+		if _tell == "abort":
+			#
+			if clients[_id]["thread_state"] == "active":
+				#
+				clients[_id]["thread_state"] = "aborted" # abort! abort!
+				#
+				status = 200
+				message = "warning_flask_thread_aborted"
+				#
+			else:
+				#
+				status = 400
+				message = "warning_flask_thread_not_active"
+				#
+			#
+		else:
+			#
+			if clients[_id]["thread_state"] == "active":
+				#
+				status = 400
+				message = "error_flask_thread_exists"
+				#
+			else:
+				#
+				clients[_id]["thread_state"] = "active"
+				#
+				request.sid = _id
+				#
+				thread = FlaskThread(_id)
+				thread.start()
+				status = 200
+				message = "success_flask_thread_started"
+				#
+			#
+		#
+		response = app.response_class(response=message, status=status, mimetype='application/json')
+		#
+		return response
+		#

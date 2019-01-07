@@ -159,17 +159,38 @@ $(document).ready(function() {
 		//
 	};
 	//
-	action_python = function(c_node_id){
+	action_python_thread = function(c_node_id, tell){
+		//
+		if (tell) {
+			//
+			if (tell == "abort") {
+				//
+				_tell = tell;
+				//
+				display_alert("warning_thread_aborted", $(".display_alert"), "static");
+				//
+			} else {
+				//
+				display_alert("warning_cannot_tell_that_to_thread", $(".display_alert"), "static"); // it takes offense
+				//
+			}
+			//
+		} else {
+			//
+			_tell = "active"
+			//
+		}
 		//
 		$.ajax({
-			url: "/gather",
+			url: "/thread",
 			type: "POST",
-			data: {"id": c_node_id},
+			data: {"id": c_node_id, "tell": _tell},
 			timeout : 100000,
 			error: function(xhr) {
 				//
 				//console.log(xhr, '');
 				console.log(xhr.responseText, '');
+				display_alert(xhr.responseText, $(".display_alert"), "static");
 				//
 			},
 			success: function(response, responseJSON, data) {
@@ -179,6 +200,7 @@ $(document).ready(function() {
 			}
 			//
 		});
+		//
 		//
 	}
 	//
@@ -245,7 +267,7 @@ $(document).ready(function() {
 				//
 				/*var $handle = this.$range.find('.rangeslider__handle__value');
 				$handle.text(this.value);*/
-			},
+			}//,
 
 			// Callback function
 			/*onSlideEnd: function(position, value) {
@@ -307,9 +329,20 @@ $(document).ready(function() {
 	//
 	init_socket();
 	//
-	$('.run_python').bind('click', function(e){
+	$('.thread_active').bind('click', function(e){
 		//
-		action_python(socket_ids.socket_node_id)
+		$('.thread_abort').removeClass("hide");
+		//
+		action_python_thread(socket_ids.socket_node_id)
+		//
+	});
+	//
+	//
+	$('.thread_abort').bind('click', function(e){
+		//
+		$(this).addClass("hide");
+		//
+		action_python_thread(socket_ids.socket_node_id, "abort")
 		//
 	});
 	//

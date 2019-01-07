@@ -396,20 +396,50 @@ input[type=range]::-moz-range-thumb {
 	font-family: monospace;
 	font-size: 0.8rem
 }
+
+
 .alert .error {
+	border-color: #eed3d7;
 	color: #b94a48;
 	background-color: #f2dede;
-	border-color: #eed3d7
 }
 
 .alert .success{
+	border-color: #d6e9c6;
 	color: #468847;
 	background-color: #dff0d8;
-	border-color: #d6e9c6
 }
 
 .alert .warning{
+	border-color: #d6e9c6;
 	color: #b27b22;
 	background-color: #ffeabb;
-	border-color: #d6e9c6
+}
+
+.btn.error {
+	color: #f2dede;
+	background-color: #b94a48;
+}
+
+.btn.success{
+	color: #dff0d8;
+	background-color: #468847;
+}
+
+.btn.warning{
+	color: #ffeabb;
+	background-color: #b27b22;
+}
+
+/**/
+.hide {
+	display: none;
+}
+
+.thread-control .btn {
+	clear: none;
+	margin-right: 0.5rem;
+}
+.thread-control .btn:last-of-type{
+	margin-right: 0;
 }

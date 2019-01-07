@@ -25,11 +25,12 @@ module.exports = function(app, module_data) {
 		//
 	});
 	//
-	app.post('/gather', function(req,res){
+	app.post('/thread', function(req,res){
 		//
 		//  FLASK
 		var data = {
-			id: req.body.id
+			id: req.body.id,
+			tell: req.body.tell
 		}
 	 	//
 		var options = {
@@ -60,7 +61,9 @@ module.exports = function(app, module_data) {
 			//
 		}).catch(function (err) {
 			//
-			console.log(err);
+			res.status(err.statusCode).send( err.error )
+			//console.log("=============")
+			//console.log(err.error);
 			//
 		});
 		//
