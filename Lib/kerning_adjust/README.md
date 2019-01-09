@@ -1,7 +1,7 @@
 Kerning Adjust (alpha)
 ===================
 
-![Screenshot](Lib/kerning_adjust/assets/img/kerning_adjust_preview.gif)
+![Screenshot](https://github.com/VivaRado/VRD-Typography-Library/blob/master/Lib/kerning_adjust/assets/img/kerning_adjust_preview.gif)
 
 Kerning Adjustment interface for variable EFO.
 The interface is served through NodeJS, alongside a Flask server.
