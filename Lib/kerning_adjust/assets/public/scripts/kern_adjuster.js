@@ -601,10 +601,11 @@
 				_R_elem = $(".kern span."+classes.glyph_base+'.'+classes.glyph+i)
 				_L_elem = _R_elem.prev();
 				//
+				_L_elem.find("b").removeAttr("style");
+				//
 				run_kerning_adjustment(data, _L_elem, _R_elem, 0)
 				//
-				_L_elem.find("b").removeAttr("style");
-				_R_elem.find("b").removeAttr("style");
+				//_R_elem.find("b").removeAttr("style");
 				//
 			}
 		}
@@ -791,18 +792,18 @@
 	function run_kerning_adjustment(data, _L,_R, val) {
 		//
 		if (val) {
-
+			//
 			_R.css({"margin-left": val })
-			_R.find("b").css({"width": val })
-
+			_R.find("b").css({"width": Math.abs(val) })
+			//
 			set_pair_kern_diff(data,_R);
-
+			//
 		} else {
-
+			//
 			_R.css({"margin-left": parseCeilInt( _R.attr("data-original-margin")) })
-
+			//
 			transfer_to_margin(_L)
-
+			//
 		}
 		//
 	}
