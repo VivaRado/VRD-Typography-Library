@@ -1,12 +1,14 @@
 Kerning Adjust (alpha)
 ===================
 
+![Screenshot](Lib/kerning_adjust/assets/img/kerning_adjust_preview.gif)
+
 Kerning Adjustment interface for variable EFO.
 The interface is served through NodeJS, alongside a Flask server.
 The Flask server is communicating over Socket.io with the NodeJS interface.
-Flask is multi-threaded so you can work on multiple fonts at the same time.
+Flask is multi-threaded so you can work on multiple weights at the same time.
 
-Font rendering is done though fragments and canvas for faster results.
+Font rendering is done though fragments for faster results, canvas rendering disabled for now (can't pass acurate style)
 At this point no kerning values are being transfered to the EFOs as it is alpha.
 
 Once the Node server is running, you can visit: ```http://localhost:8008/```
@@ -19,7 +21,7 @@ NodeJS is also starting the Flask server, which logs all the threads visit: ```h
 
 ### NodeJS Requirements
 
-```body-parser, express, express-handlebars, handlebars, python-shell, socket.io, cors```
+```body-parser, express, express-handlebars, handlebars, minimist, python-shell, socket.io, cors```
 
 ### Usage
 

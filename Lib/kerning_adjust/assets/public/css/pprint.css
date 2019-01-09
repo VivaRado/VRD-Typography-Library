@@ -1,0 +1,22 @@
+.console {
+	font-size: 70%;
+	font-family: monospace;
+}
+.console > pre{
+	line-height: 1.1em;
+}
+.display_ui .console pre {
+   width: 100%;
+}
+
+
+/**/
+
+pre {padding: 5px; margin: 5px; }
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
+
+/**/

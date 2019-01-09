@@ -20,7 +20,7 @@
 	display: block; 
 	width: 200%; 
 	margin-left: -100%;
-	transition: margin 0.3s ease-in 0s;
+	transition: margin 0.1s ease-in 0s;
 }
 .onoffswitch-inner:before, .onoffswitch-inner:after {
 	display: block; 
@@ -54,7 +54,7 @@
 	bottom: 0;
 	right: 24px;
 	border-radius: 50px;
-	transition: all 0.3s ease-in 0s; 
+	transition: all 0.1s ease-in 0s; 
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
 	margin-left: 0;
@@ -65,7 +65,7 @@
 
 .guides-container.container {
   
-  padding: 1rem 1rem 2rem 1rem;
+  padding: 1rem;
   border-bottom: 1px solid #ccc; 
 }
 

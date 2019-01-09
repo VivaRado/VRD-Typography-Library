@@ -1,9 +1,6 @@
 //
 function display_alert(alert_text, target_container, animation){
 	//
-	console.log("alert_text")
-	console.log(alert_text)
-	//
 	if (alert_text) {
 		//
 		var alert_text = alert_text.toString();
@@ -145,6 +142,28 @@ $(document).ready(function() {
 				//
 			}
 			//
+			if (msg.thread_data) {
+				//
+				json_thread_data = JSON.parse( msg.thread_data )
+				//
+				if(json_thread_data.hasOwnProperty('get_classes')){
+					//
+					localStorage.setItem( efo_name, JSON.stringify(json_thread_data))
+					//
+				}
+				//
+				console.log(json_thread_data)
+				//
+				if(json_thread_data.hasOwnProperty('get_glif_width')){
+					//
+					console.log(JSON.stringify(json_thread_data.get_glif_width))
+					//
+					localStorage.setItem( "get_glif_width", JSON.stringify(json_thread_data.get_glif_width))
+					//
+				}
+				//
+			}
+			//
 			display_alert(msg.text, $(".display_alert"), "static");
 			//
 		});
@@ -159,13 +178,14 @@ $(document).ready(function() {
 			//
 			if (tell == "abort") {
 				//
-				_tell = tell;
+				_tell = "abort";
 				//
 				display_alert("warning_thread_aborted", $(".display_alert"), "static");
 				//
 			} else {
 				//
-				display_alert("warning_cannot_tell_that_to_thread", $(".display_alert"), "static"); // it takes offense
+				_tell = tell;
+				//display_alert("warning_cannot_tell_that_to_thread", $(".display_alert"), "static"); // it takes offense
 				//
 			}
 			//
@@ -178,7 +198,12 @@ $(document).ready(function() {
 		$.ajax({
 			url: "/thread",
 			type: "POST",
-			data: {"id": c_node_id, "tell": _tell},
+			dataType: "json",
+			data: {
+				"id": c_node_id, 
+				"tell": _tell,
+				"efo":$(".efo_source").attr("data-efo")
+			},
 			timeout : 100000,
 			error: function(xhr) {
 				//
@@ -264,11 +289,6 @@ $(document).ready(function() {
 		
 	});
 	//
-	setTimeout(function(){
-		//
-		$(".kern").kern_adjust();
-		//
-	},100);
 	//
 	function check_guide_visibility(_input){
 		//
@@ -299,15 +319,18 @@ $(document).ready(function() {
 		}
 	}
 	//
-	do_guide_check($('.onoffswitch-checkbox'))
+	do_guide_check($('#onoff_guides'))
 	//
-	$('.onoffswitch-checkbox').click(function(){
+	$('#onoff_guides').click(function(){
 		//
 		do_guide_check($(this))
 		//
 	})
 	//
 	init_socket();
+	//
+	var efo_dir = $(".efo_source").attr("data-efo");
+	var efo_name = efo_dir.substring(efo_dir.lastIndexOf('/')+1);
 	//
 	$('.thread_active').bind('click', function(e){
 		//
@@ -325,6 +348,38 @@ $(document).ready(function() {
 		action_python_thread(socket_ids.socket_node_id, "abort")
 		//
 	});
+	//
+	setTimeout(function(){
+		//
+		console.log(socket_ids.socket_node_id)
+		//
+		if (!localStorage.getItem(efo_name)) {
+			//
+			action_python_thread(socket_ids.socket_node_id, "get_classes")
+			//
+		}
+		//
+		if (!localStorage.getItem("get_glif_width")) {
+			//
+			action_python_thread(socket_ids.socket_node_id, "get_glif_width")
+			//
+		}
+		//
+		setTimeout(function(){
+			//
+			$(".kern").kern_adjust({
+				"class_kern_elem": $("#onoff_class_kerning"),
+				"efo_name": efo_name,
+				"kern_classes": JSON.parse(localStorage.getItem(efo_name))["get_classes"],
+				"glif_width": JSON.parse(localStorage.getItem("get_glif_width")),
+				"masters":{"thn":[100,0],"reg":[400,0],"bld":[700,0],"thn_it":[100,1],"reg_it":[400,1],"bld_it":[700,1]}
+			});
+			//
+		},1000);
+		//
+		$(window).trigger('resize');
+		//
+	},100);
 	//
 	//
 });

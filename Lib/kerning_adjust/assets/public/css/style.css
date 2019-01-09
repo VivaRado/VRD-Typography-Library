@@ -158,12 +158,12 @@ h2 small {
 .description {
 	font-family: 'AdventProVar';
 	font-feature-settings: "kern" 1;
-	font-size: 2em;
+	/*font-size: 2em;*/
 	/*letter-spacing: 0.04em;*/
 	font-kerning: normal;
 }
 .sample, .no_sample {
-	font-size: 2em;
+	/*font-size: 2em;*/
 	line-height: 1;
 	margin-top: 0;
 }
@@ -225,7 +225,7 @@ input[type=range]::-moz-range-thumb {
 	width: 80%;
 	
 	box-sizing: border-box;
-	max-width: calc(100% - 300px)
+	/*max-width: calc(100% - 300px)*/
 
 }
 
@@ -237,27 +237,34 @@ input[type=range]::-moz-range-thumb {
 	position: absolute;
 	box-sizing: border-box;
 	padding: 1rem;
-	min-width: 300px;
+	/*min-width: 300px;*/
+	/*min-width: 300px;*/
 }
 
+main,
 .typeface {
 	height: 100%;
+	width: 100%;
 	position: relative;
 	display: table;
 }
 /**/
 
 .calc{
-	font-size: 6.2rem;
+	/*font-size: 6.2rem;*/
 	/*font-size: 8rem;*/
 	font-family: "AdventProVar";
 	font-feature-settings: "kern" 1;
 	font-weight: 100;
 }
 
+.calc span {
+	display: inline;
+}
+
 .kern {
 
-	font-size: 6.2rem;
+	/*font-size: 6.2rem;*/
 	/*font-size: 8rem;*/
 	font-family: "AdventProVar";
 	font-feature-settings: "kern" 1;
@@ -297,7 +304,7 @@ input[type=range]::-moz-range-thumb {
 	background: rgba(255, 166, 166, 0.8);
 }
 .kern b.diff_pos {
-	background: rgba(166, 255, 166, 0.8);
+	background: rgba(183, 240, 183, 0.8);/*rgba(166, 255, 166, 0.8);*/
 }
 
 .kern i:hover {
@@ -353,9 +360,15 @@ input[type=range]::-moz-range-thumb {
 	box-sizing: border-box;
 
 }
+.container .sub_cont {
+	width: 50%;
+	float: left;
+	margin-bottom: 1rem;
+}
 /**/
 .efo_title {
 	font-size: 0.65rem;
+	margin-bottom: 0.5rem;
 }
 
 .btn {
@@ -442,4 +455,13 @@ input[type=range]::-moz-range-thumb {
 }
 .thread-control .btn:last-of-type{
 	margin-right: 0;
+}
+
+/**/
+.report_classes {
+	position: relative;
+	float: left;
+	height: 500px;
+	overflow: auto;
+	width: 100%;
 }

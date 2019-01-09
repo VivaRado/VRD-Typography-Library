@@ -22,7 +22,13 @@
 		};
 	//
 	var options = {
-		customClass: ""
+		customClass: "",
+		class_kern_elem: "",
+		kern_classes: "",
+		glif_width: "",
+		efo_name: "",
+		masters:"",
+		axes:""
 	};
 	//
 	var pub = {
@@ -65,7 +71,7 @@
 		//
 		// Local options
 		opts = $.extend({}, options, opts || {});
-
+		
 		// Check for Body
 		if ($body === null) {
 			$body = $("body");
@@ -96,38 +102,45 @@
 		//
 	}
 	//
-	function set_pair_kern_diff(glyph){
+	function set_pair_kern_diff(data, R_glyph, L_glyph, val){
 		//
-		g_left = parseCeilInt(glyph.css("left"));
+		g_left = parseCeilInt(R_glyph.css("left"));
 		//
 		if (g_left == 0) {
 			//
-			g_left = parseCeilInt(glyph.css("margin-left"));
+			g_left = parseCeilInt(R_glyph.css("margin-left"));
 			//
 		}
 		//
-		//console.log(g_left)
-		//
 		_neg = "diff_neg";
 		_pos = "diff_pos";
-		_b = glyph.find('b');
-		_i = glyph.find('i');
-		_i_prev = glyph.prev().find('i');
+		_b = R_glyph.find('b');
+		_i = R_glyph.find('i');
+		//
+		if (L_glyph) {
+
+			_i_prev = L_glyph.find('i');
+
+		} else {
+
+			_i_prev = R_glyph.prev().find('i');
+			
+		}
 		//
 		a_left = Math.abs(g_left);
-		a_init_width = Math.abs(glyph.attr("data-init-width"));
+		a_init_width = Math.abs(R_glyph.attr("data-init-width"));
 		//
 		if (g_left < 0) {
 			//
 			diff_class = _neg;
 			//
-			a_init_width = Math.abs(glyph.width() - Math.abs(a_left))
+			a_init_width = Math.abs(R_glyph.width() - Math.abs(a_left))
 			//
 		} else {
 			//
 			diff_class = _pos;
 			//
-			a_init_width = Math.abs(glyph.width()) - Math.abs( parseInt( _i_prev.width() ) );
+			a_init_width = Math.abs(R_glyph.width()) - Math.abs( parseInt( _i_prev.width() ) );
 			//
 		}
 		//
@@ -139,19 +152,149 @@
 		//
 	}
 	//
+	function is_master(data){ // is master, current master
+		//
+		for (var key in data.masters) {
+			//
+			var obj = data.masters[key];
+			//
+			if ( parseInt(data.axes["wght"]) == obj[0]) {
+				//
+				if ( parseInt(data.axes["ital"]) == obj[1]) {
+					//
+					return [key, obj[0], obj[1]];
+					//
+				}
+				//
+			}
+			//
+		}
+		//
+		//
+	}
+	//
+	function show_class_kerning_effect(data,_L, _R, _val){
+		//
+		_L_c = "@_"+_L.attr("data-class");
+		_R_c = "@_"+_R.attr("data-class");
+		//
+		for (var i = 0; i < data.$fragment_map.length; i++) {
+			//
+			_R_elem = $(".kern span."+classes.glyph_base+'.'+classes.glyph+i)
+			_L_elem = _R_elem.prev();
+			//
+			if ("@_"+_L_elem.attr("data-class") == _L_c && "@_"+_R_elem.attr("data-class") == _R_c) {
+				//
+				run_kerning_adjustment(data, _L_elem, _R_elem, _val)
+				//
+			}
+			//
+		}
+		//
+	}
+	//
+	function update_class_kerning(data, _L, _R){
+		//
+		kerning_obj = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'))
+		//
+		//
+		var current_master = is_master(data)
+		//
+		_L_g = _L.attr("data-glyph");
+		_R_g = _R.attr("data-glyph");
+		_L_c = "@_"+_L.attr("data-class");
+		_R_c = "@_"+_R.attr("data-class");
+		//
+		k_val = parseInt(_R.css("margin-left"))
+		//
+		if( data.class_kern_elem.is(':checked')){
+		
+			t_L = _L_c;
+			t_R = _R_c;
+
+			//
+			show_class_kerning_effect(data,_L,_R, k_val)
+			//
+
+		} else {
+
+			t_L = _L_g;
+			t_R = _R_g;
+
+		}
+		//
+		k_name = t_L+' '+t_R;
+		//
+		if (current_master) {
+				
+			kerning_obj[current_master[0]][k_name] = k_val
+
+		}
+		//	
+		p(pprint( JSON.stringify(kerning_obj, undefined, 4) ),$('.serialize'));
+		//
+		localStorage.setItem( data.efo_name+'_kerning', JSON.stringify(kerning_obj))
+		//
+	}
+	//
 	function fragmentFromString(strHTML) {
 		//
 		return document.createRange().createContextualFragment(strHTML);
 		//
 	}
 	//
-	function get_tex_size(txt, font) {
+	function arrayColumn(arr, n) {
+		return arr.map(x=> x[n]);
+	}
+	//
+	function px2em(_px) {
 		//
-        this.element = document.createElement('canvas');
-        this.context = this.element.getContext("2d");
-        this.context.font = font;
-        return this.context.measureText(txt).width;
-    }
+		var W = window,
+			calc_ = $(".calc");
+		//
+		calc_.append('<span style="font-size:unset; width:auto; display:inline;">A</span>');
+		elem = calc_[0]
+		//
+		var parentFontSize = parseInt(W.getComputedStyle(elem.parentNode, null).fontSize),
+			elemFontSize = _px / 10;
+		console.log(parentFontSize, elemFontSize)
+		//
+		var rem = parseFloat((elemFontSize / parseInt(parentFontSize, 10)) ).toPrecision(4) * 2
+		//
+		return rem
+	}
+	//
+	function get_class(data, letter){
+		//
+		for (var key in data.kern_classes) {
+			//
+			var obj = data.kern_classes[key];
+			//
+			if (arrayColumn(obj, 2).indexOf(letter) != -1) {
+				//
+				return key.substring(key.lastIndexOf("_") + 1);
+				//
+			}
+			//
+		}
+		//
+	}
+	//
+	function get_initial_letter(data){
+		//
+		data.$kern_adjust.css({"font-size":px2em(data.glif_width)-0.6+'rem'}) // minus 0.6 because it is closer to the glif width value ?
+		$(".calc").css({"font-size":px2em(data.glif_width)-0.6+'rem'})
+		//
+		initial_letter = "A";
+		//
+		f_string = '<span class="calculator" data-glyph="'+initial_letter+'">'+initial_letter+'</span>'
+		//
+		$(f_string).hide().appendTo('.calc');
+		f_w = parseInt($('.calc span').width());
+		//
+		return f_w
+		//
+	}
 	//
 	function arranger(data, t, splitter) {
 		//
@@ -168,23 +311,16 @@
 				t.empty()
 				//
 				get_px_fontsize = undefined;
-				//	
+				//
+				get_initial_letter(data);
+				//
 				for (var i = 0; i < a.length; i++) {
 					//
-					f_string = '<span class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" data-init-width="0">'+a[i]+kern_tag_now+kern_tag_alt+'</span>'
+					f_string = '<span class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" data-init-width="0" data-glyph="'+a[i]+'" data-class="'+get_class(data, a[i])+'">'+a[i]+kern_tag_now+kern_tag_alt+'</span>'
 					//
 					frag = fragmentFromString(f_string);
 					//
-					if (i == 0) {
-
-						// append just one to get the em to pixel ratio
-						f_w = $(f_string).hide().appendTo('.calc')//.width() // render width
-						get_px_fontsize = parseInt(getComputedStyle($(".calc span")[0]).fontSize);
-						get_fontfamily = getComputedStyle($(".calc span")[0]).fontFamily;
-						
-					}
-					//
-					var f_w = parseInt(get_tex_size(a[i], get_px_fontsize+"px "+get_fontfamily));
+					var f_w = $('.calc').children().eq(i).width();
 					//
 					frag.firstChild.setAttribute("data-init-width", f_w)
 					//
@@ -200,13 +336,10 @@
 				//
 			} else { // just re render without kerning and get their widths
 				//
-				get_px_fontsize = parseInt(getComputedStyle($(".sample .kern span")[0]).fontSize)
-				get_fontfamily = getComputedStyle($(".sample .kern span")[0]).fontFamily
-				//
 				for (var i = 0; i < data.$fragment_map.length; i++) {
 					//
-					//var e_w = parseInt(get_tex_size(elem.text(), get_px_fontsize+"px "+get_fontfamily)); // render width with canvas
-					var e_w = elem.clone().hide().appendTo('.calc').width() // render width by placing fragment in doc
+					elem = $(".kern span."+classes.glyph_base+'.'+classes.glyph+i)
+					var e_w = elem.clone().hide().appendTo('.calc').width();
 					//
 					elem.attr("data-init-width", e_w)
 					//
@@ -222,10 +355,15 @@
 				//
 				if (data.$fragment_map[i+1]) {
 					//
-					determine_pair_kerning(data.$fragment_map[i][0],data.$fragment_map[i+1][0])
+					_L = data.$fragment_map[i][0]
+					_R = data.$fragment_map[i+1][0]
+					//
+					determine_pair_kerning(_L,_R)
 					//
 					elem = $('.'+classes.glyph+data.$fragment_map[i][0]);
-					set_pair_kern_diff(elem);
+					//
+					set_pair_kern_diff(data, elem);
+					//
 					//
 				}
 				//
@@ -251,8 +389,11 @@
 				ffs.push('"' + i + '" ' + axes[i]);
 			}
 		}
+		//
 		ffs = ffs.join(', ') || 'normal';
-		
+		//
+		data.axes = axes;
+		//
 		for (i=0, l=outputs.length; i<l; i++) {
 			outputs[i].style.fontVariationSettings = ffs;
 		}
@@ -276,7 +417,7 @@
 	//
 	function parseCeilInt(num){
 		//
-		return Math.ceil(parseFloat(num))
+		return Math.floor(parseFloat(num))
 		//
 	}
 	//
@@ -302,6 +443,24 @@
 		//
 	};
 	//
+	function make_empty_kerning_master(data){
+		//
+		_masters = data.masters
+		//
+		var kern_master =JSON.parse(JSON.stringify(_masters))
+		//
+		for (var key in kern_master) {
+			//
+			kern_master[key] = {};
+			//
+		}
+		//
+		data.kern_master = kern_master;
+		//
+		return kern_master
+		//
+	}
+	//	
 	function build($kern_adjust, opts) {
 		//
 		var dims = [];
@@ -313,6 +472,7 @@
 			//
 			var html = '';
 			//
+			//
 			var data = $.extend({
 				$kern_adjust: $kern_adjust,
 				$initial_text: $kern_adjust.text(),
@@ -322,6 +482,16 @@
 				$fragment_map: [],
 				$glyph: ''
 			}, opts);
+			//
+			k_object = localStorage.getItem(data.efo_name+'_kerning');
+			//
+			if (!k_object) {
+				//
+				localStorage.setItem( data.efo_name+'_kerning', JSON.stringify(make_empty_kerning_master(data)))
+				//
+			}
+			//
+			p(pprint( JSON.stringify(JSON.parse(localStorage.getItem(data.efo_name+'_kerning')), undefined, 4) ),$('.serialize'));
 			//
 			data.handleBounds = {};
 			data.glyph_left = 0;
@@ -334,12 +504,8 @@
 				var sliders = '#' + li.id + ' input';
 				var samples = '#' + li.id + ' .sample';
 				//
-				//console.log(sliders)
-				//
 				var inputs = document.querySelectorAll(sliders);
 				var outputs = document.querySelectorAll(samples);
-				//
-				//console.log(inputs)
 				//
 				data.$inputs = inputs;
 				data.$outputs = outputs;
@@ -365,14 +531,17 @@
 			//
 			var i, l;
 			for (i=0, l=data.$inputs.length; i<l; i++) {
-				$(data.$inputs[i]).on('input', function(){
-					variable_axes(data)
-				});
-				$(data.$inputs[i]).on('input', function(){
-					variable_axes(data) // dont do on input do change // now rendering with canvas instead of placing the object in dom
+				$(data.$inputs[i]).on('change', function(){
 					//
-					arranger(data,data.$kern_adjust, ''); // could on input, but would be laggy because it takes time to get new initial widths
-				}); // .on 'input' 
+					variable_axes(data);
+					//
+				});
+				$(data.$inputs[i]).on('change', function(){
+					//
+					variable_axes(data);
+					//
+					arranger(data,data.$kern_adjust, '');
+				});
 			}
 			//
 		};
@@ -462,9 +631,6 @@
 	}
 	//
 	var _ratio = 0.5;
-	//var direction = "";
-
-	//var oldx = 0;
 	//
 	function onMouseMove(data, e) {
 		//
@@ -483,10 +649,28 @@
 		//
 		position(data, _pos);
 		//
-		set_pair_kern_diff(data.$glyph);
+		set_pair_kern_diff(data,data.$glyph);
 		//
 	}
 	//
+	function run_kerning_adjustment(data, _L,_R, val) {
+		//
+		if (val) {
+
+			_R.css({"margin-left": val })
+			_R.find("b").css({"width": val })
+
+			set_pair_kern_diff(data,_R);
+
+		} else {
+
+			_R.css({"margin-left": parseCeilInt( _R.attr("data-original-margin")) })
+
+			transfer_to_margin(_L)
+
+		}
+		//
+	}
 	//
 	function onMouseUp(data, e) {
 		//
@@ -498,14 +682,13 @@
 		$(".kern").unbind(events.move);
 		$(".kern").unbind(events.end);
 		//
-		data.$glyph.next().css({"margin-left": parseCeilInt( data.$glyph.next().attr("data-original-margin")) })
-		//
-		transfer_to_margin(data.$glyph)
+		run_kerning_adjustment(data, data.$glyph, data.$glyph.next())
 		//
 		data.mouseStart = 0;
 		//
+		update_class_kerning(data, data.$glyph.prev(),data.$glyph)
+		//
 	}
-	//
 	//
 	function position(data, pos) {
 		//
@@ -515,8 +698,6 @@
 		style_handle[_direct] = pos;
 		//
 		data.$glyph.css(style_handle);
-		//
-		
 		//
 	}
 	//

@@ -2,7 +2,7 @@
 const request = require('request-promise');
 //
 var _python_path_ = '/usr/bin/python3';
-var _script_path_ = __root+'/assets/pyt';
+//var _EFO = require(__root+'/assets/lib/efo_retrieve');
 //
 module.exports = function(app, module_data) {
 	//
@@ -17,7 +17,8 @@ module.exports = function(app, module_data) {
 			layout: __root+'/assets/layouts/default',
 			title: 'VRD TYPL Kerning Adjust',
 			message: '',
-			source_efo: source_efo_filename
+			source_efo: source_efo_filename,
+			source_efo_dir: module_data["source_efo"]
 			//
 		};
 		//
@@ -27,10 +28,18 @@ module.exports = function(app, module_data) {
 	//
 	app.post('/thread', function(req,res){
 		//
+		/*if (req.body.tell == "get_classes") {
+			//
+			efo = new _EFO.EFO();
+			efo.hello(module_data["source_efo"]);
+			//*/
+		//}
+		//
 		//  FLASK
 		var data = {
 			id: req.body.id,
-			tell: req.body.tell
+			tell: req.body.tell,
+			efo: module_data["source_efo"]
 		}
 	 	//
 		var options = {
@@ -62,8 +71,6 @@ module.exports = function(app, module_data) {
 		}).catch(function (err) {
 			//
 			res.status(err.statusCode).send( err.error )
-			//console.log("=============")
-			//console.log(err.error);
 			//
 		});
 		//

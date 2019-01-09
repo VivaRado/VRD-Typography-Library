@@ -4,13 +4,10 @@ global.__root = __dirname
 //
 global.express = require('express');
 global.exphbs  = require('express-handlebars');
-//global.py = require('python-shell');
+//
 var Handlebars = require('handlebars');
 var fs = require('fs');
 var path = require('path');
-var py = require('python-shell');
-//var favicon = require('serve-favicon');
-//var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 //var session = require('express-session');
 var helpers = require(__root+'/assets/lib/helpers');
@@ -20,9 +17,11 @@ var routes = require(__root+'/assets/routes');
 //
 var cors = require('cors');
 //
+var Flask = require(__root+"/assets/lib/start_flask");
+//
 if (argv.source) {
 	//
-	console.log(argv.source)
+	global.efo_source = argv.source
 	//
 	var app = express();
 	//
@@ -43,7 +42,6 @@ if (argv.source) {
 	//
 	app.disable('x-powered-by');
 	//
-	//app.use(cookieParser());
 	var _app_limit = '100mb';
 	//
 	app.use(bodyParser.json({limit: _app_limit}));
@@ -91,30 +89,10 @@ if (argv.source) {
 	//
 	require( __root+'/'+'assets'+'/'+'routes'+'/'+'index' )(app, module_data)
 	//
-	var _python_path_ = '/usr/bin/python3';
-	var _script_path_ = __root+'/assets/flask';
-	//
-	var options = {
-		//
-		//mode: 'json',
-		pythonPath: _python_path_,
-		//pythonOptions: ['-u'],
-		scriptPath: _script_path_,
-		//
-	};
-	//
 	console.log("STARTING FLASK")
 	//
-	/*py.PythonShell.run('main.py', options, function (err, results) {
-		//
-		if(err){
-			//
-			console.log(['error_'+err]);
-			//
-		}
-		//
-	});*/
-	//
+	var _flask = new Flask.Flask();
+	_flask.start();
 	//
 } else {
 	//
