@@ -313,7 +313,6 @@
 		//
 		var parentFontSize = parseInt(W.getComputedStyle(elem.parentNode, null).fontSize),
 			elemFontSize = _px / 10;
-		console.log(parentFontSize, elemFontSize)
 		//
 		var rem = parseFloat((elemFontSize / parseInt(parentFontSize, 10)) ).toPrecision(4) * 2
 		//
