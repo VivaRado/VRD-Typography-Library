@@ -9,7 +9,7 @@ The Flask server is communicating over Socket.io with the NodeJS interface.
 Flask is multi-threaded so you can work on multiple weights at the same time.
 
 Font rendering is done though fragments for faster results, canvas rendering disabled for now (can't pass acurate style)
-At this point no kerning values are being transfered to the EFOs as it is alpha.
+At this point no kerning values are being transfered to the EFOs - but they do get stored in LocalStorage -  as it is alpha.
 
 Once the Node server is running, you can visit: ```http://localhost:8008/```
 
