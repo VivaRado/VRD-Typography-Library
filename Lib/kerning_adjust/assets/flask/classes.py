@@ -50,7 +50,6 @@ class kern_adjust:
 		EFO = EFO(self._efo)
 		#
 		fontinfo_json = EFO.fontinfo
-		#pprint.pprint()
 		#
 		kerning_plist = plist_to_json(os.path.join(self._efo,"groups","kerning.plist"))
 		#
@@ -73,8 +72,13 @@ class kern_adjust:
 	#
 	def get_glif_width(self):
 		#
-		print({"get_glif_width":545})
+		tree = ET.parse(os.path.join(self._efo,"glyphs", "reg", "A_.glif"))  
+		root = tree.getroot()
 		#
-		return json.dumps({"get_glif_width":545})
+		width = root.findall('advance')[0].attrib["width"]
+		#
+		print({"get_glif_width":width})
+		#
+		return json.dumps({"get_glif_width":width})
 		#
 		

@@ -1,6 +1,20 @@
 <div class="typeface" id="advent">
 	<div class="details">
 		<form class="controls">
+			<div class="efo-container container">
+				<label class="label efo_source" for="efo_title" data-efo="{{source_efo_dir}}">{{source_efo}}:</label>
+				
+				<div class="thread-control">
+					
+					<div class="btn thread_active">
+						Save Changes
+					</div>
+					<div class="btn thread_abort hide warning">
+						Abort
+					</div>
+
+				</div>
+			</div>
 			<div class="rangeslider-container container">
 				<div class="rangeslider-wrap">
 					<label class="label" for="advent-wght">Weight:</label>
@@ -51,27 +65,16 @@
 					</div>
 				</div>
 			</div>
-			<div class="efo-container container">
-				<label class="label efo_source" for="efo_title" data-efo="{{source_efo_dir}}">{{source_efo}}:</label>
+			<div class="report_classes container">
 				
-				<div class="thread-control">
-					
-					<div class="btn thread_active">
-						Save Changes
-					</div>
-					<div class="btn thread_abort hide warning">
-						Abort
-					</div>
+				<label class="label efo_source" for="kerning_values">Kerning Adjustments:</label>
 
+				<div class='console'>
+					<pre class='serialize'></pre>
 				</div>
 			</div>
 		</form>
 		<div class="display_alert alert"></div>
-		<div class="report_classes">
-			<div class='console'>
-				<pre class='serialize' data-keyup-accept='ui_serialize'></pre>
-			</div>
-		</div>
 	</div>
 	<div class="fonts" style="font-variation-settings: 'wght' 100;">
 		<div class="font">

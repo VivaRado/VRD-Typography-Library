@@ -6,14 +6,16 @@ Kerning Adjust (alpha)
 Kerning Adjustment interface for variable EFO.
 The interface is served through NodeJS, alongside a Flask server.
 The Flask server is communicating over Socket.io with the NodeJS interface.
-Flask is multi-threaded so you can work on multiple weights at the same time.
 
-Font rendering is done though fragments for faster results, canvas rendering disabled for now (can't pass acurate style)
-At this point no kerning values are being transfered to the EFOs - but they do get stored in LocalStorage -  as it is alpha.
+### Features
 
-Once the Node server is running, you can visit: ```http://localhost:8008/```
+ - Colaborative, Flask is multi-threaded so you can work on multiple EFOs at the same time.
+ - Interface Font rendering is done though fragments for faster result.
+ - Each Master can have its own set of kerning adjustments.
+ - Your kerning gets stored in LocalStorage.
+ - Class Kerning, so you can kern all letters of a class.
 
-NodeJS is also starting the Flask server, which logs all the threads visit: ```http://localhost:5000/```
+At this point no kerning values are being transfered to the EFOs.
 
 ### Python Requirements
 
@@ -32,5 +34,10 @@ npm install
 
 node app --source (source EFO)
 ```
+
+Once the Node server is running, you can visit: ```http://localhost:8008/```
+
+NodeJS is also starting the Flask server, which logs all the threads visit: ```http://localhost:5000/```
+
 
 [By VivaRado](https://www.vivarado.com)

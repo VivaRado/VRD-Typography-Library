@@ -225,7 +225,7 @@ input[type=range]::-moz-range-thumb {
 	width: 80%;
 	
 	box-sizing: border-box;
-	/*max-width: calc(100% - 300px)*/
+	max-width: calc(100% - 300px)
 
 }
 
@@ -237,7 +237,7 @@ input[type=range]::-moz-range-thumb {
 	position: absolute;
 	box-sizing: border-box;
 	padding: 1rem;
-	/*min-width: 300px;*/
+	min-width: 300px;
 	/*min-width: 300px;*/
 }
 
