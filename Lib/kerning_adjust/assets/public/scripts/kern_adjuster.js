@@ -200,7 +200,7 @@
 			_R_elem = $(".kern span."+classes.glyph_base+'.'+classes.glyph+i)
 			_L_elem = _R_elem.prev();
 			//
-			if (_L_elem.attr("data-class") != "undefined") {
+			if (_L_elem.attr("data-class") != undefined) {
 
 				_L_is = "@_"+_L_elem.attr("data-class");
 				
@@ -210,7 +210,7 @@
 
 			}
 			//
-			if (_R_elem.attr("data-class") != "undefined") {
+			if (_R_elem.attr("data-class") != undefined) {
 
 				_R_is = "@_"+_R_elem.attr("data-class");
 
@@ -650,6 +650,8 @@
 					//
 				}
 				//
+			} else {
+				reset_kern_view_guides();
 			}
 			//
 		}

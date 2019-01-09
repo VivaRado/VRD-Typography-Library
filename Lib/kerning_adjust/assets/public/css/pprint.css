@@ -1,6 +1,10 @@
 .console {
 	font-size: 70%;
 	font-family: monospace;
+	background: #fff;
+	border-radius: 3px;
+	border: 1px solid #ededed;
+
 }
 .console > pre{
 	line-height: 1.1em;
