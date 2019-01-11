@@ -92,7 +92,7 @@ if (argv.source) {
 	console.log("STARTING FLASK")
 	//
 	var _flask = new Flask.Flask();
-	_flask.start();
+	//_flask.start();
 	//
 } else {
 	//

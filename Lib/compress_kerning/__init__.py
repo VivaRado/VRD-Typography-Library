@@ -73,8 +73,9 @@ features_display_style = "@" # @ or MMK : only @ style compiles on variable
 #
 class COMPRESS(object):
 	#
-	def __init__(self, _f_name, _temp_source, _temp_source_copy, _source_efo_similarity_kern_plist, _compress_pattern = False):
+	def __init__(self, EFO,_f_name, _temp_source, _temp_source_copy, _source_efo_similarity_kern_plist, _compress_pattern = False):
 		#
+		self._in_efo = EFO._in
 		self._current_font_instance_weight = _f_name
 		self._temp_source = _temp_source
 		self._temp_source_copy = _temp_source_copy
@@ -310,6 +311,8 @@ class COMPRESS(object):
 	#
 	def transfer_delete_kern_value(self, _p_f, _input, _g_items, _type):
 		#
+		log = False
+		#
 		if isinstance(_input, list):
 			#
 			p_L = _input[0]
@@ -328,8 +331,10 @@ class COMPRESS(object):
 			#
 			op_long = self.get_long_type(_type)
 			#
-			print('===')
-			print("PROCESSING "+op_long+":", ",".join(_input))
+			if log:
+				
+				print('===')
+				print("PROCESSING "+op_long+":", ",".join(_input))
 			#
 		else:
 			#
@@ -339,8 +344,10 @@ class COMPRESS(object):
 			pair_R = False
 			#_type = "GL"
 			#
-			print('===')
-			print("PROCESSING GROUP TO ANY LETTER:", p_L)
+			if log:
+				
+				print('===')
+				print("PROCESSING GROUP TO ANY LETTER:", p_L)
 			#
 		#
 		for k,v in _p_f.items():
@@ -361,11 +368,12 @@ class COMPRESS(object):
 						#
 						if x in self.p_f_copy[k]:
 							#
-							print('===')
 							#
 							k_int = int(self.p_f_copy[k][x])
 							#
-							print("\tTRANSFERING: ", p_L, p_R, "VALUE: ", k_int)
+							if log:
+								print('===')
+								print("\tTRANSFERING: ", p_L, p_R, "VALUE: ", k_int)
 							#
 							# transfer pair and value to compressed dictionary
 							if p_L in self.p_c[_type]:
@@ -378,7 +386,9 @@ class COMPRESS(object):
 								#
 							#
 							# delete item from flat copy dictionary #0004
-							print("\t\tDELETING:", k +' > '+ x)
+							if log:
+								print("\t\tDELETING:", k +' > '+ x)
+							#
 							del self.p_f_copy[k][x]
 							#
 							if len(_g_items) > 0:
@@ -400,7 +410,8 @@ class COMPRESS(object):
 					#
 					for y in _g_items:
 						#
-						print("\t\tDELETING:", k +' > '+ y)
+						if log:
+							print("\t\tDELETING:", k +' > '+ y)
 						#
 						# delete group items list item from flat copy dictionary
 						if y in self.p_f_copy[k]:
@@ -409,7 +420,8 @@ class COMPRESS(object):
 							#
 						#
 				#
-				print("\tFLAT COPY LENGTH:", "Before:", len_before, "After:", len(self.p_f_copy[k]))
+				if log:
+					print("\tFLAT COPY LENGTH:", "Before:", len_before, "After:", len(self.p_f_copy[k]))
 				#
 			#
 		#
@@ -509,6 +521,50 @@ class COMPRESS(object):
 		# generic_tools.save_file(dir_to_comp_ufo_file, 'features'+'.fea', new_data)
 		# #
 		#
+		#
+	#
+	def get_kern_adjustments(self,_dir_ka):
+		# 
+		adjustments = []
+		#
+		with open(_dir_ka, "r") as _in:
+			#
+			#r_in = _in.read()
+			#
+			j_in = json.load(_in)
+			#
+			for k,v in j_in.items():
+				#
+				if (k == self._current_font_instance_weight):
+					#
+					for _k,_v in v.items():
+						#
+						_sp = _k.split(" ")
+						#
+						_cL = _sp[0]
+						_cR = _sp[1]
+						#
+						add_c_L = ""
+						add_c_R = ""
+						#
+						if "@_" in _cL:
+							#
+							_cL = _cL.replace("@_","")
+							add_c_L = "@MMK_L_"
+							#
+						#
+						if "@_" in _cR:
+							#
+							_cR = _cR.replace("@_","")
+							add_c_R = "@MMK_R_"
+							#
+						#
+						adjustments.append([add_c_L+_cL, add_c_R+_cR, int(_v), k])
+						#
+					#
+				#
+			#
+			return adjustments
 		#
 	#
 	def test_compress(self, flat, simex_groups):
@@ -688,24 +744,13 @@ class COMPRESS(object):
 		# meaning bigger numbers, 
 		# break kerning on other letters
 		#
-		do_patch = False
+		ka_dir = os.path.join(self._in_efo,"kerning","adjustments.json")
 		#
-		kerning_patch_list = [
-			['@MMK_L_A', '@MMK_R_V', 62, "it"],
-			['@MMK_L_A', '@MMK_R_V', 62, "it"],
-			['@MMK_L_V', '@MMK_R_A', -72, "it"],
-			#['@MMK_L_A', '@MMK_R_U', 10, "it"],
-			#['@MMK_L_U', '@MMK_R_A', -20, "it"],
-			['@MMK_L_F', '@MMK_R_A', -20, "it"],
-			['@MMK_L_A', '@MMK_R_d', 20, "it"],
-			['@MMK_L_A', '@MMK_R_e', 20, "it"],
-			['@MMK_L_A', '@MMK_R_g', 20, "it"],
-			['@MMK_L_A', '@MMK_R_o', 20, "it"],
-			['@MMK_L_A', 'p', 20, "it"],
-			['@MMK_L_A', 'q', 20, "it"],
-			['@MMK_L_A', 't', 20, "it"],
-			['@MMK_L_A', 'u', 20, "it"]
-		]
+		do_patch = True
+		#
+		kerning_patch_list = self.get_kern_adjustments(ka_dir)
+		#
+		#pprint.pprint(kerning_patch_list)
 		#
 		if do_patch == True:
 			#
@@ -718,13 +763,19 @@ class COMPRESS(object):
 						#
 						for x in kerning_patch_list:
 							#
-							if x[3] in self._current_font_instance_weight:
+							if x[3] == self._current_font_instance_weight:
+								#
+								#print([_k,__k],[x[0], x[1]])
 								#
 								if [_k,__k] == [x[0], x[1]]:
 									#
+									print('= PATCHING KERNING =')
+									print(self.p_c[k][_k][__k])
 									self.p_c[k][_k].update({__k:self.p_c[k][_k][__k] + x[2]})
 									#
-									print('= PATCHING KERNING =')
+									print(self.p_c[k][_k][__k])
+									#
+									print(x[2])
 									print(_k,__k, __v )
 									#
 								#

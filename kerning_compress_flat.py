@@ -77,7 +77,7 @@ if faults == False:
 			#
 			f_files_class.append(k+'_class')
 			#
-			_COMPRESS = COMPRESS(k,v, copy_ufo_for_class_compress, source_efo_similarity_kern_plist, args.compress_pattern)
+			_COMPRESS = COMPRESS(EFO,k,v, copy_ufo_for_class_compress, source_efo_similarity_kern_plist, args.compress_pattern)
 			#
 			_COMPRESS.do_class_kern_replacement()
 			#

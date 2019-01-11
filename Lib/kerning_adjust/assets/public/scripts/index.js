@@ -86,7 +86,13 @@ function toTitleCase(str,_style) {
 //
 var socket_ids = {};
 //
+var got = {}
+got.got_a = false;
+got.got_b = false;
+//
 $(document).ready(function() {
+	//
+	get_data_timer = setInterval(data_timer, 1000);
 	//
 	init_socket = function(callback){
 		//
@@ -150,15 +156,15 @@ $(document).ready(function() {
 					//
 					localStorage.setItem( efo_name, JSON.stringify(json_thread_data))
 					//
+					got.got_a = true;
+					//
 				}
-				//
-				console.log(json_thread_data)
 				//
 				if(json_thread_data.hasOwnProperty('get_glif_width')){
 					//
-					console.log(JSON.stringify(json_thread_data.get_glif_width))
-					//
 					localStorage.setItem( "get_glif_width", JSON.stringify(json_thread_data.get_glif_width))
+					//
+					got.got_b = true;
 					//
 				}
 				//
@@ -172,7 +178,7 @@ $(document).ready(function() {
 		//
 	};
 	//
-	action_python_thread = function(c_node_id, tell){
+	action_python_thread = function(c_node_id, tell, callback){
 		//
 		if (tell) {
 			//
@@ -213,6 +219,8 @@ $(document).ready(function() {
 			success: function(response, responseJSON, data) {
 				//
 				console.log(response, '');
+				//
+				if ( callback ){callback()};
 				//
 			}
 			//
@@ -349,24 +357,27 @@ $(document).ready(function() {
 		//
 	});
 	//
-	setTimeout(function(){
-		//
-		console.log(socket_ids.socket_node_id)
-		//
+	function get_data(){
+		
 		if (!localStorage.getItem(efo_name)) {
 			//
-			action_python_thread(socket_ids.socket_node_id, "get_classes")
+			action_python_thread(socket_ids.socket_node_id, "get_classes");
 			//
 		}
-		//
+		
 		if (!localStorage.getItem("get_glif_width")) {
 			//
-			action_python_thread(socket_ids.socket_node_id, "get_glif_width")
+			action_python_thread(socket_ids.socket_node_id, "get_glif_width");
 			//
 		}
+		
+	}
+	//
+	function data_timer() {
 		//
-		setTimeout(function(){
-			//
+		//console.log(localStorage.getItem(efo_name), localStorage.getItem("get_glif_width"))
+		if (localStorage.getItem(efo_name) && localStorage.getItem("get_glif_width")) {
+
 			$(".kern").kern_adjust({
 				"class_kern_elem": $("#onoff_class_kerning"),
 				"efo_name": efo_name,
@@ -375,12 +386,28 @@ $(document).ready(function() {
 				"masters":{"thn":[100,0],"reg":[400,0],"bld":[700,0],"thn_it":[100,1],"reg_it":[400,1],"bld_it":[700,1]}
 			});
 			//
-		},1000);
-		//
-		$(window).trigger('resize');
-		//
-	},100);
+			$(window).trigger('resize');
+			//
+			stop_data_timer();
+			//
+		} else {
+			//
+			get_data();
+			//
+		}
+	}
 	//
+	function stop_data_timer() {
+		//
+		clearInterval(get_data_timer);
+		//
+	}
+	//
+	setTimeout(function(){
+		//
+		get_data();
+		//
+	},500);
 	//
 });
 //
