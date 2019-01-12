@@ -283,7 +283,7 @@
 		//
 		if (current_master) {
 				
-			kerning_obj[current_master[0]][k_name] = k_val
+			kerning_obj[current_master[0]][k_name] = k_val * 10
 
 		}
 		//	
@@ -605,8 +605,6 @@
 				//
 				run_kerning_adjustment(data, _L_elem, _R_elem, 0)
 				//
-				//_R_elem.find("b").removeAttr("style");
-				//
 			}
 		}
 		//
@@ -647,7 +645,7 @@
 
 					}
 					//
-					show_class_kerning_effect(data,t_L,t_R, k_current[k]);
+					show_class_kerning_effect(data,t_L,t_R, k_current[k] / 10);
 					//
 				}
 				//

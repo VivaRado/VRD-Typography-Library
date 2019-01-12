@@ -110,8 +110,8 @@ if faults == False:
 			#
 			if args.output:
 				#
-				#call(["fontmake", "-o", "variable", "-m", new_dspace, "--output-path", args.output])
-				call(["python3", "/media/root/Malysh1/winshm/advent_repo/fontmake_debug/fontmake_deducted_2/fontmake/__main__.py", "-o", "variable", "-m", new_dspace, "--output-path", args.output])
+				call(["fontmake", "-o", "variable", "-m", new_dspace, "--output-path", args.output])
+				#call(["python3", "/media/root/Malysh1/winshm/advent_repo/fontmake_debug/fontmake_deducted_2/fontmake/__main__.py", "-o", "variable", "-m", new_dspace, "--output-path", args.output])
 				#
 			else:
 				#

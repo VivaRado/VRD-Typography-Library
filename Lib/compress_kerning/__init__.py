@@ -62,8 +62,7 @@ kern_feature_header = '''\n    # ------
     # {0}
     # ------
 
-    lookup kern_{1} useExtension {{
-    lookupflag IgnoreMarks;\n'''
+    lookup kern_{1} useExtension {{\n'''
 #
 kern_feature_footer = '''
     }} kern_{0};
@@ -134,7 +133,6 @@ class COMPRESS(object):
 				#
 				y = 0
 				#
-				#
 				for __k, __v in self.p_c[k][_k].items():
 					#
 					self.stats[k] = self.stats[k]+1
@@ -161,15 +159,12 @@ class COMPRESS(object):
 							#
 						#
 					#
-					#__v = self.round_to_nearest(__v, 15)
-
-					#if __v != 0:
-					#
 					fea_line = fea_pos_line.format(let_a, let_b, str(__v))
 					#
 					fea_lines.append(fea_line)
 					#
 					y = y + 1
+					#
 					#
 				#
 				z = z + 1
@@ -179,6 +174,7 @@ class COMPRESS(object):
 					#
 					sorted_fea = sorted(fea_lines, key=lambda x: x.count('@_'))
 					#
+					
 					#
 					type_kern_fea_lines = self.fea_kern_list_to_strings(sorted_fea)
 					#
@@ -201,10 +197,18 @@ class COMPRESS(object):
 		#
 		kern_strings = ''
 		#
+		x = 0
+		#
 		for y in kern_fea_list:
 			#
+			# if x == 49:
+			# 	#
+			# 	kern_strings = kern_strings + '        '+"subtable;"+'\n'
+			# 	#
+
 			kern_strings = kern_strings + '    '+y+'\n'
 			#
+			x = x + 1
 		#
 		return kern_strings
 		#
@@ -754,7 +758,6 @@ class COMPRESS(object):
 		#
 		if do_patch == True:
 			#
-			#
 			for k,v in self.p_c.items():
 				#
 				for _k,_v in self.p_c[k].items():
@@ -765,18 +768,11 @@ class COMPRESS(object):
 							#
 							if x[3] == self._current_font_instance_weight:
 								#
-								#print([_k,__k],[x[0], x[1]])
-								#
 								if [_k,__k] == [x[0], x[1]]:
 									#
-									print('= PATCHING KERNING =')
-									print(self.p_c[k][_k][__k])
+									print("ADJUSTING: ", _k,__k, self.p_c[k][_k][__k], " to ", self.p_c[k][_k][__k] + x[2])
+									#
 									self.p_c[k][_k].update({__k:self.p_c[k][_k][__k] + x[2]})
-									#
-									print(self.p_c[k][_k][__k])
-									#
-									print(x[2])
-									print(_k,__k, __v )
 									#
 								#
 							# 
