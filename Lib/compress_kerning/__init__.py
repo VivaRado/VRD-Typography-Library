@@ -70,6 +70,8 @@ kern_feature_footer = '''
 #
 features_display_style = "@" # @ or MMK : only @ style compiles on variable
 #
+do_patch = True
+#
 class COMPRESS(object):
 	#
 	def __init__(self, EFO,_f_name, _temp_source, _temp_source_copy, _source_efo_similarity_kern_plist, _compress_pattern = False):
@@ -99,7 +101,7 @@ class COMPRESS(object):
 		return '{0}{1}{2}'.format('    lookup kern_', ';\n    lookup kern_'.join(_lu), ';')
 		#
 	#
-	def make_kern_fea_lines(self):
+	def make_kern_fea_lines(self, patch_list):
 		#
 		#
 		p_uni_calues = []
@@ -174,7 +176,33 @@ class COMPRESS(object):
 					#
 					sorted_fea = sorted(fea_lines, key=lambda x: x.count('@_'))
 					#
-					
+					if do_patch == True and k == "LL":
+						#
+						for x in patch_list:
+							#
+							if x[3] == self._current_font_instance_weight:
+								#
+								_cL = x[0]
+								_cR = x[1]
+								_v = x[2]
+								#
+								if "@" in _cL or "@" in _cR: # pass only Letter to Letter
+									#
+									pass
+									#
+								else:
+									#	
+									print("ADJUSTING LETTER to LETTER FIX: ", _cL,_cR,_v)
+									#
+									fea_line = fea_pos_line.format(_cL, _cR, str(_v))
+									#
+									sorted_fea.append(fea_line)
+									#
+									self.stats['LL'] = self.stats['LL']+1
+									#
+								#
+							#
+						#
 					#
 					type_kern_fea_lines = self.fea_kern_list_to_strings(sorted_fea)
 					#
@@ -187,6 +215,8 @@ class COMPRESS(object):
 				#
 				all_kern_fea_str = all_kern_fea_str + kern_script_lang + self.join_lookups(kerning_lookups) + kern_footer
 				#
+			#
+
 		#
 		fea_classes = self.make_classes_fea()
 		#
@@ -527,48 +557,45 @@ class COMPRESS(object):
 		#
 		#
 	#
-	def get_kern_adjustments(self,_dir_ka):
+	def kern_adjustments(self, adustments_json):
 		# 
 		adjustments = []
 		#
-		with open(_dir_ka, "r") as _in:
+		for k,v in adustments_json.items():
 			#
-			#r_in = _in.read()
-			#
-			j_in = json.load(_in)
-			#
-			for k,v in j_in.items():
+			if (k == self._current_font_instance_weight):
 				#
-				if (k == self._current_font_instance_weight):
+				for _k,_v in v.items():
 					#
-					for _k,_v in v.items():
+					_sp = _k.split(" ")
+					#
+					_cL = _sp[0]
+					_cR = _sp[1]
+					#
+					add_c_L = ""
+					add_c_R = ""
+					#
+					if "@_" in _cL:
 						#
-						_sp = _k.split(" ")
+						_cL = _cL.replace("@_","")
+						add_c_L = "@MMK_L_"
 						#
-						_cL = _sp[0]
-						_cR = _sp[1]
+					#
+					if "@_" in _cR:
 						#
-						add_c_L = ""
-						add_c_R = ""
+						_cR = _cR.replace("@_","")
+						add_c_R = "@MMK_R_"
 						#
-						if "@_" in _cL:
-							#
-							_cL = _cL.replace("@_","")
-							add_c_L = "@MMK_L_"
-							#
-						#
-						if "@_" in _cR:
-							#
-							_cR = _cR.replace("@_","")
-							add_c_R = "@MMK_R_"
-							#
-						#
-						adjustments.append([add_c_L+_cL, add_c_R+_cR, int(_v), k])
-						#
+					#
+					#if "@_" in _cL or "@_" in _cR: # pass only Group to Group, Letter to Group, Group to Letter # leave Letter to Letter for final Adjustment Tuning
+					#
+					adjustments.append([add_c_L+_cL, add_c_R+_cR, int(_v), k])
+					#
 					#
 				#
 			#
-			return adjustments
+		#
+		return adjustments
 		#
 	#
 	def test_compress(self, flat, simex_groups):
@@ -617,6 +644,12 @@ class COMPRESS(object):
 
 		'''
 		#
+		ka_dir = os.path.join(self._in_efo,"kerning","adjustments.json")
+		#
+		
+		#
+		self.adustments_json = json.load(open(ka_dir, "r"))
+		#
 		#
 		self.p_c = collections.OrderedDict()
 		self.p_c.update({"GG":{},"GL":{},"LG":{},"LL":{}})
@@ -631,7 +664,7 @@ class COMPRESS(object):
 		all_group_items = []
 		#
 		#
-
+		
 
 		# \/ Group to Group (GG)
 		#
@@ -747,14 +780,11 @@ class COMPRESS(object):
 		# More precise adjustments than those, 
 		# meaning bigger numbers, 
 		# break kerning on other letters
-		#
-		ka_dir = os.path.join(self._in_efo,"kerning","adjustments.json")
-		#
-		do_patch = True
-		#
-		kerning_patch_list = self.get_kern_adjustments(ka_dir)
-		#
+		kerning_patch_list = self.kern_adjustments(self.adustments_json)
 		#pprint.pprint(kerning_patch_list)
+		#
+		print(self.adustments_json)
+		print(kerning_patch_list)
 		#
 		if do_patch == True:
 			#
@@ -779,6 +809,7 @@ class COMPRESS(object):
 						#
 					#
 				#
+			#
 		#
 		if self._compress_pattern:
 			#
@@ -811,7 +842,7 @@ class COMPRESS(object):
 		#
 		self.make_kern_plist()
 		#
-		self.make_kern_fea_lines()
+		self.make_kern_fea_lines(kerning_patch_list) # pass patch list Letter to Letter to fea
 		#
 		p_f_combine = []
 		#

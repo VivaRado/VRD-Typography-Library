@@ -5,6 +5,7 @@ import sys
 import plistlib
 import json
 import xml.etree.ElementTree as ET  
+from copy import deepcopy
 #
 import pprint
 #
@@ -13,6 +14,27 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 efo_lib_dir = os.path.abspath(os.path.join(dir_path, '../../../..')) # Lib
 sys.path.insert(0, efo_lib_dir)
 #
+def dict_of_dicts_merge(dict1, dict2):
+	#
+	dict3 = deepcopy(dict1)
+	#
+	for key in dict1:
+		#
+		dict1[key].update(dict2[key])
+		#
+		if key in dict2:
+			#
+			for x in dict2[key]:
+				#
+				if x in dict3[key]:
+					#
+					dict1[key][x] = dict2[key][x] + dict3[key][x]
+					#
+				#
+			#
+		#
+	return dict1
+	#
 #
 class kern_adjust:
 	#
@@ -81,4 +103,41 @@ class kern_adjust:
 		#
 		return json.dumps({"get_glif_width":width})
 		#
-		
+	def update_adjustments_json(self):
+		#
+		adjustments_json = os.path.join(self._efo,"kerning","adjustments.json")
+		#
+		def save_(save_data):
+			#
+			with open(adjustments_json, "w") as in_json:
+				#
+				json.dump(save_data, in_json, indent=4)
+				#
+				in_json.close()
+				#
+			#
+		#
+		exists = os.path.isfile(adjustments_json)
+		#
+		data_to_json = json.loads(self._data)
+		#
+		if exists:
+			#
+			with open(adjustments_json, "r") as in_json:
+				#
+				json_data = json.load(open(adjustments_json, 'r'))
+				#
+				d_save = dict_of_dicts_merge(json_data, data_to_json)
+				#
+				in_json.close()
+				#
+				save_(d_save)
+				#
+			#
+		else:
+			#
+			save_(data_to_json)
+			#
+		#
+		return json.dumps({"update_adjustments_json":data_to_json})
+		#

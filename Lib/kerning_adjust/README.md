@@ -15,8 +15,11 @@ The Flask server is communicating over Socket.io with the NodeJS interface.
  - Your kerning gets stored in LocalStorage.
  - Class Kerning, so you can kern all letters of a class.
 
-At this point no kerning values are being transfered to the EFOs.
-
+On save, the data are transfered to ```efo/kerning/adjustments.json```
+And on - separatly running - kerning_compress_flat.py on that EFO.
+Then runing - efo_to_var.py - clearing the cache data - the interface mirrors the changes.
+Working on integrating this.
+ 
 ### Python Requirements
 
 ```flask_socketio, flask_session, flask_cors```

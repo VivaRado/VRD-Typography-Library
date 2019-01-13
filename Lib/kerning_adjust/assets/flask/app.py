@@ -31,31 +31,37 @@ def generator(self):
 	n = "starting"
 	yield n
 	#
+	sleep(1)
 	if len(self._func):
 		
-		method_to_call = getattr(kern_adjust, self._func)
+		method_to_call = getattr(kern_adjust, self._func, self._data)
 		result = method_to_call(self)
+		clients[self._id]["thread_state"] = "null"
 		yield str(result)
 	#
 	sleep(1)
 	n = "done"
+	# En_Value = clients[self._id]
+	# clients.clear() 
+	# clients[self._id] = En_Value
 	yield n
 	#
 #
 class FlaskThread(Thread):
 	#
-	def __init__(self, _id, _efo, _func):
+	def __init__(self, _id, _efo, _func, _data):
 		self.delay = 1
 		self._id = _id
 		self._efo = _efo
 		self._func = _func
+		self._data = _data
 		super(FlaskThread, self).__init__(name=_id)
 	#
 	def run_function_thread(self):
 		#
 		if clients[self._id]["thread_state"] not in ["ended", "aborted"]:
 			#
-			number = round(random()*10, 3)
+			#number = round(random()*10, 3)
 			res = generator(self)
 			#
 			for x in res:
@@ -66,16 +72,16 @@ class FlaskThread(Thread):
 					#
 					if x != "starting":
 						#
-						socketio.emit('flask_message', {'number': number, "text": "success_flask_thread_"+func_info+"_"+self._func, "thread_state": "active", "thread_id": self._id , "thread_data":x} , namespace='/test', room=self._id)
-						socketio.emit('flask_message_log', {'number': number, "text": "success_flask_thread_"+func_info+"_"+self._func+"_for_"+self._id, "thread_state": "active", "thread_id": self._id, "thread_data":x } , namespace='/test')
+						socketio.emit('flask_message', {"text": "success_flask_thread_"+func_info+"_"+self._func, "thread_state": "active", "thread_id": self._id , "thread_data":x} , namespace='/test', room=self._id)
+						socketio.emit('flask_message_log', {"text": "success_flask_thread_"+func_info+"_"+self._func+"_for_"+self._id, "thread_state": "active", "thread_id": self._id, "thread_data":x } , namespace='/test')
 						#
 					#
 				else:
 					#
-					socketio.emit('flask_message', {'number': 0, "text": "success_flask_thread_finished", "thread_state": "ended", "thread_id": self._id }, namespace='/test', room=self._id)
-					socketio.emit('flask_message_log', {'number': number, "text": "success_flask_thread_finished_for_"+self._id, "thread_state": "ended", "thread_id": self._id } , namespace='/test')
+					socketio.emit('flask_message', {"text": "success_flask_thread_finished", "thread_state": "ended", "thread_id": self._id }, namespace='/test', room=self._id)
+					socketio.emit('flask_message_log', {"text": "success_flask_thread_finished_for_"+self._id, "thread_state": "null", "thread_id": self._id } , namespace='/test')
 					#
-					clients[self._id]["thread_state"] = "ended"
+					
 					#
 				#
 			#
@@ -122,79 +128,70 @@ def postdata():
 	#
 	_id = dataDict["id"]
 	_tell = dataDict["tell"]
-	_source_efo = ""
+	_data = dataDict["data"]
+	_source_efo = dataDict["efo"]
+	#
 	message = ""
 	_func = ""
 	#
+	#
 	session['id'] = _id
+	#
 	#
 	if _id in clients:
 		#
+		#
+
 		if _tell == "abort":
+			#
+			status = 400
+			thread_available = False
 			#
 			if clients[_id]["thread_state"] == "active":
 				#
 				clients[_id]["thread_state"] = "aborted" # abort! abort!
 				#
-				status = 200
 				message = "warning_flask_thread_aborted"
-				thread_available = False
 				#
 			else:
 				#
-				status = 400
+				clients[_id]["thread_state"] = "null"
+				#
 				message = "warning_flask_thread_not_active"
-				thread_available = False
 				#
 			#
-		elif _tell == "get_classes":
-			#
-			_source_efo = dataDict["efo"]
-			status = 200
-			message = "getting_classes"
-			#print(_source_efo)
-			#
-			thread_available = True
-			#
-			_func = _tell
-			#
-		elif _tell == "get_glif_width":
-			#
-			_source_efo = dataDict["efo"]
-			status = 200
-			message = "getting_glif_width"
-			#print(_source_efo)
-			#
-			thread_available = True
-			#
-			_func = _tell
-			#
-		else:
+		elif _tell in ["get_classes", "get_glif_width", "update_adjustments_json"]:
+				
 			#
 			if clients[_id]["thread_state"] == "active":
 				#
 				status = 400
-				message = "error_flask_thread_exists"
+				message = "warning_flask_thread_exists"
 				#
 				thread_available = False
 				#
 			else:
 				#
+				#
 				clients[_id]["thread_state"] = "active"
 				#
-				request.sid = _id
-				#
 				status = 200
-				message = "flask_thread_started"
+				message = "activating_"+_tell
+				#print(_source_efo)
 				#
 				thread_available = True
 				#
+				_func = _tell
+				#
 			#
+			
 		#
 		if thread_available:
 			#
-			thread = FlaskThread(_id, _source_efo, _func)
+			thread = FlaskThread(_id, _source_efo, _func, _data)
 			thread.start()
+			#
+
 			#
 		#
 		response = app.response_class(response=message, status=status, mimetype='application/json')

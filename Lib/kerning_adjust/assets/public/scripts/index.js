@@ -89,6 +89,7 @@ var socket_ids = {};
 var got = {}
 got.got_a = false;
 got.got_b = false;
+//got.got_c = false;
 //
 $(document).ready(function() {
 	//
@@ -168,6 +169,18 @@ $(document).ready(function() {
 					//
 				}
 				//
+				if(json_thread_data.hasOwnProperty('update_adjustments_json')){
+					//
+					console.log("update_adjustments_json")
+					console.log(JSON.stringify(json_thread_data.update_adjustments_json))
+					//
+					//localStorage.setItem( efo_name+'_kerning', JSON.stringify(json_thread_data.update_adjustments_json))
+					//
+					//
+					//got.got_c = true;
+					//
+				}
+				//
 			}
 			//
 			display_alert(msg.text, $(".display_alert"), "static");
@@ -178,7 +191,7 @@ $(document).ready(function() {
 		//
 	};
 	//
-	action_python_thread = function(c_node_id, tell, callback){
+	action_python_thread = function(c_node_id, tell, data, callback){
 		//
 		if (tell) {
 			//
@@ -201,6 +214,12 @@ $(document).ready(function() {
 			//
 		}
 		//
+		if (data) {
+			_data = data;
+		} else {
+			_data = "";
+		}
+		//
 		$.ajax({
 			url: "/thread",
 			type: "POST",
@@ -208,7 +227,8 @@ $(document).ready(function() {
 			data: {
 				"id": c_node_id, 
 				"tell": _tell,
-				"efo":$(".efo_source").attr("data-efo")
+				"efo":$(".efo_source").attr("data-efo"),
+				"data":_data
 			},
 			timeout : 100000,
 			error: function(xhr) {
@@ -217,8 +237,6 @@ $(document).ready(function() {
 				//
 			},
 			success: function(response, responseJSON, data) {
-				//
-				console.log(response, '');
 				//
 				if ( callback ){callback()};
 				//
@@ -344,7 +362,10 @@ $(document).ready(function() {
 		//
 		$('.thread_abort').removeClass("hide");
 		//
-		action_python_thread(socket_ids.socket_node_id)
+		json_kerning_data = localStorage.getItem(efo_name+'_kerning')
+		//
+		action_python_thread(socket_ids.socket_node_id, "update_adjustments_json", json_kerning_data);
+		//action_python_thread(socket_ids.socket_node_id)
 		//
 	});
 	//
@@ -383,7 +404,14 @@ $(document).ready(function() {
 				"efo_name": efo_name,
 				"kern_classes": JSON.parse(localStorage.getItem(efo_name))["get_classes"],
 				"glif_width": JSON.parse(localStorage.getItem("get_glif_width")),
-				"masters":{"thn":[100,0],"reg":[400,0],"bld":[700,0],"thn_it":[100,1],"reg_it":[400,1],"bld_it":[700,1]}
+				"masters":{"thn":[100,0],"reg":[400,0],"bld":[700,0],"thn_it":[100,1],"reg_it":[400,1],"bld_it":[700,1]},
+				onSlideEnd: function(k_object) {
+					//
+					console.log(k_object)
+					//
+					
+					//
+				}
 			});
 			//
 			$(window).trigger('resize');

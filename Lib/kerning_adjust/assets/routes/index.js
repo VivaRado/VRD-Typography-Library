@@ -36,16 +36,17 @@ module.exports = function(app, module_data) {
 		//}
 		//
 		//  FLASK
-		var data = {
+		var send_data = {
 			id: req.body.id,
 			tell: req.body.tell,
-			efo: module_data["source_efo"]
+			efo: module_data["source_efo"],
+			data: req.body.data
 		}
 	 	//
 		var options = {
 			method: 'POST',
 			uri: 'http://localhost:5000',
-			body: data,
+			body: send_data,
 			json: true,
 			resolveWithFullResponse: true
 		};

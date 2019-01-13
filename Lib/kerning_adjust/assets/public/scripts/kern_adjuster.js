@@ -28,8 +28,11 @@
 		glif_width: "",
 		efo_name: "",
 		masters:"",
-		axes:""
+		axes:"",
+		kerning_obj: {}
 	};
+	//
+	//var kerning_obj;
 	//
 	var pub = {
 		//
@@ -175,6 +178,10 @@
 	//
 	function show_class_kerning_effect(data,_L, _R, _val){
 		//
+		var current_master = is_master(data)
+		_L_g = _L.attr("data-glyph");
+		_R_g = _R.attr("data-glyph");
+		//
 		if (_L.attr("data-class") != "undefined") {
 
 			_L_c = "@_"+_L.attr("data-class");
@@ -195,6 +202,9 @@
 
 		}
 		//
+
+		did_show = [];
+
 		for (var i = 0; i < data.$fragment_map.length; i++) {
 			//
 			_R_elem = $(".kern span."+classes.glyph_base+'.'+classes.glyph+i)
@@ -222,7 +232,36 @@
 			//
 			if (_L_is == _L_c && _R_is == _R_c) {
 				//
-				run_kerning_adjustment(data, _L_elem, _R_elem, _val)
+				if( data.class_kern_elem.is(':checked')){
+					//
+					//if (_L_c.indexOf("@") != -1 || _R_c.indexOf("@") != -1) {
+						
+						//if (data.kerning_obj[current_master[0]].hasOwnProperty(_L_c+' '+_R_c)) {
+							//
+							run_kerning_adjustment(data, _L_elem, _R_elem, _val)
+							//
+						//} else {
+							//
+						//	if (did_show.indexOf(_L_g+' '+_R_g) == -1) {
+								//
+						//		did_show.push(_L_g+' '+_R_g)
+						//		run_kerning_adjustment(data, _L_elem, _R_elem, _val)
+								//
+						//	}
+							//
+						//}
+					//}
+					//
+				} else {
+					//
+					if (did_show.indexOf(c_split[1]+' '+c_split[0]) == -1) {
+						//	
+						did_show.push(c_split[1]+' '+c_split[0])
+						run_kerning_adjustment(data, _L_elem, _R_elem, _val)
+						//
+					}
+					//
+				}
 				//
 			}
 			//
@@ -232,8 +271,9 @@
 	//
 	function update_class_kerning(data, _L, _R){
 		//
-		kerning_obj = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'))
+		data.kerning_obj = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'))
 		//
+		//console.log(data.kerning_obj)
 		//
 		var current_master = is_master(data)
 		//
@@ -261,35 +301,44 @@
 
 		}
 		//
-		k_val = parseInt(_R.css("margin-left"))
-		//
-		if( data.class_kern_elem.is(':checked')){
-		
-			t_L = _L_c;
-			t_R = _R_c;
-
-			//
-			show_class_kerning_effect(data,_L,_R, k_val)
-			//
-
-		} else {
-
-			t_L = _L_g;
-			t_R = _R_g;
-
-		}
-		//
-		k_name = t_L+' '+t_R;
-		//
 		if (current_master) {
-				
-			kerning_obj[current_master[0]][k_name] = k_val * 10
+			//
+			k_val = parseInt(_R.css("margin-left"))
+			//
+			if( data.class_kern_elem.is(':checked')){
+			
+				t_L = _L_c;
+				t_R = _R_c;
+
+				//
+				show_class_kerning_effect(data,_L,_R, k_val)
+				//
+
+			} else {
+
+				t_L = _L_g;
+				t_R = _R_g;
+
+			}
+			//
+			k_name = t_L+' '+t_R;
+			//
+			//console.log(current_master[0])
+			//console.log(data.kerning_obj)
+			//console.log(data.kerning_obj["thn_it"])
+			//
+			data.kerning_obj[current_master[0]][k_name] = k_val * 10
+			//
 
 		}
-		//	
-		p(pprint( JSON.stringify(kerning_obj, undefined, 4) ),$('.serialize'));
 		//
-		localStorage.setItem( data.efo_name+'_kerning', JSON.stringify(kerning_obj))
+		p(pprint( JSON.stringify(data.kerning_obj, undefined, 4) ),$('.serialize'));
+		//
+		//data.kerning_obj = data.kerning_obj
+		//
+		localStorage.setItem( data.efo_name+'_kerning', JSON.stringify(data.kerning_obj))
+		//
+		data.kerning_obj = JSON.stringify(data.kerning_obj)
 		//
 	}
 	//
@@ -520,12 +569,14 @@
 		//
 		var dims = [];
 		//
+		this.onSlideEnd = opts.onSlideEnd;
 		//
 		if (!$kern_adjust.hasClass(classes.base)) {
 			// EXTEND OPTIONS
 			opts = $.extend({}, opts, $kern_adjust.data(namespace + "-options"));
 			//
 			var html = '';
+			//
 			//
 			var data = $.extend({
 				$kern_adjust: $kern_adjust,
@@ -538,6 +589,8 @@
 			}, opts);
 			//
 			k_object = localStorage.getItem(data.efo_name+'_kerning');
+			//
+			data.kerning_obj = k_object
 			//
 			if (!k_object) {
 				//
@@ -592,7 +645,7 @@
 	//	
 	function assign_kerning_acord(data){
 		//
-		kerning_obj = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'))
+		data.kerning_obj = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'))
 		//
 		var reset_kern_view_guides = function() {
 			//
@@ -614,9 +667,10 @@
 		//
 		if (current_master) {
 			//
-			k_current = kerning_obj[current_master[0]];
+			k_current = data.kerning_obj[current_master[0]];
 			//
 			if (isEmptyObject(k_current) == false) {
+				//
 				//
 				for (k in k_current){
 					//
@@ -645,7 +699,14 @@
 
 					}
 					//
-					show_class_kerning_effect(data,t_L,t_R, k_current[k] / 10);
+					//console.log(kerning_obj[current_master[0]][k_name])
+					
+
+						show_class_kerning_effect(data,t_L,t_R, k_current[k] / 10);
+
+					
+							
+					
 					//
 				}
 				//
@@ -822,6 +883,17 @@
 		//
 		update_class_kerning(data, data.$glyph.prev(),data.$glyph)
 		//
+		if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
+			//
+			console.log(localStorage.getItem( data.efo_name+'_kerning'))
+			console.log(data.kerning_obj)
+			//
+			k_object = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'));
+			data.kerning_obj = k_object
+			//
+            this.onSlideEnd(k_object);
+            //
+        }
 	}
 	//
 	function position(data, pos) {
