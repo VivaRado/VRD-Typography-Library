@@ -71,7 +71,10 @@ module.exports = function(app, module_data) {
 			//
 		}).catch(function (err) {
 			//
-			res.status(err.statusCode).send( err.error )
+			if (err.statusCode >= 100 && err.statusCode < 600)
+				res.status(err.statusCode);
+			else
+				res.status(500);
 			//
 		});
 		//

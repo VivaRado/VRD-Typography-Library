@@ -783,8 +783,8 @@ class COMPRESS(object):
 		kerning_patch_list = self.kern_adjustments(self.adustments_json)
 		#pprint.pprint(kerning_patch_list)
 		#
-		print(self.adustments_json)
-		print(kerning_patch_list)
+		#print(self.adustments_json)
+		#print(kerning_patch_list)
 		#
 		if do_patch == True:
 			#

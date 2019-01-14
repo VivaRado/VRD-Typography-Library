@@ -327,8 +327,15 @@
 			//console.log(data.kerning_obj)
 			//console.log(data.kerning_obj["thn_it"])
 			//
-			data.kerning_obj[current_master[0]][k_name] = k_val * 10
-			//
+			if (k_val == 0) {
+
+				delete data.kerning_obj[current_master[0]][k_name]
+
+			} else {
+				//
+				data.kerning_obj[current_master[0]][k_name] = k_val * 10
+				//
+			}
 
 		}
 		//
@@ -384,6 +391,28 @@
 		//
 	}
 	//
+	function get_name(data, letter){
+		//
+		x = 0
+		//
+		for (var key in data.kern_classes) {
+			//
+			var obj = data.kern_classes[key];
+			//
+			for (var i = 0; i < obj.length; i++) {
+				//
+				if (obj[i][2] == letter) {
+					//
+					return obj[i][1]
+					//
+				}
+				//
+			}
+			//
+		}
+		//
+	}
+	//
 	function get_initial_letter(data){
 		//
 		data.$kern_adjust.css({"font-size":px2em(data.glif_width)-0.6+'rem'}) // minus 0.6 because it is closer to the glif width value ?
@@ -398,6 +427,10 @@
 		//
 		return f_w
 		//
+	}
+	//
+	function isNumeric(value) {
+		return /^-{0,1}\d+$/.test(value);
 	}
 	//
 	function arranger(data, t, splitter) {
@@ -420,7 +453,16 @@
 				//
 				for (var i = 0; i < a.length; i++) {
 					//
-					f_string = '<span class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" data-init-width="0" data-glyph="'+a[i]+'" data-class="'+get_class(data, a[i])+'">'+a[i]+kern_tag_now+kern_tag_alt+'</span>'
+					d_glyph = a[i];
+					d_class = get_class(data, a[i]);
+					//
+					if(isNumeric(d_glyph)){
+						//
+						d_glyph = get_name(data, a[i]);
+						//
+					}
+					//
+					f_string = '<span class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" data-init-width="0" data-glyph="'+d_glyph+'" data-class="'+d_class+'">'+a[i]+kern_tag_now+kern_tag_alt+'</span>'
 					//
 					frag = fragmentFromString(f_string);
 					//
@@ -478,6 +520,8 @@
 	}
 	//
 	function variable_axes(data) {
+		//
+		console.log(data.$inputs)
 		//
 		inputs = data.$inputs
 		outputs = data.$outputs
@@ -608,7 +652,7 @@
 			document.querySelectorAll('.typeface:not(.loaded_kern)').forEach(function(li) {
 				//
 				li.className += ' loaded_kern';
-				var sliders = '#' + li.id + ' input';
+				var sliders = '#' + li.id + ' input[data-typeface]';
 				var samples = '#' + li.id + ' .sample';
 				//
 				var inputs = document.querySelectorAll(sliders);
@@ -885,8 +929,8 @@
 		//
 		if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
 			//
-			console.log(localStorage.getItem( data.efo_name+'_kerning'))
-			console.log(data.kerning_obj)
+			//console.log(localStorage.getItem( data.efo_name+'_kerning'))
+			//console.log(data.kerning_obj)
 			//
 			k_object = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'));
 			data.kerning_obj = k_object

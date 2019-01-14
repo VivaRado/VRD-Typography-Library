@@ -172,7 +172,7 @@ $(document).ready(function() {
 				if(json_thread_data.hasOwnProperty('update_adjustments_json')){
 					//
 					console.log("update_adjustments_json")
-					console.log(JSON.stringify(json_thread_data.update_adjustments_json))
+					//console.log(JSON.stringify(json_thread_data.update_adjustments_json))
 					//
 					//localStorage.setItem( efo_name+'_kerning', JSON.stringify(json_thread_data.update_adjustments_json))
 					//
@@ -336,11 +336,11 @@ $(document).ready(function() {
 		//
 		if(is_guides){
 			//
-			$('.kern').removeClass('guides_hide')
+			$('.kern').removeClass('guides_hide');
 			//
 		} else {
 			//
-			$('.kern').addClass('guides_hide')
+			$('.kern').addClass('guides_hide');
 			//
 		}
 	}
@@ -406,10 +406,6 @@ $(document).ready(function() {
 				"glif_width": JSON.parse(localStorage.getItem("get_glif_width")),
 				"masters":{"thn":[100,0],"reg":[400,0],"bld":[700,0],"thn_it":[100,1],"reg_it":[400,1],"bld_it":[700,1]},
 				onSlideEnd: function(k_object) {
-					//
-					console.log(k_object)
-					//
-					
 					//
 				}
 			});
