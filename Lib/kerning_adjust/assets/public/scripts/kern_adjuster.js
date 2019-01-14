@@ -510,7 +510,6 @@
 					//
 					set_pair_kern_diff(data, elem);
 					//
-					//
 				}
 				//
 			}
@@ -520,8 +519,6 @@
 	}
 	//
 	function variable_axes(data) {
-		//
-		console.log(data.$inputs)
 		//
 		inputs = data.$inputs
 		outputs = data.$outputs
@@ -743,14 +740,7 @@
 
 					}
 					//
-					//console.log(kerning_obj[current_master[0]][k_name])
-					
-
-						show_class_kerning_effect(data,t_L,t_R, k_current[k] / 10);
-
-					
-							
-					
+					show_class_kerning_effect(data,t_L,t_R, k_current[k] / 10);
 					//
 				}
 				//
