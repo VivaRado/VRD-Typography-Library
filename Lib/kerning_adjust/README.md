@@ -16,9 +16,9 @@ The Flask server is communicating over Socket.io with the NodeJS interface.
  - Class Kerning, so you can kern all letters of a class.
 
 On save, the data are transfered to ```efo/kerning/adjustments.json```
-And on - separatly running - kerning_compress_flat.py on that EFO.
-Then runing - efo_to_var.py - clearing the cache data - the interface mirrors the changes.
-Working on integrating this.
+And on ```kerning_compress_flat.py``` on that EFO, you get new PLIST and FEA files.
+Runing ```efo_to_var.py``` - clearing the browser cache data - the interface mirrors the changes.
+Working on integrating those last steps and making it easier.
  
 ### Python Requirements
 
