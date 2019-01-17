@@ -2,6 +2,9 @@ EFO Autokern
 ===================
 
 Based on Type Facet Autokern
+
+More issues have surfaced in terms of the initial integration. And will be addressed soon with a reintegration of the initial TypeFacet source.
+
 Updated to Python3 [By VivaRado](https://www.vivarado.com)
 
 Type Facet Autokern
