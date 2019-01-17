@@ -115,7 +115,7 @@ class TFSGlyph(object):
                     # TrueType "implied on-curve points"
                     lastOnPoint = fiPoints[0]
                     offPoints = fiPoints[1:-1]
-                    for index in xrange(len(offPoints) - 1):
+                    for index in range(len(offPoints) - 1):
                         offPoint0 = offPoints[index + 0]
                         offPoint1 = offPoints[index + 1]
                         impliedPoint = offPoint0.midpoint(offPoint1)

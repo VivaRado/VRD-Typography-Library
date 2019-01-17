@@ -1,7 +1,7 @@
 #
 import os
 import xml.etree.cElementTree as ET
-import xml.dom.minidom as minidom
+#import xml.dom.minidom as minidom
 import json
 from distutils.dir_util import copy_tree
 from shutil import copytree, ignore_patterns

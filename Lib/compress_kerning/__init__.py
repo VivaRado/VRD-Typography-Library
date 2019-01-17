@@ -46,13 +46,14 @@ fea_class_content = '''@{0} = [{1} {2}];\n'''
 fea_prefix = '''# Languagesystems Start
 # Prefix: Languagesystems
 languagesystem DFLT dflt;
-languagesystem grek dflt;
 languagesystem latn dflt;
+languagesystem grek dflt;
 # Languagesystems End\n\n'''
 #
 kern_script_lang = '''
-    script latn; # Latin
     script grek; # Greek
+    script latn; # Latin
+    script DFLT; # Default
 '''
 #
 kern_header = '''# Kerning Start \n\nfeature kern { # Kerning\n'''
@@ -231,11 +232,6 @@ class COMPRESS(object):
 		#
 		for y in kern_fea_list:
 			#
-			# if x == 49:
-			# 	#
-			# 	kern_strings = kern_strings + '        '+"subtable;"+'\n'
-			# 	#
-
 			kern_strings = kern_strings + '    '+y+'\n'
 			#
 			x = x + 1
@@ -248,7 +244,6 @@ class COMPRESS(object):
 		#
 		'''
 		split the simex group keys list to Left and Right lists
-		ignore same to same
 		'''
 		#
 		directional_permute = []
@@ -263,10 +258,6 @@ class COMPRESS(object):
 					#
 					pass
 					#
-				elif self.get_kern_name_and_dir(_left)[0] == self.get_kern_name_and_dir(_right)[0]: # if the same letter ignore
-					#
-					pass
-					#
 				else:
 					#
 					directional_permute.append([_left,_right])
@@ -274,9 +265,7 @@ class COMPRESS(object):
 				#
 			#
 		#
-		dups = sum(y for y in Counter(tuple(x) for x in directional_permute).values() if y > 1)
-		#
-		print("Directional Permutation Result Size:", len(directional_permute), "Duplicates:", dups)
+		print("Directional Permutation Result Size:", len(directional_permute))
 		#
 		return directional_permute
 		#
@@ -390,6 +379,20 @@ class COMPRESS(object):
 				#
 				len_before = len(self.p_f_copy[k])
 				#
+				if _type == "GG":
+					# Add class to itself #0011
+					t_glyph = self.get_kern_name_and_dir(p_L)[0]
+					mirror = '@MMK_R_'+t_glyph
+					#
+					if p_L in self.p_c[_type]:
+						#
+						if mirror not in self.p_c[_type][p_L]:
+							#
+							self.p_c[_type][p_L].update({mirror:_p_f[t_glyph][t_glyph]})
+							#
+						#
+					#
+				#
 				for x in v:
 					#
 					if p_R == False:
@@ -418,6 +421,7 @@ class COMPRESS(object):
 								#
 								self.p_c[_type][p_L] = {p_R:k_int} #0003 #0006
 								#
+								
 							#
 							# delete item from flat copy dictionary #0004
 							if log:
@@ -614,6 +618,7 @@ class COMPRESS(object):
 						get unique group items of simex L and R groups #0002
 						gather int value from flat list provided L and R #0003
 						remove the group contents from the flat list that are in L R simex unique group #0004
+						add class to itself #0011
 					# deleting from flat_copy in matches of permut list, the group items of both simex groups since they are covered by the both group contents
 
 				Group to Letter (GL):
@@ -675,18 +680,16 @@ class COMPRESS(object):
 		#
 		#
 		# #\/0002
-		y = 0
+		#
 		for x in permute_directional:
 			#
-			#if y < 250:
+			got_both = 0
 			#
 			group_items_for_pair = self.get_group_items_unique_keep_order(self.p_g,x)
 			#
 			all_group_items.extend(group_items_for_pair)
 			#
 			self.transfer_delete_kern_value(p_f, x, group_items_for_pair, "GG")
-			#
-			#y = y + 1
 			#
 		# #/\0002
 		#
@@ -697,6 +700,7 @@ class COMPRESS(object):
 
 		# \/ Group to Letter (GL)
 		#
+		y = 0
 		#
 		p_g_keys_L = [x for x in p_g_keys if x.startswith('@MMK_L_')] #0005
 		#

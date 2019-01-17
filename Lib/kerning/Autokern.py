@@ -1852,8 +1852,8 @@ class Autokern(TFSMap):
 		else:
 			raise Exception('Invalid segment')
 
-		try:
-			result = TFSSegment(*newPoints).roundWithDefaultPrecision()
+		#try:
+			#result = TFSSegment(*newPoints).roundWithDefaultPrecision()
 
 			'''
 			Segments can be turned "inside out" when deflating.
@@ -1861,19 +1861,19 @@ class Autokern(TFSMap):
 			We want to discard these segments.
 			We can detect them by checking whether the naive endpoint tangent has reversed.
 			'''
-			affinity = result.naiveEndpointTangent().dotProduct(segment.naiveEndpointTangent())
-			if affinity < 0:
-				return None
+			#affinity = result.naiveEndpointTangent().dotProduct(segment.naiveEndpointTangent())
+			#if affinity < 0:
+			#	return None
 
-			return result
-		except TFSValidationException as e:
+			#return result
+		#except TFSValidationException as e:
 			'''
 			flating a segment can result in an empty or otherwise invalid segment.
 			In fact, this will happen often since we'll be deflating previously
 			inflated rounding curves.
 			That's fine; ignore them.
 			'''
-			return None
+		return None
 
 
 	def makeInflatedProfile(self, contours, radius):

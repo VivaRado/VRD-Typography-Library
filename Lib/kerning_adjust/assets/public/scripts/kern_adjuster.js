@@ -32,6 +32,7 @@
 		kerning_obj: {}
 	};
 	//
+	var rforeign = /[^\u0000-\u007f]/;
 	//var kerning_obj;
 	//
 	var pub = {
@@ -405,6 +406,10 @@
 					//
 					return obj[i][1]
 					//
+				} else {
+					//
+					return letter
+					//
 				}
 				//
 			}
@@ -456,9 +461,21 @@
 					d_glyph = a[i];
 					d_class = get_class(data, a[i]);
 					//
+					//
 					if(isNumeric(d_glyph)){
 						//
 						d_glyph = get_name(data, a[i]);
+						//
+					} else {
+
+						//
+						if (rforeign.test(d_glyph)) {
+							//
+							console.log(d_glyph)
+							d_glyph = get_name(data, a[i]);
+							console.log(d_glyph)
+							//
+						}
 						//
 					}
 					//

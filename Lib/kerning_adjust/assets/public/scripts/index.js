@@ -431,7 +431,7 @@ $(document).ready(function() {
 		//
 		get_data();
 		//
-	},500);
+	},1000);
 	//
 });
 //

@@ -18,15 +18,39 @@ from .AutokernSettings import *
 import tfs3.common.TFSProject as TFSProject
 from tfs3.common.TFSMap import TFSMap
 #
-test_pairs_b = '''WA
+test_pairs_b = '''PK
 AV
 VA
-AW
-AY
-BA
-BE
+WA
+QK
+RK
+SK
+TK
+UK
+VK
+WK
+XK
+YK
+ZL
+AL
 BL
-BP'''
+CL
+DL
+EL
+FL
+GL
+HL
+IL
+JL
+KL
+LL
+ML
+NL
+OL
+PL
+QL
+RL
+SL'''
 #
 ignore_glyphs_list = ["brevecomb",
 "caroncomb",
@@ -215,7 +239,7 @@ class AUTOKERN(object):
 		#
 		if self._compress_class_plist == "Yes":
 			#
-			print('Hello')
+			print('\tCompressing')
 			#
 			f_files_class = []
 			#
@@ -231,7 +255,10 @@ class AUTOKERN(object):
 					#
 					f_files_class.append(k+'_krn_class')
 					#
-					_COMPRESS = COMPRESS(k,v, copy_ufo_for_class_compress, source_efo_similarity_kern_plist)
+					print(source_efo_similarity_kern_plist)
+					#
+					#_COMPRESS = COMPRESS(k,v, copy_ufo_for_class_compress, source_efo_similarity_kern_plist, args.compress_pattern)
+					_COMPRESS = COMPRESS(EFO,k,v, copy_ufo_for_class_compress, source_efo_similarity_kern_plist)
 					#EFO = EFO(args.source,EFO_temp)
 					#
 					_COMPRESS.do_class_kern_replacement()
@@ -313,16 +340,17 @@ class AUTOKERN(object):
 								'--x-extrema-overlap-scaling',
 								str(self.current_kerning_settings["--x-extrema-overlap-scaling"]),
 								#
+								# '--do-not-modify-side-bearings',
 								# '--kerning-strength',
 								# str(0.1),
-								# '--log-path',
-								# os.path.join(self._in,"temp","logs","log"),
-								# '--log-basic-pairs',
-								# '--write-kerning-pair-logs'
+								'--log-path',
+								os.path.join(self._in,"temp","logs","log"),
+								'--log-basic-pairs',
+								'--write-kerning-pair-logs'
 								)
 				#
-				pairlist = self.extract_pairs(self._in, self.given_fonts)
-				#pairlist = self.extract_test_pairs(test_pairs_b, self.given_fonts)
+				#pairlist = self.extract_pairs(self._in, self.given_fonts)
+				pairlist = self.extract_test_pairs(test_pairs_b, self.given_fonts)
 				pairlist_tup = self.pairlist_tuple(pairlist[gf])
 				#
 				pairlist_tuple_to_kern = ('--glyph-pairs-to-kern',*pairlist_tup)
