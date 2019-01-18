@@ -14,6 +14,7 @@ The Flask server is communicating over Socket.io with the NodeJS interface.
  - Each Master can have its own set of kerning adjustments.
  - Your kerning gets stored in LocalStorage.
  - Class Kerning, so you can kern all letters of a class.
+ - Snap Kerning, take sceens of your kerning so you can verify and share it.
 
 On save, the data are transfered to ```efo/kerning/adjustments.json```
 And on ```kerning_compress_flat.py``` on that EFO, you get new PLIST and FEA files.
@@ -27,6 +28,10 @@ Working on integrating those last steps and making it easier.
 ### NodeJS Requirements
 
 ```body-parser, express, express-handlebars, handlebars, minimist, python-shell, socket.io, cors```
+
+### JS Requirements
+
+```jquery, domtoimage, socket.io```
 
 ### Usage
 

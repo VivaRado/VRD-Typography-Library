@@ -32,6 +32,13 @@
 		kerning_obj: {}
 	};
 	//
+	var rep_container = '<strong data-report="" class="report_container"></strong>';
+	//
+	var reports = {
+		"kerning_none": {"class":"r_kerning_none", "title":"No Kerning Value", "initial":"🆚"},
+		"class_none": {"class":"r_class_none", "title":"No Class Value", "initial":"🆑"}
+	}
+	//
 	var rforeign = /[^\u0000-\u007f]/;
 	//var kerning_obj;
 	//
@@ -89,9 +96,97 @@
 		//
 		return $items;
 	}
-	//////
+	//
 	function classify(text) {
 		return "." + text;
+	}
+	//
+	function update_info_tags(el, add_t) {
+		//
+		el_t = el.attr("title");
+		el_r = el.find("strong").attr("data-report");
+		//
+		t_parts = []
+		r_parts = []
+		//
+		if (el_t.length > 0) {
+			//
+			t_parts = el_t.split(', ');
+			//
+		}
+		//
+		if (el_r.length > 0) {
+			//
+			r_parts = el_r.split(' ');
+			//
+		}
+		//
+		t_parts.push(add_t["initial"]+' '+add_t["title"]);
+		r_parts.push(add_t["initial"]);
+		//
+		f_t = t_parts.join(", ");
+		f_r = r_parts.join(" ");
+		//
+		el.attr("title",f_t);
+		el.find("strong").attr("data-report",f_r);
+		//
+	}
+	//
+	function make_reports(data) {
+		//
+		for (var i = 0; i < data.$fragment_map.length; i++) {
+			//
+			has_error = false;
+			//
+			t_class = '.'+classes.glyph+data.$fragment_map[i][0]
+			//
+			_elem = $(t_class);
+			//
+			_elem.removeClass("r_*")
+			//
+			_elem_glyph = _elem.attr("data-glyph")
+			//
+			if (_elem_glyph != "	" && _elem_glyph != "\n") {
+
+				//
+				el_kerning_val = _elem.find('i').width();
+				el_class_val = _elem.attr("data-class");
+				//
+				if( data.$fragment_map.length < i) { // dont show kerning fault on last element
+					//
+					if (el_kerning_val == 0) {
+						//
+						has_error = true;
+						//
+						_elem.addClass(reports["kerning_none"]["class"])
+						//
+						update_info_tags(_elem, reports["kerning_none"])
+						//
+					}
+					//
+				}
+				//
+				if (el_class_val == "undefined") {
+					//
+					has_error = true;
+					//
+					_elem.addClass(reports["class_none"]["class"])
+					//
+					update_info_tags(_elem, reports["class_none"])
+					//
+				}
+
+				//
+				if (has_error == false) {
+
+					_elem.addClass("r_clear")
+					
+				}
+				//
+			} 
+			//
+		}
+		//
 	}
 	//
 	function determine_pair_kerning( _a, _b) {
@@ -102,7 +197,10 @@
 		a_init_width = parseInt($('.'+classes.glyph+_a).attr("data-init-width"));
 		//b_width = $('.'+classes.glyph+_b).width()
 		//
-		$('.'+classes.glyph+_a).find('i').css({"width":Math.abs(a_init_width - a_width), "right":-(Math.abs(a_init_width - a_width))});
+		kerning_value = Math.abs(a_init_width - a_width);
+		//
+		elem = $('.'+classes.glyph+_a)
+		elem.find('i').css({"width":kerning_value, "right":-(Math.abs(a_init_width - a_width))});
 		//
 	}
 	//
@@ -479,7 +577,17 @@
 						//
 					}
 					//
-					f_string = '<span class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" data-init-width="0" data-glyph="'+d_glyph+'" data-class="'+d_class+'">'+a[i]+kern_tag_now+kern_tag_alt+'</span>'
+					f_string = '<span '+
+									'title="" '+
+									'class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" '+
+									'data-init-width="0" '+
+									'data-glyph="'+d_glyph+'" '+
+									'data-class="'+d_class+'">'+
+										a[i]+
+										kern_tag_now+
+										kern_tag_alt+
+										rep_container+
+								'</span>'
 					//
 					frag = fragmentFromString(f_string);
 					//
@@ -516,18 +624,24 @@
 			//
 			for (var i = 0; i < data.$fragment_map.length; i++) {
 				//
+				//
 				if (data.$fragment_map[i+1]) {
+					//
+					t_class = '.'+classes.glyph+data.$fragment_map[i][0]
+					//
+					_elem = $(t_class);
 					//
 					_L = data.$fragment_map[i][0]
 					_R = data.$fragment_map[i+1][0]
 					//
 					determine_pair_kerning(_L,_R)
 					//
-					elem = $('.'+classes.glyph+data.$fragment_map[i][0]);
+					//elem = $('.'+classes.glyph+data.$fragment_map[i][0]);
 					//
 					set_pair_kern_diff(data, elem);
 					//
 				}
+				//
 				//
 			}
 			//
@@ -690,6 +804,8 @@
 		//
 		assign_kerning_acord(data);
 		//
+		make_reports(data);
+		//
 	}
 	//
 	function isEmptyObject(obj) {
@@ -843,8 +959,16 @@
 		e.stopPropagation();
 		//
 		var this_pos_top = data.$glyph.position().top;
-		var next_pos_top = data.$glyph.next().position().top;
 		var prev_pos_top = data.$glyph.prev().position().top;
+		var next_pos_top = prev_pos_top;
+		//
+		has_next = data.$glyph.next().length
+		//
+		if (has_next > 0) {
+
+			var next_pos_top = data.$glyph.next().position().top;
+
+		}
 		//
 		if (this_pos_top != next_pos_top) { return; } // avoid last letter in each line miscalculation
 		if (this_pos_top != prev_pos_top) { return; } // avoid first letter in each line miscalculation
@@ -865,7 +989,9 @@
 		data.$glyph.addClass('active_handle');
 		//
 		// calculate bounds before moving
-		data.d_right = parseCeilInt(data.$glyph.next().position().left) + parseCeilInt(data.$glyph.next().css("left")) - parseCeilInt(data.$glyph.position().left );
+		if (has_next > 0) {
+			data.d_right = parseCeilInt(data.$glyph.next().position().left) + parseCeilInt(data.$glyph.next().css("left")) - parseCeilInt(data.$glyph.position().left );
+		}
 		data.d_left = parseCeilInt(data.$glyph.prev().position().left) - parseCeilInt(data.$glyph.prev().css("left")) - parseCeilInt(data.$glyph.position().left );
 		//
 		pos = parseCeilInt(pageX) - parseCeilInt(data.$glyph.position().left)

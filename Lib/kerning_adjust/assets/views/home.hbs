@@ -15,6 +15,17 @@
 
 				</div>
 			</div>
+			<div class="screenshot-container container">
+				<label class="label efo_source" for="efo_title">Snap Kerning:</label>
+				
+				<div class="screenshot-control">
+					
+					<div class="btn btn_icn screenshot_active">
+						<span class="icn">✲</span> Snap
+					</div>
+
+				</div>
+			</div>
 			<div class="rangeslider-container container">
 				<div class="rangeslider-wrap">
 					<label class="label" for="advent-wght">Weight:</label>
@@ -76,16 +87,45 @@
 		</form>
 		<div class="display_alert alert"></div>
 	</div>
-	<div class="fonts" style="font-variation-settings: 'wght' 100;">
-		<div class="font">
-			<div class="sample" style="font-family: 'AdventProVar'; font-weight: 100;">
-				<div class="calc"></div>
-				<div class="kern">
-					ΑΑΑΒΑΕΑΙΑΧΑΜΑΨΑΚΑΟΑΩΑΥΑΡΒΑΒΒΒΕΒΙΒΧΒΜΒΨΒΚΒΟΒΩΒΥΒΡΕΑΕΒΕΕΕΙΕΧΕΜΕΨΕΚΕΟΕΩΕΥΕΡΙΑΙΒΙΕΙΙΙΧΙΜΙΨΙΚΙΟΙΩΙΥΙΡΧΑΧΒΧΕΧΙΧΧΧΜΧΨΧΚΧΟΧΩΧΥΧΡΜΑΜΒΜΕΜΙΜΧΜΜΜΨΜΚΜΟΜΩΜΥΜΡΨΑΨΒΨΕΨΙΨΧΨΜΨΨΨΚΨΟΨΩΨΥΨΡΚΑΚΒΚΕΚΙΚΧΚΜΚΨΚΚΚΟΚΩΚΥΚΡΟΑΟΒΟΕΟΙΟΧΟΜΟΨΟΚΟΟΟΩΟΥΟΡΩΑΩΒΩΕΩΙΩΧΩΜΩΨΩΚΩΟΩΩΩΥΩΡΥΑΥΒΥΕΥΙΥΧΥΜΥΨΥΚΥΟΥΩΥΥΥΡΡΑΡΒΡΕΡΙΡΧΡΜΡΨΡΚΡΟΡΩΡΥΡΡ
+	<div id="capture" class="kerning_panel">
+		<div class="fonts" style="font-variation-settings: 'wght' 100;">
+			<div class="screenshot_info"></div>
+			<div class="font">
+				<div class="sample" style="font-family: 'AdventProVar'; font-weight: 100;">
+					<div class="calc"></div>
+					<div class="kern">bbbabebcbxbdbjbfbibtbgbhbkbpbrbsbubvbybzabaaa</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<dialog class="modal-screenshot modal hide fade" >
+
+		<header>
+
+			<div data-dismiss="modal" class="close btn"></div>
+			<h3>Kerning Snap</h3>
+
+		</header>
+		<article class="two_button"> 
+
+			<div class="screenshot_result"></div>
+			<div data-dismiss="modal" class="cancel btn">
+				Close
+			</div>
+			<div id="ok" class="btn" disabled="true">
+				Save
+			</div>
+
+		</article>
+
+		<footer>
+
+			<div class="alert inline-alert hide"></div>
+
+		</footer>
+
+	</dialog>
+
 </div>
 <div style="display: none;">
 	

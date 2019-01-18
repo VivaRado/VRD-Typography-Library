@@ -379,19 +379,48 @@ $(document).ready(function() {
 	});
 	//
 	function get_data(){
-		
+		//
 		if (!localStorage.getItem(efo_name)) {
 			//
 			action_python_thread(socket_ids.socket_node_id, "get_classes");
 			//
 		}
-		
+		//
 		if (!localStorage.getItem("get_glif_width")) {
 			//
 			action_python_thread(socket_ids.socket_node_id, "get_glif_width");
 			//
 		}
-		
+		//
+	}
+	//
+	function get_screenshot(c, callback){
+		//
+		$(".modal-screenshot").find(".screenshot_result").empty();
+		//
+		domtoimage.toPng(c).then(function(dataUrl) {
+			//
+			var img = new Image();
+			img.src = dataUrl;
+			//
+			$(".screenshot_info").empty();
+			$(".screenshot_info").hide();
+			//
+			$(".modal-screenshot").find(".screenshot_result").append(img);
+			//
+			if (callback) { callback() }
+			//
+		  })
+		  .catch(function(error) {
+			console.error('oops, something went wrong!', error);
+		  });
+		//
+		/*html2canvas(c).then(function(canvas) {
+			//
+			FAIL
+			//
+		});*/
+		//
 	}
 	//
 	function data_timer() {
@@ -432,6 +461,24 @@ $(document).ready(function() {
 		get_data();
 		//
 	},1000);
+	//
+	$('.screenshot_active').on("click",function(){
+		//
+		var d = new Date();
+		//
+		$(".screenshot_info").show();
+		$(".screenshot_info").text(efo_name+': '+d.toLocaleString());
+		//
+		get_screenshot($("#capture")[0], function(){
+			$('.modal-screenshot').modal({
+				show: true,
+				backdrop: 'static'
+			});
+			
+		});
+		//
+
+	});
 	//
 });
 //
