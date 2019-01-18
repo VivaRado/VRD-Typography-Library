@@ -11,12 +11,12 @@ The Flask server is communicating over Socket.io with the NodeJS interface.
 
  - Colaborative, Flask is multi-threaded so you can work on multiple EFOs at the same time.
  - Interface Font rendering is done though fragments for faster result.
- - Each Master can have its own set of kerning adjustments.
+ - Each Master can have it's own set of kerning adjustments.
  - Your kerning gets stored in LocalStorage.
  - Class Kerning, so you can kern all letters of a class.
  - Snap Kerning, take screens of your kerning so you can verify it passing after saving and compiling.
 
-On save, the data are transfered to ```efo/kerning/adjustments.json```
+On save, the data is transfered to ```efo/kerning/adjustments.json```
 And on ```kerning_compress_flat.py``` on that EFO, you get new PLIST and FEA files.
 Runing ```efo_to_var.py``` - to compile with fontmake, clearing the browser cache data and reload - the interface mirrors the changes.
 Working on integrating those last steps and making it easier.
