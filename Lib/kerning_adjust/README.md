@@ -1,4 +1,4 @@
-Kerning Adjust (alpha)
+Kerning Adjust (beta)
 ===================
 
 ![Screenshot](https://github.com/VivaRado/VRD-Typography-Library/blob/master/Lib/kerning_adjust/assets/img/kerning_adjust_preview.gif)
