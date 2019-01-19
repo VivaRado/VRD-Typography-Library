@@ -152,7 +152,7 @@
 				el_kerning_val = _elem.find('i').width();
 				el_class_val = _elem.attr("data-class");
 				//
-				if( data.$fragment_map.length != i) { // dont show kerning fault on last element
+				if( (data.$fragment_map.length - 1) != i) { // dont show kerning fault on last element
 					//
 					if (el_kerning_val == 0) {
 						//
@@ -900,6 +900,8 @@
 					//
 					assign_kerning_acord(data);
 					//
+					make_reports(data);
+					//
 				});
 				//
 			}
@@ -1000,6 +1002,7 @@
 		//
 		onStart(data, elem_glyph);
 		//
+		
 	}
 	//
 	var _ratio = 0.5;
