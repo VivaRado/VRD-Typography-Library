@@ -152,7 +152,7 @@
 				el_kerning_val = _elem.find('i').width();
 				el_class_val = _elem.attr("data-class");
 				//
-				if( data.$fragment_map.length < i) { // dont show kerning fault on last element
+				if( data.$fragment_map.length != i) { // dont show kerning fault on last element
 					//
 					if (el_kerning_val == 0) {
 						//
