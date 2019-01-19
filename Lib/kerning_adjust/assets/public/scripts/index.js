@@ -398,7 +398,7 @@ $(document).ready(function() {
 		//
 		$(".modal-screenshot").find(".screenshot_result").empty();
 		//
-		domtoimage.toPng(c).then(function(dataUrl) {
+		domtoimage.toJpeg(c, { "quality": 1, "bgcolor": "#fff" }).then(function(dataUrl) { // toPng
 			//
 			var img = new Image();
 			img.src = dataUrl;

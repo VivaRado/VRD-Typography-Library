@@ -547,12 +547,11 @@ main,
 .screenshot_info {
 	position: absolute;
 	bottom: -25px;
-	right: 5px;
+	right: -25px;
 	font-family: monospace;
 	font-size: 0.6rem;
 }
 #capture {
 	height: auto;
 	position: relative;
-
 }
