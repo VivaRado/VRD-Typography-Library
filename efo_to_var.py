@@ -115,11 +115,11 @@ if faults == False:
 				#
 				if os.name == 'nt':
 					#
-					call(["py", fontmake_main, "-o", "variable", "-m", new_dspace, "--output-path", os.path.normpath(args.output)])
+					call(["py", fontmake_main, "-o", "variable", "-m", new_dspace, "--output-path", str(os.path.normpath(args.output))])
 
 				else:
 
-					call(["fontmake", "-o", "variable", "-m", new_dspace, "--output-path", os.path.normpath(args.output)])
+					call(["fontmake", "-o", "variable", "-m", new_dspace, "--output-path", str(os.path.normpath(args.output))])
 
 				#
 			else:
