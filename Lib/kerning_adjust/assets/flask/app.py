@@ -15,9 +15,10 @@ template_dir = os.path.abspath(os.path.join(f_dir, '..', 'views'))
 static_file_dir = os.path.abspath(os.path.join(f_dir, '..', 'public'))
 print(static_file_dir)
 app = Flask(__name__, static_folder=static_file_dir, template_folder=template_dir)
+#app.run(host='192.168.8.100',port='5000')
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
-cors = CORS(app, resources={r"localhost*": {"origins": "*"}})
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 Session(app)
 socketio = SocketIO(app)
 #
@@ -140,8 +141,6 @@ def postdata():
 	#
 	if _id in clients:
 		#
-		#
-
 		if _tell == "abort":
 			#
 			status = 400

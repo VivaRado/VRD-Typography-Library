@@ -6,7 +6,6 @@ from distutils.dir_util import copy_tree
 #
 import ufoLib
 #
-from Lib.ufo2svg import tools
 from Lib.generic import generic_tools
 import xml.etree.cElementTree as ET
 import lxml.etree as LET

@@ -97,8 +97,10 @@ $(document).ready(function() {
 	//
 	init_socket = function(callback){
 		//
-		var socket_node = io.connect('http://localhost:8008');
-		var socket_flask = io.connect('http://localhost:5000/test');
+		console.log(location.hostname)
+		//
+		var socket_node = io.connect('http://'+location.hostname+':8008');
+		var socket_flask = io.connect('http://'+location.hostname+':5000/test');
 		//
 		socket_node.on('connect', function () { 
 			//
@@ -417,7 +419,7 @@ $(document).ready(function() {
 		//
 		/*html2canvas(c).then(function(canvas) {
 			//
-			FAIL
+			FAILS
 			//
 		});*/
 		//

@@ -5,8 +5,8 @@ from fontParts.world import *
 from TFSFont import *
 from TFSSvg import *
 #
-from PIL import Image
-import cairosvg
+#from PIL import Image
+#import cairosvg
 #
 from math import sqrt, ceil, floor
 #

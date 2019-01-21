@@ -12,7 +12,7 @@ import difflib
 #
 import xml.etree.ElementTree as ET
 import lxml.etree as LET
-from bs4 import BeautifulSoup
+
 from xml.dom import minidom
 #from lxml import etree
 

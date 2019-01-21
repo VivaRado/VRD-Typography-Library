@@ -7,6 +7,7 @@ from Lib.components import COMPS
 from Lib.generic import generic_tools
 #
 from subprocess import call
+import fontmake
 #
 import json
 #
@@ -108,14 +109,29 @@ if faults == False:
 			#
 			tree.write(new_dspace)
 			#
+			fontmake_main = os.path.join(os.path.dirname(fontmake.__file__), "__main__.py")
+			#
 			if args.output:
 				#
-				call(["fontmake", "-o", "variable", "-m", new_dspace, "--output-path", args.output])
-				#call(["python3", "/media/root/Malysh1/winshm/advent_repo/fontmake_debug/fontmake_deducted_2/fontmake/__main__.py", "-o", "variable", "-m", new_dspace, "--output-path", args.output])
+				if os.name == 'nt':
+					#
+					call(["py", fontmake_main, "-o", "variable", "-m", new_dspace, "--output-path", os.path.normpath(args.output)])
+
+				else:
+
+					call(["fontmake", "-o", "variable", "-m", new_dspace, "--output-path", os.path.normpath(args.output)])
+
 				#
 			else:
 				#
-				call(["fontmake", "-o", "variable", "-m", new_dspace])
+				if os.name == 'nt':
+
+					call(["py", fontmake_main, "-o", "variable", "-m", new_dspace])
+
+				else:
+
+					call(["fontmake", "-o", "variable", "-m", new_dspace])
+
 				#
 			#
 			#

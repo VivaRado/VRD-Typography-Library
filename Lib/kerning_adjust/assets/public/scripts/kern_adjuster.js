@@ -121,8 +121,20 @@
 			//
 		}
 		//
-		t_parts.push(add_t["initial"]+' '+add_t["title"]);
-		r_parts.push(add_t["initial"]);
+		t_add = add_t["initial"]+' '+add_t["title"];
+		r_add = add_t["initial"]
+		//	
+		if (t_parts.indexOf(t_add) == -1) {
+			//
+			t_parts.push(t_add);
+			//
+		}
+		//
+		if (r_parts.indexOf(r_add) == -1) {
+			//
+			r_parts.push(r_add);
+			//
+		}
 		//
 		f_t = t_parts.join(", ");
 		f_r = r_parts.join(" ");
@@ -565,13 +577,10 @@
 						d_glyph = get_name(data, a[i]);
 						//
 					} else {
-
 						//
 						if (rforeign.test(d_glyph)) {
 							//
-							console.log(d_glyph)
 							d_glyph = get_name(data, a[i]);
-							console.log(d_glyph)
 							//
 						}
 						//
@@ -960,48 +969,52 @@
 		e.preventDefault();
 		e.stopPropagation();
 		//
+		has_prev = data.$glyph.prev().length
+		has_next = data.$glyph.next().length
+		//
 		var this_pos_top = data.$glyph.position().top;
 		var prev_pos_top = data.$glyph.prev().position().top;
 		var next_pos_top = prev_pos_top;
 		//
-		has_next = data.$glyph.next().length
-		//
-		if (has_next > 0) {
+		if (has_prev > 0) {
+			//
+			if (has_next > 0) {
 
-			var next_pos_top = data.$glyph.next().position().top;
+				var next_pos_top = data.$glyph.next().position().top;
 
+			}
+			//
+			if (this_pos_top != next_pos_top) { return; } // avoid last letter in each line miscalculation
+			if (this_pos_top != prev_pos_top) { return; } // avoid first letter in each line miscalculation
+			if (data.$glyph.prev().length == 0 ) { return; } // avoid first letter miscalculation
+			//
+			var oe = e.originalEvent,
+				touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
+				pageX = (touch) ? touch.pageX : e.clientX;
+			//
+			var the_class = $(e.target).attr('class');
+			var is_dim = the_class.substring(the_class.lastIndexOf("-") + 1);
+			//
+			data.$glyph.next().attr("data-original-margin", parseCeilInt(data.$glyph.next().css("margin-left")))
+			data.$glyph.next().css({"margin-left": parseCeilInt(data.$glyph.css("margin-left")) + parseCeilInt(data.$glyph.next().attr("data-original-margin")) })
+			//
+			transfer_to_left(data.$glyph)
+			//
+			data.$glyph.addClass('active_handle');
+			//
+			// calculate bounds before moving
+			if (has_next > 0) {
+				data.d_right = parseCeilInt(data.$glyph.next().position().left) + parseCeilInt(data.$glyph.next().css("left")) - parseCeilInt(data.$glyph.position().left );
+			}
+			data.d_left = parseCeilInt(data.$glyph.prev().position().left) - parseCeilInt(data.$glyph.prev().css("left")) - parseCeilInt(data.$glyph.position().left );
+			//
+			pos = parseCeilInt(pageX) - parseCeilInt(data.$glyph.position().left)
+			//
+			data.glyph_left = pos;
+			//
+			onStart(data, elem_glyph);
+			//
 		}
-		//
-		if (this_pos_top != next_pos_top) { return; } // avoid last letter in each line miscalculation
-		if (this_pos_top != prev_pos_top) { return; } // avoid first letter in each line miscalculation
-		if (data.$glyph.prev().length == 0 ) { return; } // avoid first letter miscalculation
-		//
-		var oe = e.originalEvent,
-			touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
-			pageX = (touch) ? touch.pageX : e.clientX;
-		//
-		var the_class = $(e.target).attr('class');
-		var is_dim = the_class.substring(the_class.lastIndexOf("-") + 1);
-		//
-		data.$glyph.next().attr("data-original-margin", parseCeilInt(data.$glyph.next().css("margin-left")))
-		data.$glyph.next().css({"margin-left": parseCeilInt(data.$glyph.css("margin-left")) + parseCeilInt(data.$glyph.next().attr("data-original-margin")) })
-		//
-		transfer_to_left(data.$glyph)
-		//
-		data.$glyph.addClass('active_handle');
-		//
-		// calculate bounds before moving
-		if (has_next > 0) {
-			data.d_right = parseCeilInt(data.$glyph.next().position().left) + parseCeilInt(data.$glyph.next().css("left")) - parseCeilInt(data.$glyph.position().left );
-		}
-		data.d_left = parseCeilInt(data.$glyph.prev().position().left) - parseCeilInt(data.$glyph.prev().css("left")) - parseCeilInt(data.$glyph.position().left );
-		//
-		pos = parseCeilInt(pageX) - parseCeilInt(data.$glyph.position().left)
-		//
-		data.glyph_left = pos;
-		//
-		onStart(data, elem_glyph);
-		//
 		
 	}
 	//

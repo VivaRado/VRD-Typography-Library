@@ -11,14 +11,14 @@ import copy
 #import json
 import random
 import string
-import atexit
+#import atexit
 import pprint
 import difflib
 import datetime
 import plistlib
 #import datetime
 import itertools
-import readline 
+#import readline 
 import collections
 import rlcompleter 
 from sys import argv

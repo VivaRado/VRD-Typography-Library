@@ -3,8 +3,8 @@ import time
 #
 #import Lib.generic.tab_completion
 from Lib.efo import EFO
-from Lib.similarity_extractor import SIMEX
-from Lib.kerning import AUTOKERN
+#from Lib.similarity_extractor import SIMEX
+#from Lib.kerning import AUTOKERN
 from Lib.compress_kerning import COMPRESS
 from Lib.generic import generic_tools
 #

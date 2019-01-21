@@ -46,4 +46,9 @@ Compression Logic:
 
 ------
 
+### Python Requirements
+
+```fontParts, svgwrite, image```
+
+
 [By VivaRado](https://www.vivarado.com)

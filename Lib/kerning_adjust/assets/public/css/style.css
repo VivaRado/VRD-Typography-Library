@@ -326,7 +326,7 @@ main,
 	opacity: 1;
 }
 .loaded_kern .kern .glyph {
-	display: inline;
+	display: inline-block;
 	float: none;
 	position: relative;
 	cursor: pointer;
@@ -531,6 +531,7 @@ main,
 	font-size: 0.6rem;
 	text-align: left;
 	padding: 0.3rem;
+	min-width: 50px;
 }
 
 .report_container:after{
