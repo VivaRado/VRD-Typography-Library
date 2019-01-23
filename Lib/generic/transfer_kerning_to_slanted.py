@@ -171,7 +171,7 @@ if  args.target_fonts is None:
 	#
 	faults = True
 	#
-	print('=\n=> Please Provide the Fonts to Shift Anchor Offsets: -f "thn,reg,bld"\n=')	
+	print('=\n=> Please Provide the Fonts to apply altered kerning: -t "thn,reg,bld"\n=')	
 	#
 #
 if  args.deg is None:

@@ -83,6 +83,15 @@ npm install
 
 node app --source (source EFO)
 ```
+[**Transfer Kerning to Slanted (alpha):**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/generic/transfer_kerning_to_slanted.pdf)
+```
+transfer_kerning_to_slanted.py
+
+-s (source EFO)  
+-f (the weights of the font to get kerning info: "reg,bld,...")
+-t (the weights of the font to put kerning info: "reg,bld,...")
+-d (Slant Degrees: "12")
+```
 ------
 
 [By VivaRado](https://www.vivarado.com)

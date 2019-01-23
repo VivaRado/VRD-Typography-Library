@@ -158,7 +158,13 @@ class COMPRESS(object):
 							#
 							ltkd_b = self.get_kern_name_and_dir(R_pair)
 							#
-							let_b = '@_'+ltkd_b[0]+'1'
+							add_one = ''
+							#
+							if R_pair in list(self.p_g.keys()):
+								#
+								add_one = '1'
+								#
+							let_b = '@_'+ltkd_b[0]+add_one
 							#
 						#
 					#
