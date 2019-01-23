@@ -83,7 +83,7 @@ npm install
 
 node app --source (source EFO)
 ```
-[**Transfer Kerning to Slanted (alpha):**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/generic/transfer_kerning_to_slanted.pdf)
+[**AutoSlant (alpha):**](https://github.com/VivaRado/VRD-Typography-Library/tree/master/Lib/generic/transfer_kerning_to_slanted.pdf)
 ```
 transfer_kerning_to_slanted.py
 
