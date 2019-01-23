@@ -46,33 +46,33 @@ parser.add_argument("-d", "--deg", dest="deg",
 args = parser.parse_args()
 #
 dir_path = os.path.dirname(os.path.realpath(__file__))
-#
-def shear_kerning(height, slant_deg, Ko, L, Ln, R, Rn):
-	#
-	xs = math.sin(slant_deg*math.pi/180) * height
-	xl = xs * 2
-	d = (L - xs) + Ko
-	b = xs + d + abs(Ko)
-	g = xl + d
-	calc = ((g-b)-(Rn-R)) - ((g-b)-(Ln-L))
-	# if orig_kern < 0:
-	# 	#
-	# 	x= math.sin(slant_deg*math.pi/180) * height
-	# 	u = ( x + abs(orig_kern) ) / 2
-	# 	#
-	# 	calc = int(u - abs(R - Rn) + abs(L - Ln))
-	# 	#
-	# 	print("+")
-	# 	#
-	# else:
-	# 	#
-	# 	print("-") 
-	# 	#
-	# 	calc = -int(abs(abs(R - Rn) - abs(L - Ln)))
-	# 	#
-	return int(calc)
-	#
-# (int(args.deg), args.fonts, args.target_fonts)
+# #
+# def shear_kerning(height, slant_deg, Ko, L, Ln, R, Rn):
+# 	#
+# 	xs = math.sin(slant_deg*math.pi/180) * height
+# 	xl = xs * 2
+# 	d = (L - xs) + Ko
+# 	b = xs + d + abs(Ko)
+# 	g = xl + d
+# 	calc = ((g-b)-(Rn-R)) - ((g-b)-(Ln-L))
+# 	# if orig_kern < 0:
+# 	# 	#
+# 	# 	x= math.sin(slant_deg*math.pi/180) * height
+# 	# 	u = ( x + abs(orig_kern) ) / 2
+# 	# 	#
+# 	# 	calc = int(u - abs(R - Rn) + abs(L - Ln))
+# 	# 	#
+# 	# 	print("+")
+# 	# 	#
+# 	# else:
+# 	# 	#
+# 	# 	print("-") 
+# 	# 	#
+# 	# 	calc = -int(abs(abs(R - Rn) - abs(L - Ln)))
+# 	# 	#
+# 	return int(calc)
+# 	#
+# # (int(args.deg), args.fonts, args.target_fonts)
 #
 def get_glif_file_name(xmlTree, glif_name):
 	#
@@ -101,7 +101,7 @@ def do_kerning_alterations(EFO, deg, in_fonts, targ_fonts):
 	open flat kerning for in_fonts
 		get fontinfo capHeight
 		for each pair get pair widths
-			run shear_kerning(height, slant_deg, orig_kern, L, Ln, R, Rn)
+			find highest point location, move kerning by the diff
 	'''
 	#
 	read_efo_json_fontinfo(EFO, "Downstream")
@@ -137,7 +137,7 @@ def do_kerning_alterations(EFO, deg, in_fonts, targ_fonts):
 							res_R = get_glif_width(EFO._in, glyphlib, y, s_f) # source_font_R_width
 							res_Rn = get_glif_width(EFO._in, glyphlib, y, t_f) # target_font_R_width
 							#
-							new_kern_val =shear_kerning(cap_height, deg, res_kern, res_L, res_Ln, res_R, res_Rn)
+							new_kern_val = shear_kerning(cap_height, deg, res_kern, res_L, res_Ln, res_R, res_Rn)
 							#
 							t_p_f[x][y] = new_kern_val
 							#
