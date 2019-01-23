@@ -25,6 +25,7 @@
 		customClass: "",
 		class_kern_elem: "",
 		kern_classes: "",
+		glyphlib: "",
 		glif_width: "",
 		efo_name: "",
 		masters:"",
@@ -38,9 +39,6 @@
 		"kerning_none": {"class":"r_kerning_none", "title":"No Kerning Value", "initial":"🆚"},
 		"class_none": {"class":"r_class_none", "title":"No Class Value", "initial":"🆑"}
 	}
-	//
-	var rforeign = /[^\u0000-\u007f]/;
-	//var kerning_obj;
 	//
 	var pub = {
 		//
@@ -287,31 +285,12 @@
 		//
 	}
 	//
-	function show_class_kerning_effect(data,_L, _R, _val){
+	function show_class_kerning_effect(data,_L, _L_sc, _R, _R_sc, _val){
 		//
 		var current_master = is_master(data)
-		_L_g = _L.attr("data-glyph");
-		_R_g = _R.attr("data-glyph");
 		//
-		if (_L.attr("data-class") != "undefined") {
-
-			_L_c = "@_"+_L.attr("data-class");
-			
-		} else {
-
-			_L_c = _L.attr("data-glyph");
-
-		}
-		//
-		if (_R.attr("data-class") != "undefined") {
-
-			_R_c = "@_"+_R.attr("data-class");
-
-		} else {
-			
-			_R_c = _R.attr("data-glyph");
-
-		}
+		_L_c = _L.attr(_L_sc);
+		_R_c = _R.attr(_R_sc);
 		//
 
 		did_show = [];
@@ -321,58 +300,12 @@
 			_R_elem = $(".kern span."+classes.glyph_base+'.'+classes.glyph+i)
 			_L_elem = _R_elem.prev();
 			//
-			if (_L_elem.attr("data-class") != undefined) {
-
-				_L_is = "@_"+_L_elem.attr("data-class");
-				
-			} else {
-
-				_L_is = _L_elem.attr("data-glyph");
-
-			}
-			//
-			if (_R_elem.attr("data-class") != undefined) {
-
-				_R_is = "@_"+_R_elem.attr("data-class");
-
-			} else {
-				
-				_R_is = _R_elem.attr("data-glyph");
-
-			}
+			_L_is = _L_elem.attr(_L_sc);
+			_R_is = _R_elem.attr(_R_sc);
 			//
 			if (_L_is == _L_c && _R_is == _R_c) {
 				//
-				if( data.class_kern_elem.is(':checked')){
-					//
-					//if (_L_c.indexOf("@") != -1 || _R_c.indexOf("@") != -1) {
-						
-						//if (data.kerning_obj[current_master[0]].hasOwnProperty(_L_c+' '+_R_c)) {
-							//
-							run_kerning_adjustment(data, _L_elem, _R_elem, _val)
-							//
-						//} else {
-							//
-						//	if (did_show.indexOf(_L_g+' '+_R_g) == -1) {
-								//
-						//		did_show.push(_L_g+' '+_R_g)
-						//		run_kerning_adjustment(data, _L_elem, _R_elem, _val)
-								//
-						//	}
-							//
-						//}
-					//}
-					//
-				} else {
-					//
-					if (did_show.indexOf(c_split[1]+' '+c_split[0]) == -1) {
-						//	
-						did_show.push(c_split[1]+' '+c_split[0])
-						run_kerning_adjustment(data, _L_elem, _R_elem, _val)
-						//
-					}
-					//
-				}
+				run_kerning_adjustment(data, _L_elem, _R_elem, _val)
 				//
 			}
 			//
@@ -380,79 +313,159 @@
 		//
 	}
 	//
+	// maybe combine get_defined_sides with find_with_class
+	//
+	var find_with_class = function(_c){
+			//
+			_itm_G = $('[data-glyph="'+_c+'"]');
+			//
+			if ( _c.indexOf("@") != -1 ) {
+				//
+				c_L = _c.split("@_")[1];
+				//
+				_itm = $('[data-class="'+c_L+'"]');
+				//
+				_itm_L = $('[data-class-l="'+c_L+'"]');
+				_itm_C = $('[data-class="'+c_L+'"]');
+				_itm_R = $('[data-class-r="'+c_L+'"]');
+				//
+				if (_itm_C.length == 0) {
+
+					if (_itm_L.length == 0) {
+						//
+						if (_itm_R.length == 0) {
+							//
+							_itm_c = [_itm_G, "data-glyph", "G"];
+							//
+						} else {
+							//
+							_itm_c = [_itm_R, "data-class-r", "R"];
+							//
+						}
+						//
+					} else {
+						//
+						_itm_c = [_itm_L, "data-class-l", "L"];
+						//
+					}
+					//
+				} else {
+					//
+					_itm_c = [_itm_C, "data-class", "C"];
+					//
+				}
+
+			} else {
+
+				_itm_c = [_itm_G, "data-glyph", "G"];
+
+			}
+			//
+			//
+			return _itm_c;
+			//
+		}
+	//
+	function get_defined_sides(data, _itm){
+		//
+		_itm_L = _itm.attr("data-class-l");
+		_itm_C = _itm.attr("data-class");
+		_itm_R = _itm.attr("data-class-r");
+		//
+		//
+		if( data.class_kern_elem.is(':checked')){
+			//
+			if (_itm_C == "undefined") {
+
+				if (_itm_L == "undefined") {
+					//
+					if (_itm_R == "undefined") {
+						//
+						_itm_c = [_itm.attr("data-glyph"), "data-glyph", "G"];
+						//
+					} else {
+						//
+						_itm_c = ["@_"+_itm_R, "data-class-r", "R"];
+						//
+					}
+					//
+				} else {
+					//
+					_itm_c = ["@_"+_itm_L, "data-class-l", "L"];
+					//
+				}
+				//
+			} else {
+				//
+				_itm_c = ["@_"+_itm_C, "data-class", "C"];
+				//
+			}
+			//
+		} else {
+			//
+			_itm_c = [_itm.attr("data-glyph"), "data-glyph", "G"];
+			//
+		}
+		//
+		return _itm_c;
+		//
+	}
+	//
 	function update_class_kerning(data, _L, _R){
 		//
 		data.kerning_obj = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'))
 		//
-		//console.log(data.kerning_obj)
 		//
 		var current_master = is_master(data)
 		//
-		_L_g = _L.attr("data-glyph");
-		_R_g = _R.attr("data-glyph");
+		s_L_c = get_defined_sides(data, _L)
+		s_R_c = get_defined_sides(data, _R)
 		//
-		//
-		if (_L.attr("data-class") != "undefined") {
-
-			_L_c = "@_"+_L.attr("data-class");
-			
-		} else {
-
-			_L_c = _L.attr("data-glyph");
-
-		}
-		//
-		if (_R.attr("data-class") != "undefined") {
-
-			_R_c = "@_"+_R.attr("data-class");
-
-		} else {
-			
-			_R_c = _R.attr("data-glyph");
-
-		}
 		//
 		if (current_master) {
 			//
 			k_val = parseInt(_R.css("margin-left"))
 			//
-			if( data.class_kern_elem.is(':checked')){
-			
-				t_L = _L_c;
-				t_R = _R_c;
-
+			R_name = s_R_c[0];
+			R_attr = s_R_c[1];
+			L_name = s_L_c[0];
+			L_attr = s_L_c[1];
+			//
+			if (s_R_c[2] == "L") { // if Left Class Defined in Right Side Kerning Attempt
 				//
-				show_class_kerning_effect(data,_L,_R, k_val)
+				R_attr = "data-glyph";
+				R_name = get_let(_R.attr(R_attr));
 				//
-
-			} else {
-
-				t_L = _L_g;
-				t_R = _R_g;
-
 			}
 			//
-			k_name = t_L+' '+t_R;
+			if (s_L_c[2] == "R") { // if Right Class Defined in Left Side Kerning Attempt
+				//
+				L_attr = "data-glyph";
+				L_name = get_let(_L.attr(L_attr));
+				//
+			}
 			//
-			//console.log(current_master[0])
-			//console.log(data.kerning_obj)
-			//console.log(data.kerning_obj["thn_it"])
+			if( data.class_kern_elem.is(':checked')){
+				//
+				show_class_kerning_effect(data, _L, L_attr, _R, R_attr, k_val);
+				//
+			}
+			//
+			k_pair_name = L_name+' '+R_name;
 			//
 			if (k_val == 0) {
-
-				delete data.kerning_obj[current_master[0]][k_name]
-
+				//
+				delete data.kerning_obj[current_master[0]][k_pair_name]
+				//
 			} else {
 				//
-				data.kerning_obj[current_master[0]][k_name] = k_val * 10
+				data.kerning_obj[current_master[0]][k_pair_name] = k_val * 10
 				//
 			}
 
 		}
 		//
 		p(pprint( JSON.stringify(data.kerning_obj, undefined, 4) ),$('.serialize'));
-		//
-		//data.kerning_obj = data.kerning_obj
 		//
 		localStorage.setItem( data.efo_name+'_kerning', JSON.stringify(data.kerning_obj))
 		//
@@ -486,44 +499,74 @@
 		return rem
 	}
 	//
+	function get_let(l){
+		return l.substring(l.lastIndexOf("_") + 1);
+	}
+	//
 	function get_class(data, letter){
+		//
+		found = [];
+		cls = [];
+		//	
+		_cls_L = undefined;
+		_cls_R = undefined;
+		_cls_C = undefined;
 		//
 		for (var key in data.kern_classes) {
 			//
-			var obj = data.kern_classes[key];
+			_obj = data.kern_classes[key];
 			//
-			if (arrayColumn(obj, 2).indexOf(letter) != -1) {
+			if (arrayColumn(_obj, 2).indexOf(letter) != -1) {
 				//
-				return key.substring(key.lastIndexOf("_") + 1);
+				found.push(key)
 				//
 			}
 			//
 		}
 		//
+		for (var i = 0; i < found.length; i++) {
+			//
+			dir = found[i].split('@MMK_').pop().split('_')[0];
+			//
+			//
+			if (dir == "L") {
+				//
+				_cls_L = get_let(found[i])
+				//
+			}
+			//
+			if (dir == "R") {
+				//
+				_cls_R = get_let(found[i])
+				//
+			}
+			//
+		}
+		//
+		if (_cls_R == _cls_L) {
+			//
+			_cls_C = _cls_R
+			//
+		}
+		//
+		return [_cls_L, _cls_C, _cls_R]
+		//
 	}
 	//
 	function get_name(data, letter){
 		//
-		x = 0
-		//
-		for (var key in data.kern_classes) {
+		for (var key in data.glyphlib) {
+			_obj = data.glyphlib[key];
 			//
-			var obj = data.kern_classes[key];
-			//
-			for (var i = 0; i < obj.length; i++) {
+			for (var i = 0; i < _obj.length; i++) {
 				//
-				if (obj[i][2] == letter) {
+				if (_obj[i][0] == letter) {
 					//
-					return obj[i][1]
-					//
-				} else {
-					//
-					return letter
+					return key
 					//
 				}
 				//
 			}
-			//
 		}
 		//
 	}
@@ -557,7 +600,6 @@
 		//
 		if (a.length) {
 			//
-			//
 			if (data.$fragment_map.length == 0) { // if we have a fragment_map dont place the elements again.
 				//
 				t.empty()
@@ -568,30 +610,18 @@
 				//
 				for (var i = 0; i < a.length; i++) {
 					//
-					d_glyph = a[i];
 					d_class = get_class(data, a[i]);
 					//
-					//
-					if(isNumeric(d_glyph)){
-						//
-						d_glyph = get_name(data, a[i]);
-						//
-					} else {
-						//
-						if (rforeign.test(d_glyph)) {
-							//
-							d_glyph = get_name(data, a[i]);
-							//
-						}
-						//
-					}
+					d_glyph = get_name(data, a[i]);
 					//
 					f_string = '<span '+
 									'title="" '+
 									'class="'+classes.glyph_base+' '+classes.glyph+(i+1)+'" '+
 									'data-init-width="0" '+
 									'data-glyph="'+d_glyph+'" '+
-									'data-class="'+d_class+'">'+
+									'data-class="'+d_class[1]+'"'+
+									'data-class-l="'+d_class[0]+'"'+
+									'data-class-r="'+d_class[2]+'">'+
 										a[i]+
 										kern_tag_now+
 										kern_tag_alt+
@@ -645,12 +675,9 @@
 					//
 					determine_pair_kerning(_L,_R)
 					//
-					//elem = $('.'+classes.glyph+data.$fragment_map[i][0]);
-					//
 					set_pair_kern_diff(data, elem);
 					//
 				}
-				//
 				//
 			}
 			//
@@ -825,11 +852,13 @@
 		}
 		return true;
 	}
-	//	
+	//
 	function assign_kerning_acord(data){
 		//
 		data.kerning_obj = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'))
 		//
+		
+
 		var reset_kern_view_guides = function() {
 			//
 			for (var i = 0; i < data.$fragment_map.length; i++) {
@@ -843,6 +872,9 @@
 				//
 			}
 		}
+		//
+
+		//
 		//
 		var current_master = is_master(data);
 		//
@@ -859,30 +891,32 @@
 					//
 					c_split = k.split(" ");
 					//
-					// has class or just glyph
-					if ( c_split[0].indexOf("@") != -1 ){
-
-						c_L = c_split[0].split("@_")[1];
-						t_L = $('[data-class="'+c_L+'"]');
-
-					} else {
-
-						t_L = $('[data-glyph="'+c_split[0]+'"]');
-
+					//
+					ac_L = c_split[0]
+					ac_R = c_split[1]
+					//
+					t_L = find_with_class(ac_L);
+					t_R = find_with_class(ac_R);
+					//
+					L_attr = t_L[1];
+					R_attr = t_R[1];
+					//
+					/*if (t_R[2] == "L") { // if Left Class Defined in Right Side Kerning Attempt
+						//
+						R_attr = "data-glyph";
+						//R_name = get_let(_R.attr(R_attr));
+						//
 					}
 					//
-					if ( c_split[1].indexOf("@") != -1 ){
-
-						c_R = c_split[1].split("@_")[1];
-						t_R = $('[data-class="'+c_R+'"]');
-
-					} else {
-
-						t_R = $('[data-glyph="'+c_split[1]+'"]');
-
-					}
+					if (t_L[2] == "R") { // if Right Class Defined in Left Side Kerning Attempt
+						//
+						L_attr = "data-glyph";
+						//L_name = get_let(_L.attr(L_attr));
+						//
+					}*/
+					//console.log(t_L[0], L_attr,t_R[0], R_attr)
 					//
-					show_class_kerning_effect(data,t_L,t_R, k_current[k] / 10);
+					show_class_kerning_effect(data,t_L[0], L_attr,t_R[0], R_attr, k_current[k] / 10);
 					//
 				}
 				//
@@ -979,14 +1013,14 @@
 		if (has_prev > 0) {
 			//
 			if (has_next > 0) {
-
+				//
 				var next_pos_top = data.$glyph.next().position().top;
-
+				//
 			}
 			//
 			if (this_pos_top != next_pos_top) { return; } // avoid last letter in each line miscalculation
 			if (this_pos_top != prev_pos_top) { return; } // avoid first letter in each line miscalculation
-			if (data.$glyph.prev().length == 0 ) { return; } // avoid first letter miscalculation
+			if (data.$glyph.prev().length == 0 ) { return; } // avoid first letter miscalculation // sorry you will have to resize the window.
 			//
 			var oe = e.originalEvent,
 				touch = (typeof oe.targetTouches !== "undefined") ? oe.targetTouches[0] : null,
@@ -1077,9 +1111,6 @@
 		update_class_kerning(data, data.$glyph.prev(),data.$glyph)
 		//
 		if (this.onSlideEnd && typeof this.onSlideEnd === 'function') {
-			//
-			//console.log(localStorage.getItem( data.efo_name+'_kerning'))
-			//console.log(data.kerning_obj)
 			//
 			k_object = JSON.parse(localStorage.getItem(data.efo_name+'_kerning'));
 			data.kerning_obj = k_object

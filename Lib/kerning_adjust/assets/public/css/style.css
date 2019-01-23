@@ -326,7 +326,7 @@ main,
 	opacity: 1;
 }
 .loaded_kern .kern .glyph {
-	display: inline-block;
+	display: inline; /* DO NOT CHANGE*/
 	float: none;
 	position: relative;
 	cursor: pointer;

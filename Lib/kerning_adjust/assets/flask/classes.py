@@ -5,6 +5,7 @@ import sys
 import plistlib
 import json
 import xml.etree.ElementTree as ET  
+import xmltodict
 from copy import deepcopy
 #
 import pprint
@@ -44,10 +45,17 @@ class kern_adjust:
 		#
 	def get_classes(self):
 		#
+		tree = ET.parse(os.path.join(self._efo,"glyphlib.xml"))  
+		root = tree.getroot()
+		#
+		#
+		def get_uni_chr(_chr):
+			#
+			return str('\\u'+_chr).encode('utf-8').decode("unicode-escape")
+			#
+		#
 		def get_glyphlib_info( name):
 			#
-			tree = ET.parse(os.path.join(self._efo,"glyphlib.xml"))  
-			root = tree.getroot()
 			#
 			for x in root:
 				#
@@ -57,12 +65,31 @@ class kern_adjust:
 					#
 					if len(x.attrib["unicode"]):
 						#
-						uni_char = str('\\u'+x.attrib["unicode"]).encode('utf-8').decode("unicode-escape")#.decode("hex")
+						uni_char = get_uni_chr(x.attrib["unicode"])
 						#
 					#
 					return [x.attrib["glif"],name,uni_char, x.attrib["unicode"]]
 					#
 				#
+			#
+		#
+		def get_glyphlib():
+			#
+			json_glyphlib = {}
+			#
+			for x in root:
+				#
+				uni_char = ""
+				#
+				if len(x.attrib["unicode"]):
+					#
+					uni_char = get_uni_chr(x.attrib["unicode"])
+					#
+				#
+				json_glyphlib.update({x.attrib["name"] : [uni_char, x.attrib["glif"], x.attrib["unicode"]]})
+				#
+			#
+			return json_glyphlib
 			#
 		#
 		from Lib.efo import EFO
@@ -89,7 +116,7 @@ class kern_adjust:
 			new_plist[k] = new_v
 			#
 		#
-		return json.dumps({"get_classes":new_plist,"get_weights":get_font_file_array(EFO)})
+		return json.dumps({"get_classes":new_plist,"get_weights":get_font_file_array(EFO), "get_glyphlib": get_glyphlib() })
 		#
 	#
 	def get_glif_width(self):

@@ -434,6 +434,7 @@ $(document).ready(function() {
 				"class_kern_elem": $("#onoff_class_kerning"),
 				"efo_name": efo_name,
 				"kern_classes": JSON.parse(localStorage.getItem(efo_name))["get_classes"],
+				"glyphlib": JSON.parse(localStorage.getItem(efo_name))["get_glyphlib"],
 				"glif_width": JSON.parse(localStorage.getItem("get_glif_width")),
 				"masters":{"thn":[100,0],"reg":[400,0],"bld":[700,0],"thn_it":[100,1],"reg_it":[400,1],"bld_it":[700,1]},
 				onSlideEnd: function(k_object) {
