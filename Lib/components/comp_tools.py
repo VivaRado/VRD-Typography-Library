@@ -17,27 +17,33 @@ from bs4 import BeautifulSoup
 Flattens but punctuation is missaligned.
 Intended only for the rendering procedure where the punctuation is ignored and only the number 1 contour is considered.
 '''
-def flatten_components(ufo_dir):
+def flatten_components(ufo_dir, export = True, save_glif = True):
 	#
 	print('COMP: Flatten UFO Components')
 	#
+	print(ufo_dir)
+	#
 	reader = ufoLib.UFOReader(ufo_dir, validate=True)
 	#
-	source_dir = os.path.join(ufo_dir,'glyphs')
-	target_dir = os.path.join(ufo_dir,'glyphs_flat')
-	generic_tools.make_dir(target_dir)
+	if export == True:
+		#
+		source_dir = os.path.join(ufo_dir,'glyphs')
+		target_dir = os.path.join(ufo_dir,'glyphs_flat')
+		generic_tools.make_dir(target_dir)
+		#
+		copy_tree(source_dir, target_dir)
+		#
+		t_dir = target_dir#/media/root/Malysh1/winshm/advent_repo/Advent/_/exp/advent_pro_fmm/test.ufo/glyphs'
+		print('INPUT', ufo_dir)
+		print('OUTPUT', t_dir)
 	#
-	copy_tree(source_dir, target_dir)
-	#
-	t_dir = target_dir#/media/root/Malysh1/winshm/advent_repo/Advent/_/exp/advent_pro_fmm/test.ufo/glyphs'
-	print('INPUT', ufo_dir)
-	print('OUTPUT', t_dir)
-	#
-	ufoWriter = ufoLib.GlyphSet(t_dir)
+		ufoWriter = ufoLib.GlyphSet(t_dir)
 	#
 	inGlyphSet = reader.getGlyphSet()
 	#
 	for glyphName in inGlyphSet.keys():
+		#
+		#print(glyphName, get_name)
 		#
 		g = inGlyphSet[glyphName]
 		#
@@ -47,7 +53,10 @@ def flatten_components(ufo_dir):
 		source_glyph = os.path.join(t_dir,generic_tools.glyphNameToFileName(glyphName)+'.glif')
 		#
 		g.drawPoints(None) 
-		ufoWriter.writeGlyph(glyphName, g, g.drawPoints)
+		#
+		if export:
+			#
+			ufoWriter.writeGlyph(glyphName, g, g.drawPoints)
 		#
 		#ufoWriter.writeContents()
 		#
@@ -107,16 +116,31 @@ def flatten_components(ufo_dir):
 				new_xml_str = LET.tostring(new_xml, encoding='utf8', method="xml", xml_declaration=False, pretty_print=True).decode()
 				clean_xml_str = BeautifulSoup(xml_str, "xml").prettify()#minidom.parseString(xml_str).toprettyxml(indent="   ")
 				#
-				f = open(source_glyph, "w")
-				f.write(clean_xml_str) 
-				f.close()
+				if save_glif == True:
+					#
+					f = open(source_glyph, "w")
+					f.write(clean_xml_str) 
+					f.close()
+					#
+				else:
+					#
+					f.close()
+					#
+					#
+				#if get_name == glyphName:
+					#
+					#return clean_xml_str
+					#
 				#
 			#
 		#
 	#
-	time.sleep(2)
-	#
-	generic_tools.empty_dir(source_dir)
-	#
-	generic_tools.rm_dir(source_dir)
-	os.rename(target_dir, source_dir)
+	if export == True:
+		#
+		time.sleep(2)
+		#
+		generic_tools.empty_dir(source_dir)
+		#
+		generic_tools.rm_dir(source_dir)
+		os.rename(target_dir, source_dir)
+		#
