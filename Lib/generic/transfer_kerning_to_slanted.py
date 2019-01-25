@@ -78,13 +78,13 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 # 	#
 # # (int(args.deg), args.fonts, args.target_fonts)
 #
-def get_glif_file_name(xmlTree, glif_name):
+def get_glif_name(xmlTree, _str):
 	#
 	for elem in xmlTree.iter():
 		#
 		if elem.tag == "glyph":
 			#
-			if elem.attrib.get("name") == glif_name:
+			if elem.attrib.get("name") == _str:
 				#
 				return elem.attrib.get("glif")+'.glif'
 				#
@@ -94,39 +94,84 @@ def get_glif_file_name(xmlTree, glif_name):
 #
 def get_glif_width(_in, tree, name, font):
 	#
-	in_glif_filename = os.path.join(_in,"glyphs",font,get_glif_file_name(tree, name))
+	in_glif_filename = os.path.join(_in,"glyphs",font,get_glif_name(tree, name))
 	in_glif_file = ET.parse(in_glif_filename)
 	return int(in_glif_file.findall('advance')[0].get('width'))
 	#
 #
-transfer_dict = {"orig":{},"dest":{}}
-#
-def get_glif_top_point(_in, tree, cap_height, name, font):
+def get_glif_top_point(_in, cap_height, glyph_filename, glif_name, font, instance, transfer_dict, equiv_font):
 	#
-	in_glif_filename = os.path.join(_in,"glyphs",get_glif_file_name(tree, name))
+	in_glif_filename = os.path.join(_in,"glyphs",glyph_filename)
 	#
 	in_glif_file = ET.parse(in_glif_filename)
 	#
 	nums = []
 	#
-	for _o in in_glif_file.findall('outline'):
+	glyph_filename_clean = glyph_filename.split(".glif")[0]
+	#
+	if font not in transfer_dict[instance]:
 		#
-		for _c in _o.findall('contour')[0]:
+		transfer_dict[instance] = {font:{}}
+		#
+	#
+	if instance == "targ":
+		#
+		orig_idx = transfer_dict["orig"][equiv_font][glyph_filename_clean]["idx"]
+		_idx = orig_idx
+		#
+	#
+	for _o in in_glif_file.iter():
+		#
+		if _o.tag == "glyph":
 			#
-			nums.append([int(_c.get('y')), int(_c.get('x'))])
+			in_g_name = _o.get('name')
+			#
+		#
+		if _o.tag == "outline":
+			#
+			if len(_o.findall('contour')):				
+				#
+				if instance == "orig":
+					# add new
+					for _c in _o.findall('contour')[0]:
+						#
+						nums.append([int(_c.get('x')), int(_c.get('y'))])
+						#
+					#
+				else:
+					# get that specific index from orig
+					#
+					if in_g_name == glif_name:
+						#
+						idx_point = _o.findall('contour')[0].getchildren()[orig_idx]
+						#
+						nums.append([int(idx_point.get('x')), int(idx_point.get('y'))])
+						#
+					#
+				#
+			else:
+				#
+				print("\t No Contour Found for: ", in_glif_filename)
+				#
 			#
 		#
 	#
-	
-	#
-	if name not in transfer_dict["orig"]:
+	if glyph_filename_clean not in transfer_dict[instance][font]:
 		#
-		transfer_dict["orig"][name] = {"data": min(nums, key=lambda x: cap_height - x[0])}
+		if instance == "orig":
+			#
+			_min = sorted(nums, key=lambda e: ((cap_height - e[1]), -e[0]))[0] # y closest to capital height and x right most
+			_idx = nums.index(_min)
+			#
+		else:
+			#
+			_min = nums[0]
+			#
+		#
+		transfer_dict[instance][font][glyph_filename_clean] = {"data": _min, "idx": _idx}
 		#
 	#
-	#for g in in_glif_file.findall('advance')
-	#
-	#return int(in_glif_file.findall('advance')[0].get('width'))
+	return transfer_dict
 	#
 #
 def split_input (inp):
@@ -143,28 +188,111 @@ def split_input (inp):
 	return inp
 	#
 #
-def do_kerning_alterations(EFO, deg, in_fonts, targ_fonts):
+def get_transfer_dict(EFO, orig_fonts, targ_fonts, glyphlib):
+	#
+	transfer_dict = {"orig":{},"targ":{}}
+	#
+	cap_height = EFO.fontinfo[0]["shared_info"]["capHeight"]
+	#
+	for weight_name in orig_fonts+targ_fonts:
+		#
+		for f_k in glyphlib.iter():
+			#
+			if f_k.tag == "glyph":
+				#
+				g = f_k.attrib.get("glif")
+				#
+				if g not in ["_notdef", "space"]:
+					#
+					glif_filename = f_k.attrib.get("glif")+'.glif'
+					glif_name = f_k.attrib.get("name")
+					#
+					i_n = generic_tools.sanitize_string(EFO.current_font_family_name+' '+weight_name)
+					i_n_dir = os.path.join(EFO.current_font_family_directory, i_n+'.ufo')
+					#
+					equiv_font = None
+					#
+					if weight_name in orig_fonts:
+						#
+						instance = "orig"
+						#
+					elif weight_name in targ_fonts:
+						#
+						instance = "targ"
+						#
+						equiv_font = orig_fonts[targ_fonts.index(weight_name)]
+						#
+					#
+					transfer_dict = get_glif_top_point(i_n_dir, cap_height, glif_filename, glif_name, weight_name, instance, transfer_dict, equiv_font) # source_font_L_width
+					#
+				#
+			#
+		#
+	#
+	return transfer_dict
+	#
+#
+def get_new_kerning(Kn, OLw, TLw, ORw, TRw, LOFPt, LTFPt, ROFPt, RTFPt):
+	#
+	_max_diff = 10
+	_offset = 1000
+	_sidebearings = 0
+	#
+	add_Kn = Kn + _offset # add offset ensure positive simplifies the calculation
+	#
+	LFPt = LTFPt - LOFPt
+	RFPt = RTFPt - ROFPt
+	#
+	TOLw = ( TLw - OLw )
+	TORw = ( TRw - ORw )
+	#
+	FPK = LFPt + add_Kn
+	#
+	TROLw = TOLw + TORw
+	#
+	if TOLw < _max_diff and TORw < _max_diff:
+		#
+		DKn = add_Kn
+		#
+	else:
+		#
+		remRFPt = 0
+		#
+		if TORw < _max_diff and (RTFPt - ROFPt) > _max_diff: # if the right side width is the same in Orig and Targ, but there is movement of FP
+			#
+			remRFPt = RFPt
+			#
+		#
+		DKn = FPK - TROLw - remRFPt
+		#
+	#
+	return DKn - _offset# remove offset
+	#
+#
+def do_kerning_alterations(EFO, deg, orig_fonts, targ_fonts):
 	#
 	'''
-	open flat kerning for in_fonts
+	open flat kerning for orig_fonts
 		get fontinfo capHeight
-		for each pair get pair widths
-			find highest point location, move kerning by the diff
+		flatten all fonts that participate
+		
+		for each font, for each glyphname in glyphlib not _notdef
+			find highest point location for orig and targ fonts
+			store to transfer_dict as glif_name : { closest y point to cap height of contour[0] point list as [x,y], index in original contour[0] point list }
+		
+		for each font in target and dest
 	'''
 	#
 	read_efo_json_fontinfo(EFO, "Downstream")
 	fonts = get_font_file_array(EFO)
 	#
-	cap_height = EFO.fontinfo[0]["shared_info"]["capHeight"]
-	source_glyphflib = os.path.join(EFO._in,"glyphlib.xml")
-	glyphlib = ET.parse(source_glyphflib)
 	#
-	in_fonts = split_input(in_fonts)
+	orig_fonts = split_input(orig_fonts)
 	targ_fonts = split_input(targ_fonts)
 	#
-	EFO._efo_to_ufos(','.join(in_fonts+targ_fonts), False, "class")
+	EFO._efo_to_ufos(','.join(orig_fonts+targ_fonts), False, "class")
 	#
-	for z in in_fonts+targ_fonts:
+	for z in orig_fonts+targ_fonts:
 		#
 		instance_name = generic_tools.sanitize_string(EFO.current_font_family_name+' '+z)
 		instance_directory = os.path.join(EFO.current_font_family_directory, instance_name+'.ufo')
@@ -172,69 +300,67 @@ def do_kerning_alterations(EFO, deg, in_fonts, targ_fonts):
 		comp_tools.flatten_components(instance_directory)
 		#
 	#
+	source_glyphflib = os.path.join(EFO._in,"glyphlib.xml")
+	glyphlib = ET.parse(source_glyphflib)
 	#
-	for s_f in fonts:
+	t_d = get_transfer_dict(EFO, orig_fonts, targ_fonts, glyphlib)
+	#
+	for o_f in fonts:
 		#
-		if s_f in in_fonts:
+		if o_f in orig_fonts:
 			#
-			#
-			#
-			in_flat_kerning = os.path.join(EFO._in,"kerning","flat",s_f+'.plist')
-			s_p_f = plistlib.readPlist(in_flat_kerning)
-			#
-			for t_f in targ_fonts:
+			for t_f in fonts:
 				#
 				if t_f in targ_fonts:
 					#
-					for x in s_p_f:
+					for t_f in targ_fonts:
 						#
-						i_n = generic_tools.sanitize_string(EFO.current_font_family_name+' '+s_f)
-						i_n_dir = os.path.join(EFO.current_font_family_directory, i_n+'.ufo')
-						#res_L = get_glif_width(EFO._in, glyphlib, x, s_f) # source_font_L_width
-						#res_Ln = get_glif_width(EFO._in, glyphlib, x, t_f) # target_font_L_width
+						orig_flat_kerning = os.path.join(EFO._in,"kerning","flat",o_f+'.plist')
+						s_p_f = plistlib.readPlist(orig_flat_kerning)
 						#
-						res_L = get_glif_top_point(i_n_dir, glyphlib, cap_height, x, s_f) # source_font_L_width
-			#
-			for t_f in targ_fonts:
+						targ_flat_kerning = os.path.join(EFO._in,"kerning","flat",t_f+'.plist')
+						t_p_f = plistlib.readPlist(targ_flat_kerning)
+						#
+						for x in s_p_f:
+							#print("glyph",x)
+							#print("LOFPt", LOFPt)
+							#print("LTFPt", LTFPt)
+							#
+							for y in s_p_f[x]:
+								#
+								LOFPt = t_d["orig"][o_f][get_glif_name(glyphlib, x).split(".glif")[0]]["data"][0]# y orig 
+								LTFPt = t_d["targ"][t_f][get_glif_name(glyphlib, x).split(".glif")[0]]["data"][0]# y target
+								#
+								#
+								ROFPt = t_d["orig"][o_f][get_glif_name(glyphlib, y).split(".glif")[0]]["data"][0]# y orig 
+								RTFPt = t_d["targ"][t_f][get_glif_name(glyphlib, y).split(".glif")[0]]["data"][0]# y target
+								#
+								#
+								Kn = s_p_f[x][y] # orig kerning
+								#
+								i_n = generic_tools.sanitize_string(EFO.current_font_family_name+' '+o_f)
+								i_n_dir = os.path.join(EFO.current_font_family_directory, i_n+'.ufo')
+								#
+								OLw = get_glif_width(EFO._in, glyphlib, x, o_f) # orig_font_L_width
+								TLw = get_glif_width(EFO._in, glyphlib, x, t_f) # targ_font_L_width
+								#
+								ORw = get_glif_width(EFO._in, glyphlib, y, o_f) # orig_font_R_width
+								TRw = get_glif_width(EFO._in, glyphlib, y, t_f) # targ_font_R_width
+								#
+								DKn = get_new_kerning(Kn, OLw, TLw, ORw, TRw, LOFPt, LTFPt, ROFPt, RTFPt)
+								#
+								t_p_f[x][y] = DKn
+								#
+								print("\t","Kn:", Kn, "\tDKn", DKn, "\tPAIR:", x, y)
+								#
+							#
+						#
+						plistlib.writePlist(t_p_f, targ_flat_kerning)
+						#
+						#
+					#
 				#
-				if t_f in targ_fonts:
-					#
-					targ_flat_kerning = os.path.join(EFO._in,"kerning","flat",t_f+'.plist')
-					t_p_f = plistlib.readPlist(targ_flat_kerning)
-					#
-					for x in s_p_f:
-						#
-						for y in s_p_f[x]:
-							#
-							res_kern = s_p_f[x][y]
-							#
-							i_n = generic_tools.sanitize_string(EFO.current_font_family_name+' '+s_f)
-							i_n_dir = os.path.join(EFO.current_font_family_directory, i_n+'.ufo')
-							#res_L = get_glif_width(EFO._in, glyphlib, x, s_f) # source_font_L_width
-							#res_Ln = get_glif_width(EFO._in, glyphlib, x, t_f) # target_font_L_width
-							#
-							#res_L = get_glif_top_point(i_n_dir, glyphlib, cap_height, x, s_f) # source_font_L_width
-							#
-							#res_Ln = get_glif_top_point(current_font_instance_directory, glyphlib, cap_height, x, t_f) # target_font_L_width
-							#
-							#res_R = get_glif_width(EFO._in, glyphlib, y, s_f) # source_font_R_width
-							#res_Rn = get_glif_width(EFO._in, glyphlib, y, t_f) # target_font_R_width
-							#
-							#new_kern_val = shear_kerning(cap_height, deg, res_kern, res_L, res_Ln, res_R, res_Rn)
-							#
-							#t_p_f[x][y] = new_kern_val
-							#
-							#print(res_kern, new_kern_val)
-							#
-						#
-					#
-					#plistlib.writePlist(t_p_f, targ_flat_kerning)
-					#
-				#
-			#
 		#
-	#
-	print(transfer_dict["orig"])
 	#
 #
 faults = False
