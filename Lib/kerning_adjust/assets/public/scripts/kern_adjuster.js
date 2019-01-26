@@ -142,6 +142,8 @@
 		//
 	}
 	//
+	var _ommit_reports = ["	", "\n", "space", "sigma1"];
+	//
 	function make_reports(data) {
 		//
 		for (var i = 0; i < data.$fragment_map.length; i++) {
@@ -156,8 +158,7 @@
 			//
 			_elem_glyph = _elem.attr("data-glyph")
 			//
-			if (_elem_glyph != "	" && _elem_glyph != "\n") {
-
+			if ( _ommit_reports.indexOf(_elem_glyph) == -1 ) {
 				//
 				el_kerning_val = _elem.find('i').width();
 				el_class_val = _elem.attr("data-class");
@@ -171,6 +172,7 @@
 						_elem.addClass(reports["kerning_none"]["class"])
 						//
 						update_info_tags(_elem, reports["kerning_none"])
+						//
 						//
 					}
 					//
@@ -203,6 +205,10 @@
 		//
 		itm = $('.'+classes.glyph+_a);
 		//
+		if (itm.attr("data-glyph") == "space") {
+			return
+		}
+		//
 		a_width = parseInt($('.'+classes.glyph+_a).width());
 		a_init_width = parseInt($('.'+classes.glyph+_a).attr("data-init-width"));
 		//b_width = $('.'+classes.glyph+_b).width()
@@ -215,6 +221,7 @@
 	}
 	//
 	function set_pair_kern_diff(data, R_glyph, L_glyph, val){
+		//
 		//
 		g_left = parseCeilInt(R_glyph.css("left"));
 		//
@@ -261,6 +268,8 @@
 		_b.removeClass(_neg);
 		_b.addClass(diff_class);
 		_b.css({"width":a_left, "right": a_init_width });
+		//
+	
 		//
 	}
 	//
@@ -613,6 +622,7 @@
 					d_class = get_class(data, a[i]);
 					//
 					d_glyph = get_name(data, a[i]);
+					//
 					//
 					f_string = '<span '+
 									'title="" '+

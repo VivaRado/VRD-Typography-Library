@@ -21,8 +21,6 @@ And on ```kerning_compress_flat.py``` on that EFO, you get new PLIST and FEA fil
 Runing ```efo_to_var.py``` - to compile with fontmake, clearing the browser cache data and reload - the interface mirrors the changes.
 Working on integrating those last steps and making it easier.
 
-If you are working on Linux with multilingual fonts, you will experience kerning missing for pairs that are foreign language to Latin, for example Greek to Latin fail to kern, you can avoid this by starting Kerning Adjust on a Virtual Environment, or run it on Windows.
-
 ### Python Requirements
 
 ```flask, flask_socketio, flask_session, flask_cors, ufoLib, lxml```
