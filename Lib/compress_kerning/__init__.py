@@ -34,6 +34,82 @@ ignore_glyphs = []
 #
 fea_pos_line = '''    pos {0} {1} {2};'''
 #
+grek = [
+"tonos",
+"dieresistonos",
+"Alphatonos",
+"periodcentered",
+"Epsilontonos",
+"Etatonos",
+"Iotatonos",
+"guillemotright",
+"Omicrontonos",
+"onehalf",
+"Upsilontonos",
+"Omegatonos",
+"iotadieresistonos",
+"Alpha",
+"Beta",
+"Gamma",
+"Epsilon",
+"Zeta",
+"Eta",
+"Theta",
+"Iota",
+"Kappa",
+"Lambda",
+"Mu",
+"Nu",
+"Xi",
+"Omicron",
+"Pi",
+"Rho",
+"Sigma",
+"Tau",
+"Upsilon",
+"Phi",
+"Chi",
+"Psi",
+"Omegagreek",
+"Iotadieresis",
+"Upsilondieresis",
+"alphatonos",
+"epsilontonos",
+"etatonos",
+"iotatonos",
+"upsilondieresistonos",
+"alpha",
+"beta",
+"gamma",
+"delta",
+"epsilon",
+"zeta",
+"eta",
+"theta",
+"iota",
+"kappa",
+"lambda",
+"mu",
+"mugreek",
+"nu",
+"xi",
+"omicron",
+"pi",
+"rho",
+"sigma1",
+"sigma",
+"tau",
+"upsilon",
+"phi",
+"chi",
+"psi",
+"omega",
+"iotadieresis",
+"upsilondieresis",
+"omicrontonos",
+"upsilontonos",
+"omegatonos"
+]
 #flc_file_header = '''%%FONTLAB CLASSES\n\n'''
 #
 #flc_content = '''%%CLASS _{0}
@@ -675,7 +751,8 @@ class COMPRESS(object):
 		all_group_items = []
 		#
 		#
-		
+		self.remove_cross_language_system(grek, p_f)
+
 
 		# \/ Group to Group (GG)
 		#
@@ -781,8 +858,7 @@ class COMPRESS(object):
 			#
 		#
 		self.p_c["LL"].update(self.p_f_copy)
-		# 
-		
+		#
 
 		# /\
 		#
@@ -810,9 +886,12 @@ class COMPRESS(object):
 								#
 								if [_k,__k] == [x[0], x[1]]:
 									#
-									print("ADJUSTING: ", _k,__k, self.p_c[k][_k][__k], " to ", self.p_c[k][_k][__k] + x[2])
-									#
-									self.p_c[k][_k].update({__k:self.p_c[k][_k][__k] + x[2]})
+									if _k == "sigma1":
+										pass
+									else:
+										print("ADJUSTING: ", _k,__k, self.p_c[k][_k][__k], " to ", self.p_c[k][_k][__k] + x[2])
+										#
+										self.p_c[k][_k].update({__k:self.p_c[k][_k][__k] + x[2]})
 									#
 								#
 							# 
@@ -857,6 +936,35 @@ class COMPRESS(object):
 		p_f_combine = []
 		#
 	#
+	def remove_cross_language_system(self, lsys, _p_f):
+		#
+		for k,v in _p_f.items():
+			#
+			_L = k
+			#
+			for x in v:
+				#
+				_R = x
+				#
+				if _L in grek and _R in grek:
+					#
+					if _L == "sigma1": # sigma final is never followed by another letter, it can only be on the right side.
+						#
+						del self.p_f_copy[_L][_R]
+						#
+					#
+				if _L in grek and _R not in grek:
+					#
+					del self.p_f_copy[_L][_R]
+					#
+				#
+				if _R in grek and _L not in grek:
+					#
+					del self.p_f_copy[_L][_R]
+					#
+				#
+			#
+		#
 	def do_class_kern_replacement(self):
 		#
 		dir_flat_ufo_file = self._temp_source
@@ -869,6 +977,7 @@ class COMPRESS(object):
 		#
 		self.test_compress(dir_flat_ufo_file_kern, file_base_group)
 		#
+		
 		#
 		total_pairs = 0
 		#
