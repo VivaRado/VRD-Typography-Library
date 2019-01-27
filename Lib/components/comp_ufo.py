@@ -13,6 +13,8 @@ import difflib
 import xml.etree.ElementTree as ET
 import lxml.etree as LET
 
+from bs4 import BeautifulSoup
+
 from xml.dom import minidom
 #from lxml import etree
 
@@ -194,12 +196,12 @@ def get_base_glif_contours(_dir_glif, needed_glifs):
 			glif_parse = ET.fromstring(glif_data)
 			#
 			name = glif_parse.get('name')
-			res_width = int(glif_parse.findall('advance')[0].get('width'))
 			#
 			if name not in seen_glifs:
 				#
 				if name in needed_glifs:
 					#
+					res_width = int(glif_parse.findall('advance')[0].get('width'))
 					#
 					try:
 						#
@@ -324,8 +326,6 @@ def exchange_replace_contour(acc_dest, acc_dest_glif, acc_orig_glif, comb_accent
 		#
 		if "ogonek" in is_accent_info[0]:
 			#
-			#print('IS OGONEK')
-			#
 			pos_anchors = comp_anchors_bot_ogonek.format(int(eventual_pos_y), int(is_accent_info[1]/2))
 			#
 		else:
@@ -346,7 +346,7 @@ def replace_contour(_this, _here, _return_replaced, _clean = False, _base = Fals
 	replacement = ''
 	#
 	#
-	parser = etree.XMLParser(remove_blank_text=True)
+	#parser = etree.XMLParser(remove_blank_text=True)
 	#
 	with open(_here, 'r') as rf:
 		#
@@ -980,6 +980,35 @@ def create_base_anchors(self, accent_list, center_pos_x, pos_y, ogonek_pos_x, po
 	return '\n'+all_cont_str
 	#
 #
+def exchange_width(_base, _targ):
+	#
+	with open(_base, 'r') as bf:
+		#
+		b_glif_data = bf.read()
+		#
+		b_glif_parse = ET.fromstring(b_glif_data)
+		#
+		b_res_width = int(b_glif_parse.findall('advance')[0].get('width'))
+		#
+		bf.close()
+		#
+		with open(_targ, 'r') as tf:
+			#
+			t_glif_data = tf.read()
+			#
+			tf.close()
+			#
+			t_glif_parse = ET.fromstring(t_glif_data)
+			#
+			t_glif_parse.findall('advance')[0].set('width',str(b_res_width))
+			#
+			tree = ET.ElementTree(t_glif_parse)
+			#
+			tree.write(_targ)
+			#
+		#
+	#
+#
 def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 	#
 	print('COMP: Componentize')
@@ -1022,6 +1051,12 @@ def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 		#
 		for u,t in get_contours_to_rep.items():
 			#
+			#
+			target_glif = os.path.join(self._dir_glif, t[0])
+			base_glif = os.path.join(self._dir_glif, base_conts[0])
+			#
+			exchange_width(base_glif, target_glif)
+			#
 			print('\r\t'+'COMP: Base = '+o+', Comp = '+u+flush_space+'\n',end='')
 			#
 			u_name = u
@@ -1029,10 +1064,6 @@ def run_ufo_glyphs(self, comp_dir_path, ufo_dir_path):
 			etree_comps_str = add_components(self, t, o, u_name, comb_bot, comb_bot_rebase, base_conts)
 			#
 			replacement_contour = etree_comps_str
-			#
-			target_glif = os.path.join(self._dir_glif, t[0])
-			base_glif = os.path.join(self._dir_glif, base_conts[0])
-			#
 			clean_anchors(target_glif)
 			#
 			replace_contour(replacement_contour, target_glif, False)
