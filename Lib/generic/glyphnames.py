@@ -4934,7 +4934,7 @@ adobe_glyph_list = [
 'phimod;1D60',
 'turnediota;2129',
 'uni021A;021A',
-'dslash;0111',
+'dcroat;0111',
 'uni021B;021B',
 # ";1F00",
 # ";1F01",

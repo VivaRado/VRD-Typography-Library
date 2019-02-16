@@ -221,8 +221,16 @@ def get_dict_wo_key(dictionary, key):
 #
 
 def glyphNameToFileName(glyphName):
-
-	return userNameToFileName(glyphName)
+	#
+	returned_name = userNameToFileName(glyphName)
+	#
+	#print(returned_name)
+	#
+	#if returned_name == "dslash":
+		#
+	#	returned_name = "dcroat"
+	#	#
+	return returned_name
 
 	"""Default algorithm for making a file name out of a glyph name.
 	This one has limited support for case insensitive file systems:
@@ -336,7 +344,12 @@ def determine_kerning_type_ufo(ufo_dir):
 #
 def get_between(_start, _end, _str):
 	#
-	return _str[_str.find(_start)+len(_start):_str.find(_end)]
+	if _start in _str and _end in _str:
+		#
+		return _str[_str.find(_start)+len(_start):_str.find(_end)]
+		#
+	else:
+		return False
 	#
 #
 def copy_dict(_d):

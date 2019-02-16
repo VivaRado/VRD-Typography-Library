@@ -525,6 +525,8 @@
 			//
 			_obj = data.kern_classes[key];
 			//
+			_obj = _obj.filter(function(e){return e}); // remove null
+			//
 			if (arrayColumn(_obj, 2).indexOf(letter) != -1) {
 				//
 				found.push(key)
@@ -622,7 +624,6 @@
 					d_class = get_class(data, a[i]);
 					//
 					d_glyph = get_name(data, a[i]);
-					//
 					//
 					f_string = '<span '+
 									'title="" '+

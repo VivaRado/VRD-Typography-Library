@@ -119,21 +119,21 @@ grek = [
 #
 fea_class_content = '''@{0} = [{1} {2}];\n'''
 #
-fea_prefix = '''# Languagesystems Start
+fea_prefix = '''# Languagesystems Start;
 # Prefix: Languagesystems
-languagesystem DFLT dflt;
+#languagesystem DFLT dflt;
 languagesystem latn dflt;
 languagesystem grek dflt;
-# Languagesystems End\n\n'''
+# Languagesystems End;\n\n'''
 #
 kern_script_lang = '''
     script grek; # Greek
     script latn; # Latin
-    script DFLT; # Default
+    #script DFLT; # Default
 '''
 #
-kern_header = '''# Kerning Start \n\nfeature kern { # Kerning\n'''
-kern_footer = '''\n} kern;\n# Kerning End'''
+kern_header = '''# Kerning Start;\n\nfeature kern { # Kerning\n'''
+kern_footer = '''\n} kern;\n# Kerning End;'''
 #
 kern_feature_header = '''\n    # ------
     # {0}
@@ -634,7 +634,7 @@ class COMPRESS(object):
 			all_kern_flc = all_kern_flc + new_fea_line
 		#
 		#
-		fea_classes = '# Classes Start\n'+all_kern_flc+'# Classes End\n\n'
+		fea_classes = '# Classes Start;\n'+all_kern_flc+'\n# Classes End;\n\n'
 		# #
 		return fea_classes
 		# new_data = fea_prefix+fea_classes+self.fea_kern_list_to_file(sorted(self.final_class_kerning, key=lambda x: x.count('@_')))
