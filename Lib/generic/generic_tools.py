@@ -10,6 +10,7 @@ import xml.etree.cElementTree as ET
 import xml.dom.minidom as minidom
 #
 from ufoLib.filenames import userNameToFileName
+#from .glyphdata import DATA as GlyphData
 #
 def merge_two_dicts(x, y):
 	"""Given two dicts, merge them into a new dict as a shallow copy."""
@@ -355,3 +356,69 @@ def get_between(_start, _end, _str):
 def copy_dict(_d):
 	return {k:v for k,v in _d.items()}
 #
+
+def _format_codepoint(codepoint):
+	if 0xE000 <= codepoint <= 0xF8FF:
+		item_description = 'PRIVATE USE AREA U+{0:04X}'.format(codepoint)
+		char = ' '
+	elif codepoint == 0x000D:
+		# Special case, this only happens in Latin-core.
+		# FIXME: we should consider remover CR from Latin-core
+		item_description = 'CR'
+		char = ' '
+	else:
+		#
+		item_description = chr(codepoint)#.decode('utf-8')
+		char = chr(codepoint)
+	return ('0x{0:04X}'.format(codepoint)
+		  , char
+		  , item_description)
+
+def format_codepoint(codepoint):
+	return ' '.join(_format_codepoint(codepoint))
+
+_NAMELIST_CODEPOINT_REGEX = re.compile('^([A-F0-9]{4,5})')
+
+def get_codepoint_from_line(line):
+	assert line.startswith('0x')
+	match = _NAMELIST_CODEPOINT_REGEX.match(line[2:7])
+	if match is None:
+		match = _NAMELIST_CODEPOINT_REGEX.match(line[2:7].upper())
+		if match is not None:
+			# Codepoints must be uppercase, it's documented
+			warn('Found a codepoint with lowercase unicode hex value: 0x{0}'.format(match.groups()[0]))
+		return None
+	return int(match.groups()[0], 16)
+
+def parse_nam(_n):
+	#
+	entries = []
+	before = []
+	header = []
+	f = open(_n,'r')
+	for line in f:
+		line = line.rstrip()
+		if (not entries and not before) and line.startswith('#'):
+			header.append(line)
+			continue
+		entry = None
+		if line.startswith('0x'):
+			# uni chr
+			codepoint = get_codepoint_from_line(line)
+			entry = (codepoint, None, line)
+		elif line.startswith('      '):
+			# unencoded name
+			name = line.rsplit(' ', 1)[1]
+			entry = (None, name, line)
+
+		if entry is not None:
+			entry += (before, )
+			before = []
+			entries.append(entry)
+		else:
+			# these lines will stick before the next entry
+			before.append(line)
+
+	#
+	return entries
+	#
