@@ -43,10 +43,6 @@ from Lib.ufo2svg import UFO2SVG
 from Lib.ufo2svg.glif2svg import convertUFOToSVGFiles
 from fontParts.world import *
 
-
-supportedUFOFormatVersions = [1, 2, 3]
-supportedGLIFFormatVersions = [1, 2]
-
 class Recomb(object):
 	def __init__(self):
 		
