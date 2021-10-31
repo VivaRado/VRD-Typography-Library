@@ -33,7 +33,7 @@ REQ/COMMANDS: Using a list of commands per preset glyph iterate
 	convert new SVG into UFO glif
 	add into new UFO font
 
-
+To create recombination we store the result and then point to that result in the subsequent instructions, we loop until all have results.
 
 '''
 
@@ -58,16 +58,62 @@ class Recomb(object):
 		self.current_font_instance_name = "advent_pro_fmm_bld.ufo"
 		self.current_font_instance_temp_directory = _t
 
-		#UFO_to_SVG = UFO2SVG(_s,"bld")
-
-		#UFO_to_SVG.svgs_to_efo()
-
 		f = OpenFont(os.path.join(_s,self.current_font_instance_name))
-		#
-		#UFO_to_SVG = UFO2SVG(f)
-		#
-		#
+
 		convertUFOToSVGFiles(self, f, self.current_font_instance_name)
 
 
-rc = Recomb()
+#rc = Recomb()
+
+def func1(l,n,x):
+	return l + str(n) + "H" + str(x)
+
+def func2(l):
+	return l + "V"
+
+def func3(l):
+	return l + "C"
+
+
+class dotdict(dict):
+	"""dot.notation access to dictionary attributes"""
+	__getattr__ = dict.__getitem__
+	__setattr__ = dict.__setitem__
+	__delattr__ = dict.__delitem__
+
+
+t = {"H":(func1),"V":(func2),"S":(),"R":(),"C":(func3)}
+
+l = ["a","b","c"]
+
+ins = {
+		"a":{"H":{"arg":[1,2],"res":[]}, "V":{"arg":[],"res":[]}},
+		"b":{"C":{"arg":[],"res":[],"rec":"a"}}
+	  }
+
+ins = dotdict(ins)
+
+for letter,funct in ins.items():
+	#
+	if len(funct) > 0:
+		#
+		prevres = letter
+		#
+		for fnam,fdet in funct.items():
+			#
+			fdet = dotdict(fdet)
+
+			if "rec" in fdet.keys():
+				
+				p = list(ins.a)[-1]
+				
+				prevres = ins.a[p]["res"][0]
+			
+			res = t[fnam](prevres,*fdet.arg)
+
+			prevres = res
+			fdet.res.append(res)
+		#
+	#
+
+print(ins)
