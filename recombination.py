@@ -68,7 +68,7 @@ Dummy functions will alter to:
 FIRST ORDER
 	Exact Copy
 	Mirror (Hrz, Vrt)
-	
+
 SECOND ORDER
 	Partial Addition/Removal
 	Mirror (Hrz, Vrt)
@@ -160,10 +160,47 @@ ins = {
 		"S":{"C":{"arg":[],"out":[]}},
 		"З":{"C":{"arg":[],"out":[]}},
 		"Ч":{"C":{"arg":[],"out":[]}},
-		
 		"Ш":{"C":{"arg":[],"out":[],"rec":"Π"}}, # < recombine letter "Π"
 		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш"}}, # < recombine letter "Ш"
 		"Ц":{"C":{"arg":[],"out":[],"rec":"Π"}},
+		"F":{"C":{"arg":[],"out":[],"rec":"Ε"}},
+		"Γ":{"C":{"arg":[],"out":[],"rec":"F"}},
+		"Τ":{"C":{"arg":[],"out":[],"rec":"Γ"}},
+		"Ι":{"C":{"arg":[],"out":[],"rec":"Τ"}},
+		"Ξ":{"C":{"arg":[],"out":[],"rec":"Ε"}},
+		"Η":{"C":{"arg":[],"out":[],"rec":"Ε"}},
+		"V":{"C":{"arg":[],"out":[],"rec":"Λ"}},
+		"Υ":{"C":{"arg":[],"out":[],"rec":"V"}},
+		"У":{"C":{"arg":[],"out":[],"rec":"Υ"}},
+		"Α":{"C":{"arg":[],"out":[],"rec":"Λ"}},
+		"Δ":{"C":{"arg":[],"out":[],"rec":"Λ"}},
+		"W":{"C":{"arg":[],"out":[],"rec":"Μ"}},
+		"Ν":{"C":{"arg":[],"out":[],"rec":"Μ"}},
+		"И":{"C":{"arg":[],"out":[],"rec":"Ν"}},
+		"Ζ":{"C":{"arg":[],"out":[],"rec":"Ν"}},
+		"Σ":{"C":{"arg":[],"out":[],"rec":"Μ"}},
+		"Κ":{"C":{"arg":[],"out":[],"rec":"Σ"}},
+		"Χ":{"C":{"arg":[],"out":[],"rec":"Σ"}},
+		"Ж":{"C":{"arg":[],"out":[],"rec":"Χ"}},
+		"Ω":{"C":{"arg":[],"out":[],"rec":"Ο"}},
+		"U":{"C":{"arg":[],"out":[],"rec":"Ο"}},
+		"Q":{"C":{"arg":[],"out":[],"rec":"Ο"}},
+		"Θ":{"C":{"arg":[],"out":[],"rec":"Ο"}},
+		"Φ":{"C":{"arg":[],"out":[],"rec":"Ο"}},
+		"Ψ":{"C":{"arg":[],"out":[],"rec":"Φ"}},
+		"C":{"C":{"arg":[],"out":[],"rec":"Ο"}},
+		"Э":{"C":{"arg":[],"out":[],"rec":"C"}},
+		"D":{"C":{"arg":[],"out":[],"rec":"C"}},
+		"G":{"C":{"arg":[],"out":[],"rec":"C"}},
+		"Ю":{"C":{"arg":[],"out":[],"rec":"Ο"}},
+		"Ρ":{"C":{"arg":[],"out":[],"rec":"Β"}},
+		"R":{"C":{"arg":[],"out":[],"rec":"Ρ"}},
+		"Я":{"C":{"arg":[],"out":[],"rec":"R"}},
+		"Ь":{"C":{"arg":[],"out":[],"rec":"Ρ"}},
+		"Ъ":{"C":{"arg":[],"out":[],"rec":"Ь"}},
+		"Ы":{"C":{"arg":[],"out":[],"rec":"Ь"}},
+		"Б":{"C":{"arg":[],"out":[],"rec":"Ь"}},
+
 	  }
 
 ins = dotdict(ins)
