@@ -88,14 +88,70 @@ And possible custom functions that go into more detail.
 
 '''
 
+ET.register_namespace("","http://www.w3.org/2000/svg")
+
+def parse_svg_path(svg_dir):
+	#
+	glyphName = svg_dir.split("/")[-1]
+	svg_file = os.path.join(svg_dir+'.svg')
+	#
+	tree = ET.parse(svg_file)
+	#
+	svg_data = tree.getroot()
+	#
+	if 'd' in svg_data[0].attrib:
+		#
+		path_d = svg_data[0].attrib['d']
+		#
+		if len(path_d) > 1:
+			#
+			return tree, svg_data
+			#
+			
+
+def save_svg_file(svg_dir, tree):
+	#
+	ET.indent(tree)
+	tree.write(svg_dir+'DEMO.svg', xml_declaration=True, encoding='utf-8')
+	#
+
 def func1(l,n,x):
-	return l + str(n) + "H" + str(x)
+	# parsing / SAME
+	tree, svg_data = parse_svg_path(l)
+	#
+	# transforming / CHANGING
+	#
+
+	#
+	# saving / SAME
+	save_svg_file(l,tree)
+	#
+	return l 
 
 def func2(l):
-	return l + "V"
+	# parsing / SAME
+	tree, svg_data = parse_svg_path(l)
+	#
+	# transforming / CHANGING
+	#
+
+	#
+	# saving / SAME
+	save_svg_file(l,tree)
+	#
+	return l 
 
 def func3(l):
-	return l + "_"
+	# parsing / SAME
+	tree, svg_data = parse_svg_path(l)
+	#
+	# transforming / CHANGING
+	svg_data[0].attrib['d'] = formatPath(flipPath(parsePath(svg_data[0].attrib['d']), horizontal=True, vertical=False))
+	#
+	# saving / SAME
+	save_svg_file(l,tree)
+	#
+	return l 
 
 
 '''
@@ -105,7 +161,7 @@ Letter: {Function: { Arguments, Out, Recombine }, Function:{ Arguments, Out, Rec
 
 '''
 
-function_declaration = {"H":(func1),"V":(func2),"S":(),"R":(),"C":(func3)}
+function_declaration = {"H":(func1),"V":(func2),"S":(),"R":(),"C":(func3),"":()}
 
 '''
 Π	Ш	Щ
@@ -152,19 +208,20 @@ S
 
 '''
 
+tdir = "Test/temp_a/"
 
 ins = {
-		"Π":{"H":{"arg":[1,2],"out":[]}, "V":{"arg":[],"out":[]}},
-		"Ε":{"C":{"arg":[],"out":[],"rec":"Π"}}, # < recombine letter "Π"
-		"Λ":{"C":{"arg":[],"out":[]}},
-		"Μ":{"C":{"arg":[],"out":[]}},
-		"Ο":{"C":{"arg":[],"out":[]}},
-		"Β":{"C":{"arg":[],"out":[]}},
-		"Л":{"C":{"arg":[],"out":[]}},
-		"J":{"C":{"arg":[],"out":[]}},
-		"S":{"C":{"arg":[],"out":[]}},
-		"З":{"C":{"arg":[],"out":[]}},
-		"Ч":{"C":{"arg":[],"out":[]}},
+		"Π":{"":{"arg":[],"out":[tdir+"P_i"]}},
+		"Ε":{"":{"arg":[],"out":[tdir+"E_psilon"],"rec":"Π"}}, # < recombine letter "Π"
+		"Λ":{"":{"arg":[],"out":[tdir+"L_ambda"]}},
+		"Μ":{"":{"arg":[],"out":[tdir+"M_u"]}},
+		"Ο":{"":{"arg":[],"out":[tdir+"O_micron"]}},
+		"Β":{"":{"arg":[],"out":[tdir+"B_eta"]}},
+		"Л":{"":{"arg":[],"out":[tdir+"uni041B_"]}},
+		"J":{"":{"arg":[],"out":[tdir+"J_"]}},
+		"S":{"":{"arg":[],"out":[tdir+"S_"]}},
+		"З":{"":{"arg":[],"out":[tdir+"uni0417_"]}},
+		"Ч":{"":{"arg":[],"out":[tdir+"uni0427_"]}},
 		"Ш":{"C":{"arg":[],"out":[],"rec":"Π"}},
 		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш"}},
 		"Ц":{"C":{"arg":[],"out":[],"rec":"Π"}},
@@ -218,44 +275,11 @@ for letter,funct in ins.items():
 			if "rec" in fdet.keys():
 				p = list(ins[fdet["rec"]])[-1]
 				prevout = ins[fdet["rec"]][p]["out"][0]
-			out = function_declaration[fnam](prevout,*fdet.arg)
-			prevout = out
-			fdet.out.append(out)
+
+			if fnam != "":
+				
+				out = function_declaration[fnam](prevout,*fdet.arg)
+				prevout = out
+				fdet.out.append(out)
 
 pprint.pprint(ins)
-
-# Dummy svg to glif pre transform function
-#
-glyphName = 'A_'
-svg_file = os.path.join('Test/temp_a/'+glyphName+'.svg')
-#
-tree = ET.parse(svg_file)
-#
-svg_data = tree.getroot()
-svg_string = ET.tostring(svg_data, encoding='utf8', method='xml').decode()
-#
-#
-if 'd' in svg_data[0].attrib:
-	#
-	path_d = svg_data[0].attrib['d']
-	#
-	if len(path_d) > 1:
-		#
-		flip_path = formatPath(flipPath(parsePath(path_d), horizontal=True, vertical=False))
-		svg_data[0].attrib['d'] = flip_path
-		svg_string = ET.tostring(svg_data, encoding='utf8', method='xml').decode()
-		#
-	#
-#
-glif = svg2glif(svg_string, glyphName)
-#
-print(glif)
-#
-# EFO_glyphs_dir = os.path.join(self._in, self.EFO_glyphs_dir)
-# EFO_current_font_item = os.path.join(EFO_glyphs_dir, item_name)
-# outfile = os.path.join(EFO_current_font_item, glifname+'.glif')
-# #
-# with open(outfile, 'w', encoding='utf-8') as f:
-# 	#
-# 	f.write(glif)
-# 	#pass
