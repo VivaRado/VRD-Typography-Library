@@ -40,8 +40,13 @@ import os
 from Lib.ufo2svg import UFO2SVG
 from Lib.ufo2svg.glif2svg import convertUFOToSVGFiles
 from fontParts.world import *
+from Lib.ufo2svg.simple_path import *
+from Lib.ufo2svg.svg2glif import *
+
 from Lib.generic.generic_tools import dotdict
 import pprint
+
+import xml.etree.ElementTree as ET
 
 class Recomb(object):
 	def __init__(self):
@@ -160,8 +165,8 @@ ins = {
 		"S":{"C":{"arg":[],"out":[]}},
 		"З":{"C":{"arg":[],"out":[]}},
 		"Ч":{"C":{"arg":[],"out":[]}},
-		"Ш":{"C":{"arg":[],"out":[],"rec":"Π"}}, # < recombine letter "Π"
-		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш"}}, # < recombine letter "Ш"
+		"Ш":{"C":{"arg":[],"out":[],"rec":"Π"}},
+		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш"}},
 		"Ц":{"C":{"arg":[],"out":[],"rec":"Π"}},
 		"F":{"C":{"arg":[],"out":[],"rec":"Ε"}},
 		"Γ":{"C":{"arg":[],"out":[],"rec":"F"}},
@@ -218,3 +223,39 @@ for letter,funct in ins.items():
 			fdet.out.append(out)
 
 pprint.pprint(ins)
+
+# Dummy svg to glif pre transform function
+#
+glyphName = 'A_'
+svg_file = os.path.join('Test/temp_a/'+glyphName+'.svg')
+#
+tree = ET.parse(svg_file)
+#
+svg_data = tree.getroot()
+svg_string = ET.tostring(svg_data, encoding='utf8', method='xml').decode()
+#
+#
+if 'd' in svg_data[0].attrib:
+	#
+	path_d = svg_data[0].attrib['d']
+	#
+	if len(path_d) > 1:
+		#
+		flip_path = formatPath(flipPath(parsePath(path_d), horizontal=True, vertical=False))
+		svg_data[0].attrib['d'] = flip_path
+		svg_string = ET.tostring(svg_data, encoding='utf8', method='xml').decode()
+		#
+	#
+#
+glif = svg2glif(svg_string, glyphName)
+#
+print(glif)
+#
+# EFO_glyphs_dir = os.path.join(self._in, self.EFO_glyphs_dir)
+# EFO_current_font_item = os.path.join(EFO_glyphs_dir, item_name)
+# outfile = os.path.join(EFO_current_font_item, glifname+'.glif')
+# #
+# with open(outfile, 'w', encoding='utf-8') as f:
+# 	#
+# 	f.write(glif)
+# 	#pass
