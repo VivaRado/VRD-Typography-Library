@@ -44,6 +44,9 @@ from Lib.ufo2svg.simple_path import *
 from Lib.ufo2svg.svg2glif import *
 
 from Lib.generic.generic_tools import dotdict
+
+from ufoLib.filenames import userNameToFileName
+
 import pprint
 
 import xml.etree.ElementTree as ET
@@ -118,7 +121,7 @@ def save_svg_file(svg_dir, newname, tree):
 	tree.write(new_file+'.svg', xml_declaration=True, encoding='utf-8')
 	#
 
-def func1(l,n,x=False):
+def func1(l,nam,x=False):
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
@@ -127,26 +130,31 @@ def func1(l,n,x=False):
 
 	#
 	# saving / SAME
-	save_svg_file(l,n,tree)
+	glifnam = userNameToFileName(nam)
+
+	save_svg_file(l,glifnam,tree)
 	#
 	return l 
 
-def func2(l,n,x=False):
+def func2(l,nam,ax=False):
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
+	print(l, nam, ax, userNameToFileName(nam))
+	#
+	glifnam = userNameToFileName(nam)
 	# transforming / CHANGING
 	#
 
 	#
 	# saving / SAME
-	save_svg_file(l,n,tree)
+	save_svg_file(l,glifnam,tree)
 	#
 	return l 
 
 def t_mirror(l, nam, ax):
 	#
-	print(l, nam, ax)
+	print(l, nam, ax, userNameToFileName(nam))
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
@@ -157,7 +165,8 @@ def t_mirror(l, nam, ax):
 	d = formatPath(flipPath(parsePath(d), horizontal=_h, vertical=_v))
 	#
 	# saving / SAME
-	save_svg_file(l,nam,tree)
+	glifnam = userNameToFileName(nam)
+	save_svg_file(l,glifnam,tree)
 	#
 	return l 
 
@@ -242,76 +251,76 @@ ins = {
 		"З":{"":{"arg":[],"out":[tdir+"uni0417_"]}},
 		"Ч":{"":{"arg":[],"out":[tdir+"uni0427_"]}}, 
 		"Ш":{"TM":{"arg":["vertical"],"out":[],"rec":"Π","nam":"uni0428"}}, # --
-		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш","nam":"uni0429"}},
-		"Ц":{"C":{"arg":[],"out":[],"rec":"Π","nam":"uni0426"}},
-		"F":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"F_"}},
-		"Γ":{"C":{"arg":[],"out":[],"rec":"F","nam":"G_amma"}},
-		"Τ":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"T_au"}},
-		"Ι":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"I_ota"}},
-		"Ξ":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"X_i"}},
-		"Η":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"E_ta"}},
-		"V":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"V_"}},
-		"Υ":{"C":{"arg":[],"out":[],"rec":"V","nam":"Y_"}},
-		"У":{"C":{"arg":[],"out":[],"rec":"Υ","nam":"uni0423"}},
-		"Α":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"A_lpha"}},
-		"Δ":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"D_eltagreek"}},
-		"W":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"W_"}},
-		"Ν":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"N_u"}},
-		"И":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"uni0418"}},
-		"Ζ":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"Z_eta"}},
-		"Σ":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"S_igma"}},
-		"Κ":{"C":{"arg":[],"out":[],"rec":"Σ","nam":"K_appa"}},
-		"Χ":{"C":{"arg":[],"out":[],"rec":"Σ","nam":"X_i"}},
-		"Ж":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"uni0416"}},
-		"Ω":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"O_megagreek"}},
-		"U":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"U_"}},
-		"Q":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Q_"}},
-		"Θ":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"T_heta"}},
-		"Φ":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"P_hi"}},
-		"Ψ":{"C":{"arg":[],"out":[],"rec":"Φ","nam":"P_si"}},
-		"C":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"C_"}},
-		"Э":{"C":{"arg":[],"out":[],"rec":"C","nam":"uni042D"}},
-		"D":{"C":{"arg":[],"out":[],"rec":"C","nam":"D_"}},
-		"G":{"C":{"arg":[],"out":[],"rec":"C","nam":"G_"}},
-		"Ю":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"uni042E"}},
-		"Ρ":{"C":{"arg":[],"out":[],"rec":"Β","nam":"R_ho"}},
-		"R":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"R_"}},
-		"Я":{"C":{"arg":[],"out":[],"rec":"R","nam":"uni042F"}},
-		"Ь":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"uni042C"}},
-		"Ъ":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042A"}},
-		"Ы":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042B"}},
-		"Б":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni0411"}}, 
-		"Д":{"C":{"arg":[],"out":[],"rec":"Л","nam":"uni0414"}}, 
-		"П":{"C":{"arg":[],"out":[],"rec":"Π","nam":"uni041F"}}, # -- 
-		"E":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"E_"}},
-		"Е":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"uni0415"}},
-		"L":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"L_"}},
-		"Г":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"uni0413"}},
-		"T":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"T_"}},
-		"Т":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"uni0422"}},
-		"I":{"C":{"arg":[],"out":[],"rec":"Ι","nam":"I_"}},
-		"H":{"C":{"arg":[],"out":[],"rec":"Η","nam":"H_"}},
-		"Н":{"C":{"arg":[],"out":[],"rec":"Η","nam":"uni041D"}},
-		"Y":{"C":{"arg":[],"out":[],"rec":"Υ","nam":"uni0059"}},
-		"A":{"C":{"arg":[],"out":[],"rec":"Α","nam":"A_"}},
-		"А":{"C":{"arg":[],"out":[],"rec":"Α","nam":"uni0410"}},
-		"M":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"M_"}},
-		"М":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"uni041C"}},
-		"N":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"N_"}},
-		"Й":{"C":{"arg":[],"out":[],"rec":"И","nam":"uni0419"}},
-		"Z":{"C":{"arg":[],"out":[],"rec":"Ζ","nam":"Z_ed"}},
-		"K":{"C":{"arg":[],"out":[],"rec":"Κ","nam":"K_"}},
-		"К":{"C":{"arg":[],"out":[],"rec":"Κ","nam":"uni041A"}},
-		"X":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"X_"}},
-		"Х":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"uni0425"}},
-		"O":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"O_"}},
-		"О":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"uni041E"}},
-		"С":{"C":{"arg":[],"out":[],"rec":"C","nam":"uni0421"}},
-		"Ф":{"C":{"arg":[],"out":[],"rec":"Φ","nam":"uni0424"}},
-		"B":{"C":{"arg":[],"out":[],"rec":"Β","nam":"B_"}},
-		"В":{"C":{"arg":[],"out":[],"rec":"Β","nam":"uni0412"}},
-		"P":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"P_"}},
-		"Р":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"uni0420"}},		
+		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш","nam":"uni0429","uni":"0429"}}, #add actual uni
+		"Ц":{"C":{"arg":[],"out":[],"rec":"Π","nam":"uni0426","uni":"0426"}},
+		"F":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"F","uni":""}},
+		"Γ":{"C":{"arg":[],"out":[],"rec":"F","nam":"Gamma","uni":""}},
+		"Τ":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"Tau","uni":""}},
+		"Ι":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"Iota","uni":""}},
+		"Ξ":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"Xi","uni":""}},
+		"Η":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"Eta","uni":""}},
+		"V":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"V","uni":""}},
+		"Υ":{"C":{"arg":[],"out":[],"rec":"V","nam":"Y","uni":""}},
+		"У":{"C":{"arg":[],"out":[],"rec":"Υ","nam":"uni0423","uni":""}},
+		"Α":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"Alpha","uni":""}},
+		"Δ":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"Deltagreek","uni":""}},
+		"W":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"W","uni":""}},
+		"Ν":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"Nu","uni":""}},
+		"И":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"uni0418","uni":""}},
+		"Ζ":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"Zeta","uni":""}},
+		"Σ":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"Sigma","uni":""}},
+		"Κ":{"C":{"arg":[],"out":[],"rec":"Σ","nam":"Kappa","uni":""}},
+		"Χ":{"C":{"arg":[],"out":[],"rec":"Σ","nam":"Xi","uni":""}},
+		"Ж":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"uni0416","uni":""}},
+		"Ω":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Omegagreek","uni":""}},
+		"U":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"U","uni":""}},
+		"Q":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Q","uni":""}},
+		"Θ":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Theta","uni":""}},
+		"Φ":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Phi","uni":""}},
+		"Ψ":{"C":{"arg":[],"out":[],"rec":"Φ","nam":"Psi","uni":""}},
+		"C":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"C","uni":""}},
+		"Э":{"C":{"arg":[],"out":[],"rec":"C","nam":"uni042D","uni":""}},
+		"D":{"C":{"arg":[],"out":[],"rec":"C","nam":"D","uni":""}},
+		"G":{"C":{"arg":[],"out":[],"rec":"C","nam":"G","uni":""}},
+		"Ю":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"uni042E","uni":""}},
+		"Ρ":{"C":{"arg":[],"out":[],"rec":"Β","nam":"Rho","uni":""}},
+		"R":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"R","uni":""}},
+		"Я":{"C":{"arg":[],"out":[],"rec":"R","nam":"uni042F","uni":""}},
+		"Ь":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"uni042C","uni":""}},
+		"Ъ":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042A","uni":""}},
+		"Ы":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042B","uni":""}},
+		"Б":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni0411","uni":""}}, 
+		"Д":{"C":{"arg":[],"out":[],"rec":"Л","nam":"uni0414","uni":""}}, 
+		"П":{"C":{"arg":[],"out":[],"rec":"Π","nam":"uni041F","uni":""}}, # -- 
+		"E":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"E","uni":""}},
+		"Е":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"uni0415","uni":""}},
+		"L":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"L","uni":""}},
+		"Г":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"uni0413","uni":""}},
+		"T":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"T","uni":""}},
+		"Т":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"uni0422","uni":""}},
+		"I":{"C":{"arg":[],"out":[],"rec":"Ι","nam":"I","uni":""}},
+		"H":{"C":{"arg":[],"out":[],"rec":"Η","nam":"H","uni":""}},
+		"Н":{"C":{"arg":[],"out":[],"rec":"Η","nam":"uni041D","uni":""}},
+		"Y":{"C":{"arg":[],"out":[],"rec":"Υ","nam":"uni0059","uni":""}},
+		"A":{"C":{"arg":[],"out":[],"rec":"Α","nam":"A","uni":""}},
+		"А":{"C":{"arg":[],"out":[],"rec":"Α","nam":"uni0410","uni":""}},
+		"M":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"M","uni":""}},
+		"М":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"uni041C","uni":""}},
+		"N":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"N","uni":""}},
+		"Й":{"C":{"arg":[],"out":[],"rec":"И","nam":"uni0419","uni":""}},
+		"Z":{"C":{"arg":[],"out":[],"rec":"Ζ","nam":"Zed","uni":""}},
+		"K":{"C":{"arg":[],"out":[],"rec":"Κ","nam":"K","uni":""}},
+		"К":{"C":{"arg":[],"out":[],"rec":"Κ","nam":"uni041A","uni":""}},
+		"X":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"X","uni":""}},
+		"Х":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"uni0425","uni":""}},
+		"O":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"O","uni":""}},
+		"О":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"uni041E","uni":""}},
+		"С":{"C":{"arg":[],"out":[],"rec":"C","nam":"uni0421","uni":""}},
+		"Ф":{"C":{"arg":[],"out":[],"rec":"Φ","nam":"uni0424","uni":""}},
+		"B":{"C":{"arg":[],"out":[],"rec":"Β","nam":"B","uni":""}},
+		"В":{"C":{"arg":[],"out":[],"rec":"Β","nam":"uni0412","uni":""}},
+		"P":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"P","uni":""}},
+		"Р":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"uni0420","uni":""}},		
 	  }
 
 ins = dotdict(ins)
@@ -331,4 +340,3 @@ for letter,funct in ins.items():
 				prevout = out
 				fdet.out.append(out)
 
-pprint.pprint(ins)
