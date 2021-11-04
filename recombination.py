@@ -118,7 +118,7 @@ def save_svg_file(svg_dir, newname, tree):
 	tree.write(new_file+'.svg', xml_declaration=True, encoding='utf-8')
 	#
 
-def func1(l,n,x):
+def func1(l,n,x=False):
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
@@ -127,11 +127,11 @@ def func1(l,n,x):
 
 	#
 	# saving / SAME
-	save_svg_file(l,name,tree)
+	save_svg_file(l,n,tree)
 	#
 	return l 
 
-def func2(l):
+def func2(l,n,x=False):
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
@@ -140,24 +140,31 @@ def func2(l):
 
 	#
 	# saving / SAME
-	save_svg_file(l,name,tree)
+	save_svg_file(l,n,tree)
 	#
 	return l 
 
-def func3(l, nam):
+def t_mirror(l, nam, ax):
 	#
-	print(l, nam)
+	print(l, nam, ax)
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
 	# transforming / CHANGING
-	svg_data[0].attrib['d'] = formatPath(flipPath(parsePath(svg_data[0].attrib['d']), horizontal=True, vertical=False))
+	d = svg_data[0].attrib['d']
+	_h = ax == "horizontal"
+	_v = ax == "vertical"
+	d = formatPath(flipPath(parsePath(d), horizontal=_h, vertical=_v))
 	#
 	# saving / SAME
 	save_svg_file(l,nam,tree)
 	#
 	return l 
 
+def id_change(f, t):
+	#	
+	pass
+	#
 
 '''
 
@@ -166,7 +173,14 @@ Letter: {Function: { Arguments, Out, Recombine }, Function:{ Arguments, Out, Rec
 
 '''
 
-function_declaration = {"H":(func1),"V":(func2),"S":(),"R":(),"C":(func3),"":()}
+function_declaration = {"H":(func1),
+						"V":(func2),
+						"S":(),
+						"R":(),
+						"C":(func2),
+						"TM": (t_mirror),
+						"":(),
+						}
 
 '''
 Π	Ш	Щ
@@ -227,7 +241,7 @@ ins = {
 		"S":{"":{"arg":[],"out":[tdir+"S_"]}},
 		"З":{"":{"arg":[],"out":[tdir+"uni0417_"]}},
 		"Ч":{"":{"arg":[],"out":[tdir+"uni0427_"]}}, 
-		"Ш":{"C":{"arg":[],"out":[],"rec":"Π","nam":"uni0428"}}, # --
+		"Ш":{"TM":{"arg":["vertical"],"out":[],"rec":"Π","nam":"uni0428"}}, # --
 		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш","nam":"uni0429"}},
 		"Ц":{"C":{"arg":[],"out":[],"rec":"Π","nam":"uni0426"}},
 		"F":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"F_"}},
