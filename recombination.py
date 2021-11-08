@@ -152,6 +152,21 @@ def func2(l,nam, uni=False,ax=False):
 	#
 	return l 
 
+def cp(l, nam, uni, ax=False):
+	#
+	print(l, nam, ax, userNameToFileName(nam))
+	# parsing / SAME
+	tree, svg_data = parse_svg_path(l)
+	#
+	# transforming / CHANGING
+	svg_data[0].attrib['id'] = make_id(svg_data[0].attrib['id'], nam, uni)
+	#
+	# saving / SAME
+	glifnam = userNameToFileName(nam)
+	save_svg_file(l,glifnam,tree)
+	#
+	return l 
+
 def t_mirror(l, nam, uni, ax=False):
 	#
 	print(l, nam, ax, userNameToFileName(nam))
@@ -188,6 +203,7 @@ function_declaration = {"H":(func1),
 						"S":(),
 						"R":(),
 						"C":(func2),
+						"CP":(cp),
 						"TM": (t_mirror),
 						"":(),
 						}
@@ -252,7 +268,7 @@ ins = {
 		"З":{"":{"arg":[],"out":[tdir+"uni0417_"]}},
 		"Ч":{"":{"arg":[],"out":[tdir+"uni0427_"]}}, 
 		"Ш":{"TM":{"arg":["horizontal"],"out":[],"rec":"Π","nam":"uni0428", "uni":"0428"}}, # --
-		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш","nam":"uni0429","uni":"0429"}}, #add actual uni
+		"Щ":{"CP":{"arg":[],"out":[],"rec":"Ш","nam":"uni0429","uni":"0429"}},
 		"Ц":{"TM":{"arg":["horizontal"],"out":[],"rec":"Π","nam":"uni0426","uni":"0426"}},
 		"F":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"F","uni":"0046"}},
 		"Γ":{"C":{"arg":[],"out":[],"rec":"F","nam":"Gamma","uni":"0393"}},
@@ -284,44 +300,44 @@ ins = {
 		"D":{"C":{"arg":[],"out":[],"rec":"C","nam":"D","uni":"0044"}},
 		"G":{"C":{"arg":[],"out":[],"rec":"C","nam":"G","uni":"0047"}},
 		"Ю":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"uni042E","uni":"042E"}},
-		"Ρ":{"C":{"arg":[],"out":[],"rec":"Β","nam":"Rho","uni":"03A1"}},
-		"R":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"R","uni":"0052"}},
+		"Ρ":{"CP":{"arg":[],"out":[],"rec":"Β","nam":"Rho","uni":"03A1"}},
+		"R":{"CP":{"arg":[],"out":[],"rec":"Ρ","nam":"R","uni":"0052"}},
 		"Я":{"C":{"arg":[],"out":[],"rec":"R","nam":"uni042F","uni":"042F"}},
 		"Ь":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"uni042C","uni":"042C"}},
 		"Ъ":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042A","uni":"042A"}},
 		"Ы":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042B","uni":"042B"}},
 		"Б":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni0411","uni":"0411"}}, 
 		"Д":{"C":{"arg":[],"out":[],"rec":"Л","nam":"uni0414","uni":"0414"}}, 
-		"П":{"C":{"arg":[],"out":[],"rec":"Π","nam":"uni041F","uni":"041F"}}, # -- 
-		"E":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"E","uni":"0045"}},
-		"Е":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"uni0415","uni":"0415"}},
+		"П":{"CP":{"arg":[],"out":[],"rec":"Π","nam":"uni041F","uni":"041F"}}, # -- 
+		"E":{"CP":{"arg":[],"out":[],"rec":"Ε","nam":"E","uni":"0045"}},
+		"Е":{"CP":{"arg":[],"out":[],"rec":"Ε","nam":"uni0415","uni":"0415"}},
 		"L":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"L","uni":"004c"}},
-		"Г":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"uni0413","uni":"0413"}},
-		"T":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"T","uni":"0054"}},
-		"Т":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"uni0422","uni":"0422"}},
-		"I":{"C":{"arg":[],"out":[],"rec":"Ι","nam":"I","uni":"0049"}},
-		"H":{"C":{"arg":[],"out":[],"rec":"Η","nam":"H","uni":"0048"}},
-		"Н":{"C":{"arg":[],"out":[],"rec":"Η","nam":"uni041D","uni":"041D"}},
-		"Y":{"C":{"arg":[],"out":[],"rec":"Υ","nam":"uni0059","uni":"0059"}},
-		"A":{"C":{"arg":[],"out":[],"rec":"Α","nam":"A","uni":"0041"}},
-		"А":{"C":{"arg":[],"out":[],"rec":"Α","nam":"uni0410","uni":"Acyrilli"}},
-		"M":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"M","uni":"004d"}},
-		"М":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"uni041C","uni":"041C"}},
-		"N":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"N","uni":"004e"}},
+		"Г":{"CP":{"arg":[],"out":[],"rec":"Γ","nam":"uni0413","uni":"0413"}},
+		"T":{"CP":{"arg":[],"out":[],"rec":"Τ","nam":"T","uni":"0054"}},
+		"Т":{"CP":{"arg":[],"out":[],"rec":"Τ","nam":"uni0422","uni":"0422"}},
+		"I":{"CP":{"arg":[],"out":[],"rec":"Ι","nam":"I","uni":"0049"}},
+		"H":{"CP":{"arg":[],"out":[],"rec":"Η","nam":"H","uni":"0048"}},
+		"Н":{"CP":{"arg":[],"out":[],"rec":"Η","nam":"uni041D","uni":"041D"}},
+		"Y":{"CP":{"arg":[],"out":[],"rec":"Υ","nam":"uni0059","uni":"0059"}},
+		"A":{"CP":{"arg":[],"out":[],"rec":"Α","nam":"A","uni":"0041"}},
+		"А":{"CP":{"arg":[],"out":[],"rec":"Α","nam":"uni0410","uni":"Acyrilli"}},
+		"M":{"CP":{"arg":[],"out":[],"rec":"Μ","nam":"M","uni":"004d"}},
+		"М":{"CP":{"arg":[],"out":[],"rec":"Μ","nam":"uni041C","uni":"041C"}},
+		"N":{"CP":{"arg":[],"out":[],"rec":"Ν","nam":"N","uni":"004e"}},
 		"Й":{"C":{"arg":[],"out":[],"rec":"И","nam":"uni0419","uni":"0419"}},
-		"Z":{"C":{"arg":[],"out":[],"rec":"Ζ","nam":"Zed","uni":"005a"}},
-		"K":{"C":{"arg":[],"out":[],"rec":"Κ","nam":"K","uni":"004b"}},
-		"К":{"C":{"arg":[],"out":[],"rec":"Κ","nam":"uni041A","uni":"041A"}},
-		"X":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"X","uni":"0058"}},
-		"Х":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"uni0425","uni":"0425"}},
-		"O":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"O","uni":"004f"}},
-		"О":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"uni041E","uni":"041E"}},
-		"С":{"C":{"arg":[],"out":[],"rec":"C","nam":"uni0421","uni":"0421"}},
-		"Ф":{"C":{"arg":[],"out":[],"rec":"Φ","nam":"uni0424","uni":"0424"}},
-		"B":{"C":{"arg":[],"out":[],"rec":"Β","nam":"B","uni":"0042"}},
-		"В":{"C":{"arg":[],"out":[],"rec":"Β","nam":"uni0412","uni":"0412"}},
-		"P":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"P","uni":"0050"}},
-		"Р":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"uni0420","uni":"0420"}},		
+		"Z":{"CP":{"arg":[],"out":[],"rec":"Ζ","nam":"Zed","uni":"005a"}},
+		"K":{"CP":{"arg":[],"out":[],"rec":"Κ","nam":"K","uni":"004b"}},
+		"К":{"CP":{"arg":[],"out":[],"rec":"Κ","nam":"uni041A","uni":"041A"}},
+		"X":{"CP":{"arg":[],"out":[],"rec":"Χ","nam":"X","uni":"0058"}},
+		"Х":{"CP":{"arg":[],"out":[],"rec":"Χ","nam":"uni0425","uni":"0425"}},
+		"O":{"CP":{"arg":[],"out":[],"rec":"Ο","nam":"O","uni":"004f"}},
+		"О":{"CP":{"arg":[],"out":[],"rec":"Ο","nam":"uni041E","uni":"041E"}},
+		"С":{"CP":{"arg":[],"out":[],"rec":"C","nam":"uni0421","uni":"0421"}},
+		"Ф":{"CP":{"arg":[],"out":[],"rec":"Φ","nam":"uni0424","uni":"0424"}},
+		"B":{"CP":{"arg":[],"out":[],"rec":"Β","nam":"B","uni":"0042"}},
+		"В":{"CP":{"arg":[],"out":[],"rec":"Β","nam":"uni0412","uni":"0412"}},
+		"P":{"CP":{"arg":[],"out":[],"rec":"Ρ","nam":"P","uni":"0050"}},
+		"Р":{"CP":{"arg":[],"out":[],"rec":"Ρ","nam":"uni0420","uni":"0420"}},		
 	  }
 
 ins = dotdict(ins)
