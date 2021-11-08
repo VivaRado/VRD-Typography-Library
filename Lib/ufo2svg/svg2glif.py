@@ -26,18 +26,22 @@ from .simple_path import *
 __version__ = "0.1.0"
 __all__ = ["svg2glif", "SVGOutline"]
 
-def get_additional_info_from_path_id(svg):
+def get_additional_info_from_svg_glyph(svg):
 	#
 	root = ET.fromstring(svg)
 	paths = []
+	'''
 	for el in root.findall(".//{http://www.w3.org/2000/svg}path[@d]"):
 		_id = el.get("id")
 		paths.append(_id)
 	#
-	if len(paths):
-		return paths[0].split('__')
-	else:
-		return "NONE"
+
+	'''
+	dat = root.get("glyph")
+	#if len(paths):
+	return dat.split('__')
+	#else:
+	#	return "NONE"
 
 def svg2glif(svg, name, width=0, height=0, unicodes=None, transform=None,
 			 version=1):
@@ -49,7 +53,7 @@ def svg2glif(svg, name, width=0, height=0, unicodes=None, transform=None,
 	conversion (must be tuple of 6 floats, or a FontTools Transform object).
 	"""
 		
-	add_info = get_additional_info_from_path_id(svg)
+	add_info = get_additional_info_from_svg_glyph(svg)
 
 	glyph = SVGOutline.fromstring(svg, transform=transform)
 	glyph.name = add_info[0]
