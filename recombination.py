@@ -159,7 +159,7 @@ def cp(l, nam, uni, ax=False):
 	tree, svg_data = parse_svg_path(l)
 	#
 	# transforming / CHANGING
-	svg_data[0].attrib['id'] = make_id(svg_data[0].attrib['id'], nam, uni)
+	svg_data.attrib['glyph'] = make_id(svg_data.attrib['glyph'], nam, uni)
 	#
 	# saving / SAME
 	glifnam = userNameToFileName(nam)
@@ -173,8 +173,11 @@ def t_mirror(l, nam, uni, ax=False):
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
+	print("---")
+	print(svg_data.attrib)
+	#
 	# transforming / CHANGING
-	svg_data[0].attrib['id'] = make_id(svg_data[0].attrib['id'], nam, uni)
+	svg_data.attrib['glyph'] = make_id(svg_data.attrib['glyph'], nam, uni)
 	#
 	_h = ax == "horizontal"
 	_v = ax == "vertical"
@@ -270,48 +273,48 @@ ins = {
 		"Ш":{"TM":{"arg":["horizontal"],"out":[],"rec":"Π","nam":"uni0428", "uni":"0428"}}, # --
 		"Щ":{"CP":{"arg":[],"out":[],"rec":"Ш","nam":"uni0429","uni":"0429"}},
 		"Ц":{"TM":{"arg":["horizontal"],"out":[],"rec":"Π","nam":"uni0426","uni":"0426"}},
-		"F":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"F","uni":"0046"}},
-		"Γ":{"C":{"arg":[],"out":[],"rec":"F","nam":"Gamma","uni":"0393"}},
-		"Τ":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"Tau","uni":"03A4"}},
-		"Ι":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"Iota","uni":"0399"}},
-		"Ξ":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"Xi","uni":"039E"}},
-		"Η":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"Eta","uni":"0397"}},
+		"F":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"F","uni":"0046"}}, # resolve func
+		"Γ":{"C":{"arg":[],"out":[],"rec":"F","nam":"Gamma","uni":"0393"}}, # resolve func
+		"Τ":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"Tau","uni":"03A4"}}, # resolve func
+		"Ι":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"Iota","uni":"0399"}}, # resolve func
+		"Ξ":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"Xi","uni":"039E"}}, # resolve func
+		"Η":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"Eta","uni":"0397"}}, # resolve func
 		"V":{"TM":{"arg":["horizontal"],"out":[],"rec":"Λ","nam":"V","uni":"0056"}},
-		"Υ":{"C":{"arg":[],"out":[],"rec":"V","nam":"Upsilon","uni":"03A5"}},
-		"У":{"C":{"arg":[],"out":[],"rec":"Υ","nam":"uni0423","uni":"0423"}},
-		"Α":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"Alpha","uni":"0391"}},
-		"Δ":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"Deltagreek","uni":"0394"}},
-		"W":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"W","uni":"0057"}},
-		"Ν":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"Nu","uni":"039D"}},
-		"И":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"uni0418","uni":"0418"}},
-		"Ζ":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"Zeta","uni":"0396"}},
-		"Σ":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"Sigma","uni":"03A3"}},
-		"Κ":{"C":{"arg":[],"out":[],"rec":"Σ","nam":"Kappa","uni":"039A"}},
-		"Χ":{"C":{"arg":[],"out":[],"rec":"Σ","nam":"Xi","uni":"03A7"}},
-		"Ж":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"uni0416","uni":"0416"}},
-		"Ω":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Omegagreek","uni":"03A9"}},
-		"U":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"U","uni":"0055"}},
-		"Q":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Q","uni":"0051"}},
-		"Θ":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Theta","uni":"0398"}},
-		"Φ":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Phi","uni":"03A6"}},
-		"Ψ":{"C":{"arg":[],"out":[],"rec":"Φ","nam":"Psi","uni":"03A8"}},
-		"C":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"C","uni":"0043"}},
-		"Э":{"C":{"arg":[],"out":[],"rec":"C","nam":"uni042D","uni":"042D"}},
-		"D":{"C":{"arg":[],"out":[],"rec":"C","nam":"D","uni":"0044"}},
-		"G":{"C":{"arg":[],"out":[],"rec":"C","nam":"G","uni":"0047"}},
-		"Ю":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"uni042E","uni":"042E"}},
+		"Υ":{"C":{"arg":[],"out":[],"rec":"V","nam":"Upsilon","uni":"03A5"}}, # resolve func
+		"У":{"C":{"arg":[],"out":[],"rec":"Υ","nam":"uni0423","uni":"0423"}}, # resolve func
+		"Α":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"Alpha","uni":"0391"}}, # resolve func
+		"Δ":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"Deltagreek","uni":"0394"}}, # resolve func
+		"W":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"W","uni":"0057"}}, # resolve func
+		"Ν":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"Nu","uni":"039D"}}, # resolve func
+		"И":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"uni0418","uni":"0418"}}, # resolve func
+		"Ζ":{"C":{"arg":[],"out":[],"rec":"Ν","nam":"Zeta","uni":"0396"}}, # resolve func
+		"Σ":{"C":{"arg":[],"out":[],"rec":"Μ","nam":"Sigma","uni":"03A3"}}, # resolve func
+		"Κ":{"C":{"arg":[],"out":[],"rec":"Σ","nam":"Kappa","uni":"039A"}}, # resolve func
+		"Χ":{"C":{"arg":[],"out":[],"rec":"Σ","nam":"Xi","uni":"03A7"}}, # resolve func
+		"Ж":{"C":{"arg":[],"out":[],"rec":"Χ","nam":"uni0416","uni":"0416"}}, # resolve func
+		"Ω":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Omegagreek","uni":"03A9"}}, # resolve func
+		"U":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"U","uni":"0055"}}, # resolve func
+		"Q":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Q","uni":"0051"}}, # resolve func
+		"Θ":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Theta","uni":"0398"}}, # resolve func
+		"Φ":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"Phi","uni":"03A6"}}, # resolve func
+		"Ψ":{"C":{"arg":[],"out":[],"rec":"Φ","nam":"Psi","uni":"03A8"}}, # resolve func
+		"C":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"C","uni":"0043"}}, # resolve func
+		"Э":{"C":{"arg":[],"out":[],"rec":"C","nam":"uni042D","uni":"042D"}}, # resolve func
+		"D":{"C":{"arg":[],"out":[],"rec":"C","nam":"D","uni":"0044"}}, # resolve func
+		"G":{"C":{"arg":[],"out":[],"rec":"C","nam":"G","uni":"0047"}}, # resolve func
+		"Ю":{"C":{"arg":[],"out":[],"rec":"Ο","nam":"uni042E","uni":"042E"}}, # resolve func
 		"Ρ":{"CP":{"arg":[],"out":[],"rec":"Β","nam":"Rho","uni":"03A1"}},
 		"R":{"CP":{"arg":[],"out":[],"rec":"Ρ","nam":"R","uni":"0052"}},
-		"Я":{"C":{"arg":[],"out":[],"rec":"R","nam":"uni042F","uni":"042F"}},
-		"Ь":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"uni042C","uni":"042C"}},
-		"Ъ":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042A","uni":"042A"}},
-		"Ы":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042B","uni":"042B"}},
-		"Б":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni0411","uni":"0411"}}, 
-		"Д":{"C":{"arg":[],"out":[],"rec":"Л","nam":"uni0414","uni":"0414"}}, 
+		"Я":{"C":{"arg":[],"out":[],"rec":"R","nam":"uni042F","uni":"042F"}}, # resolve func
+		"Ь":{"C":{"arg":[],"out":[],"rec":"Ρ","nam":"uni042C","uni":"042C"}}, # resolve func
+		"Ъ":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042A","uni":"042A"}}, # resolve func
+		"Ы":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni042B","uni":"042B"}}, # resolve func
+		"Б":{"C":{"arg":[],"out":[],"rec":"Ь","nam":"uni0411","uni":"0411"}},  # resolve func
+		"Д":{"C":{"arg":[],"out":[],"rec":"Л","nam":"uni0414","uni":"0414"}},  # resolve func
 		"П":{"CP":{"arg":[],"out":[],"rec":"Π","nam":"uni041F","uni":"041F"}}, # -- 
 		"E":{"CP":{"arg":[],"out":[],"rec":"Ε","nam":"E","uni":"0045"}},
 		"Е":{"CP":{"arg":[],"out":[],"rec":"Ε","nam":"uni0415","uni":"0415"}},
-		"L":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"L","uni":"004c"}},
+		"L":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"L","uni":"004c"}}, # resolve func
 		"Г":{"CP":{"arg":[],"out":[],"rec":"Γ","nam":"uni0413","uni":"0413"}},
 		"T":{"CP":{"arg":[],"out":[],"rec":"Τ","nam":"T","uni":"0054"}},
 		"Т":{"CP":{"arg":[],"out":[],"rec":"Τ","nam":"uni0422","uni":"0422"}},
@@ -324,7 +327,7 @@ ins = {
 		"M":{"CP":{"arg":[],"out":[],"rec":"Μ","nam":"M","uni":"004d"}},
 		"М":{"CP":{"arg":[],"out":[],"rec":"Μ","nam":"uni041C","uni":"041C"}},
 		"N":{"CP":{"arg":[],"out":[],"rec":"Ν","nam":"N","uni":"004e"}},
-		"Й":{"C":{"arg":[],"out":[],"rec":"И","nam":"uni0419","uni":"0419"}},
+		"Й":{"C":{"arg":[],"out":[],"rec":"И","nam":"uni0419","uni":"0419"}}, # resolve func
 		"Z":{"CP":{"arg":[],"out":[],"rec":"Ζ","nam":"Zed","uni":"005a"}},
 		"K":{"CP":{"arg":[],"out":[],"rec":"Κ","nam":"K","uni":"004b"}},
 		"К":{"CP":{"arg":[],"out":[],"rec":"Κ","nam":"uni041A","uni":"041A"}},

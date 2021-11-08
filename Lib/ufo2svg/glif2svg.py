@@ -5,6 +5,8 @@ from io import BytesIO
 import tempfile
 
 from .tools import *
+from .tools import _writeUnicode
+
 from .glyphs import writeGlyphPath
 from .simple_path import *
 
@@ -18,11 +20,9 @@ header = """<?xml version="1.0" encoding="utf-8"?>
 flush_space = '                                     '
 #
 
-def convertUFOToSVGFiles(self, _f, item_name, ignoreGlyphs=[] ):
+def convertUFOToSVGFiles(self, font, item_name, ignoreGlyphs=[] ):
 	#
 	destinationPathOrFile = self.current_font_instance_vectors_directory
-	#
-	font = _f
 	#
 	all_keys_sorted = sorted(font.keys())
 	#
@@ -53,13 +53,17 @@ def convertUFOToSVGFiles(self, _f, item_name, ignoreGlyphs=[] ):
 			#
 			the_path = writeGlyphPath(glyph)
 			#
+			glifdata = '__'.join([str(glyph.name),str(_writeUnicode(glyph)).upper(),str(glyph.width)])
+			#
 			if glyph.box:
-				#			
-				svg = ET.Element("svg", attrib=dict(version="1.0", xmlns="http://www.w3.org/2000/svg", width="0px", height="0px", x="0px", y="0px", viewBox="0 0 0 0"))
+				#
+				attrs = dict(version="1.0", xmlns="http://www.w3.org/2000/svg", width="0px", height="0px", x="0px", y="0px", viewBox="0 0 0 0", glyph=glifdata)
+				svg = ET.Element("svg", attrib=attrs)
 				#
 			else:
-				#			
-				svg = ET.Element("svg", attrib=dict(version="1.0", xmlns="http://www.w3.org/2000/svg", x="0px", y="0px", viewbox="0 0 0 0"))
+				#
+				attrs = dict(version="1.0", xmlns="http://www.w3.org/2000/svg", x="0px", y="0px", viewbox="0 0 0 0", glyph=glifdata)
+				svg = ET.Element("svg", attrib=attrs)
 				#
 			#
 			svg.append(the_path)

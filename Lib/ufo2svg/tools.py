@@ -41,3 +41,13 @@ def pointToString(pt):
 	return " ".join([valueToString(i) for i in pt])
 
 
+
+def _writeUnicode(glyph):
+
+	if glyph.unicode:
+
+		number = glyph.unicode
+		unic = '{0:04x}'.format(number)
+		return unic
+	else:
+		return "none"

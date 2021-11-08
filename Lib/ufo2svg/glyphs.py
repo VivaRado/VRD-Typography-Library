@@ -5,6 +5,7 @@ from xml.etree.ElementTree import Element
 from xml.etree import ElementTree
 from .svgPathPen import SVGPathPen
 from .tools import valueToString
+from .tools import _writeUnicode
 
 from svgpathtools import parse_path
 
@@ -40,22 +41,14 @@ def writeGlyphPath(glyph):
 def _writeID(glyph, attrib):
 
 	assert glyph.name is not None
-	attrib["id"] = '__'.join([str(glyph.name),str(_writeUnicode(glyph, attrib)).upper(),str(glyph.width)])
+	attrib["id"] = '__'.join([str(glyph.name),str(_writeUnicode(glyph)).upper(),str(glyph.width)])
 
 # def _writeHorizAdvX(glyph, attrib):
 
 # 	assert glyph.width >= 0
 # 	attrib["horiz-adv-x"] = valueToString(glyph.width)
 
-def _writeUnicode(glyph, attrib):
 
-	if glyph.unicode:
-
-		number = glyph.unicode
-		unic = '{0:04x}'.format(number)
-		return unic
-	else:
-		return "none"
 
 def _writeD(glyph, attrib, _x, _y):
 
