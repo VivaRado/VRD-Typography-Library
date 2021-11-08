@@ -121,7 +121,7 @@ def save_svg_file(svg_dir, newname, tree):
 	tree.write(new_file+'.svg', xml_declaration=True, encoding='utf-8')
 	#
 
-def func1(l,nam,x=False):
+def func1(l,nam, uni,x=False):
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
@@ -136,7 +136,7 @@ def func1(l,nam,x=False):
 	#
 	return l 
 
-def func2(l,nam,ax=False):
+def func2(l,nam, uni=False,ax=False):
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
@@ -152,17 +152,18 @@ def func2(l,nam,ax=False):
 	#
 	return l 
 
-def t_mirror(l, nam, ax):
+def t_mirror(l, nam, uni, ax=False):
 	#
 	print(l, nam, ax, userNameToFileName(nam))
 	# parsing / SAME
 	tree, svg_data = parse_svg_path(l)
 	#
 	# transforming / CHANGING
-	d = svg_data[0].attrib['d']
+	svg_data[0].attrib['id'] = make_id(svg_data[0].attrib['id'], nam, uni)
+	#
 	_h = ax == "horizontal"
 	_v = ax == "vertical"
-	d = formatPath(flipPath(parsePath(d), horizontal=_h, vertical=_v))
+	svg_data[0].attrib['d'] = formatPath(flipPath(parsePath(svg_data[0].attrib['d']), horizontal=_h, vertical=_v))
 	#
 	# saving / SAME
 	glifnam = userNameToFileName(nam)
@@ -170,9 +171,9 @@ def t_mirror(l, nam, ax):
 	#
 	return l 
 
-def id_change(f, t):
-	#	
-	pass
+def make_id(_id, nam, uni):
+	#
+	return '__'.join([nam,uni,_id.split("__")[2]])
 	#
 
 '''
@@ -250,16 +251,16 @@ ins = {
 		"S":{"":{"arg":[],"out":[tdir+"S_"]}},
 		"З":{"":{"arg":[],"out":[tdir+"uni0417_"]}},
 		"Ч":{"":{"arg":[],"out":[tdir+"uni0427_"]}}, 
-		"Ш":{"TM":{"arg":["vertical"],"out":[],"rec":"Π","nam":"uni0428"}}, # --
+		"Ш":{"TM":{"arg":["horizontal"],"out":[],"rec":"Π","nam":"uni0428", "uni":"0428"}}, # --
 		"Щ":{"C":{"arg":[],"out":[],"rec":"Ш","nam":"uni0429","uni":"0429"}}, #add actual uni
-		"Ц":{"C":{"arg":[],"out":[],"rec":"Π","nam":"uni0426","uni":"0426"}},
+		"Ц":{"TM":{"arg":["horizontal"],"out":[],"rec":"Π","nam":"uni0426","uni":"0426"}},
 		"F":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"F","uni":"0046"}},
 		"Γ":{"C":{"arg":[],"out":[],"rec":"F","nam":"Gamma","uni":"0393"}},
 		"Τ":{"C":{"arg":[],"out":[],"rec":"Γ","nam":"Tau","uni":"03A4"}},
 		"Ι":{"C":{"arg":[],"out":[],"rec":"Τ","nam":"Iota","uni":"0399"}},
 		"Ξ":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"Xi","uni":"039E"}},
 		"Η":{"C":{"arg":[],"out":[],"rec":"Ε","nam":"Eta","uni":"0397"}},
-		"V":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"V","uni":"0056"}},
+		"V":{"TM":{"arg":["horizontal"],"out":[],"rec":"Λ","nam":"V","uni":"0056"}},
 		"Υ":{"C":{"arg":[],"out":[],"rec":"V","nam":"Upsilon","uni":"03A5"}},
 		"У":{"C":{"arg":[],"out":[],"rec":"Υ","nam":"uni0423","uni":"0423"}},
 		"Α":{"C":{"arg":[],"out":[],"rec":"Λ","nam":"Alpha","uni":"0391"}},
@@ -336,7 +337,7 @@ for letter,funct in ins.items():
 
 			if fnam != "":
 				
-				out = function_declaration[fnam](prevout,fdet.nam,*fdet.arg)
+				out = function_declaration[fnam](prevout,fdet.nam,fdet.uni,*fdet.arg)
 				prevout = out
 				fdet.out.append(out)
 
