@@ -269,7 +269,7 @@ ins = {
 		"J":{"":{"arg":[],"out":[tdir+"J_"]}},
 		"S":{"":{"arg":[],"out":[tdir+"S_"]}},
 		"З":{"":{"arg":[],"out":[tdir+"uni0417_"]}},
-		"Ч":{"":{"arg":[],"out":[tdir+"uni0427_"]}}, 
+		"Ч":{"":{"arg":[],"out":[tdir+"uni0427_"]}},
 		"Ш":{"TM":{"arg":["horizontal"],"out":[],"rec":"Π","nam":"uni0428", "uni":"0428"}}, # --
 		"Щ":{"CP":{"arg":[],"out":[],"rec":"Ш","nam":"uni0429","uni":"0429"}},
 		"Ц":{"TM":{"arg":["horizontal"],"out":[],"rec":"Π","nam":"uni0426","uni":"0426"}},
