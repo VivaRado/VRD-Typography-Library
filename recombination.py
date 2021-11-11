@@ -46,7 +46,10 @@ from fontParts.world import *
 from Lib.ufo2svg.simple_path import *
 from Lib.ufo2svg.svg2glif import *
 
+from Lib.helpers.svgpath2mpl import parse_path as mpl_parse_path
+
 from svg.path import parse_path
+
 
 
 from Lib.generic.generic_tools import dotdict
@@ -104,12 +107,13 @@ ET.register_namespace("","http://www.w3.org/2000/svg")
 
 def path_to_coord(d):
 
-	parsed = parse_path(d)
-	print('Objects:\n', parsed, '\n' + '-' * 20)
-	for obj in parsed:
-		print(type(obj).__name__, ', start/end coords:', ((round(obj.start.real, 3), round(obj.start.imag, 3)), (round(obj.end.real, 3), round(obj.end.imag, 3))))
-	print('-' * 20)
+	# parsed = parse_path(d)
+	# print('Objects:\n', parsed, '\n' + '-' * 20)
+	# for obj in parsed:
+	# 	print(type(obj).__name__, ', start/end coords:', ((round(obj.start.real, 3), round(obj.start.imag, 3)), (round(obj.end.real, 3), round(obj.end.imag, 3))))
+	# print('-' * 20)
 	
+	print(mpl_parse_path(d))
 	# split_by_letters = re.findall('[A-Z|a-z][^A-Z|a-z]*', d)
 	# split_as_you_want = []
 	# for x in split_by_letters:
