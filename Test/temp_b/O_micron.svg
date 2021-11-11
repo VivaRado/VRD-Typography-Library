@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="612px" height="792px" viewBox="0 0 612 792" style="enable-background:new 0 0 612 792;" xml:space="preserve">
+	 width="612px" height="792px" viewBox="0 0 612 792" style="enable-background:new 0 0 612 792;" xml:space="preserve" glyph="Omicron__039F__493">
 <path id="F" d="M246-602.1v-110c-115.8,0-210.1,94.2-210.1,210.1h110C145.9-557.2,190.8-602.1,246-602.1z"/>
 <path id="D" d="M145.9-199.1h-110C35.9-83.2,130.2,11,246,11V-99C190.8-99,145.9-143.9,145.9-199.1z"/>
 <path id="A" d="M346.1-502h110c0-115.8-94.2-210.1-210.1-210.1v110C301.2-602.1,346.1-557.2,346.1-502z"/>
 <path id="C" d="M456.1-199.1h-110C346.1-143.9,301.2-99,246-99V11C361.8,11,456.1-83.2,456.1-199.1z"/>
-<rect id="B" x="346.1" y="-502" width="110" height="302.9"/>
-<rect id="E" x="35.9" y="-502" width="110" height="302.9"/>
+<path id="B" d="M346.1-502c0,0,70.9,0,110,0c0,50,0,302.9,0,302.9h-110V-502z"/>
+<path id="E" d="M35.9-502c0,0,74.1,0,110,0c0,68,0,302.9,0,302.9h-110V-502z"/>
 </svg>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="612px" height="792px" viewBox="0 0 612 792" style="enable-background:new 0 0 612 792;" xml:space="preserve">
-<rect id="D" x="467" y="-698" width="110" height="698"/>
-<rect id="A" x="41" y="-698" width="110" height="698"/>
-<polygon id="B_1_" points="308,0 272,0 44,-698 151,-698 341,-115 "/>
-<polygon id="C" points="310,0 346,0 574,-698 467,-698 277,-115 "/>
+	 width="612px" height="792px" viewBox="0 0 612 792" style="enable-background:new 0 0 612 792;" xml:space="preserve" glyph="Mu__039C__620">
+<path id="D" d="M467-698c0,0,61,0,110,0c0,71,0,698,0,698H467V-698z"/>
+<path id="A" d="M41-698c0,0,55,0,110,0c0,53,0,698,0,698H41V-698z"/>
+<path id="B_1_" d="M308,0h-36L44-698c0,0,59,0,107,0c21,64.3,190,583,190,583L308,0z"/>
+<path id="C" d="M310,0h36l228-698c0,0-70,0-107,0c-12.6,38.8-190,583-190,583L310,0z"/>
 </svg>

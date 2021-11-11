@@ -1,4 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="0px" height="0px" x="0px" y="0px" viewBox="0 0 0 0" glyph="uni0428__0428__514">
-  <path id="Pi__03A0__514" d="M361.0 0.0L471.0 0.0L471.0 698.0L41.0 698.0L41.0 0.0L151.0 0.0L151.0 588.0L361.0 588.0L361.0 0.0" />
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" x="0px" y="0px" width="612px" height="792px" viewBox="0 0 612 792" style="enable-background:new 0 0 612 792;" xml:space="preserve" glyph="uni0428__0428__514">
+  <path id="Pi_A" d="M41.0 -698.0C41.0 -698.0 424.0 -698.0 471.0 -698.0C471.0 -643.0 471.0 -588.0 471.0 -588.0L41.0 -588.0L41.0 -698.0Z" />
+  <path id="Pi_B" d="M41.0 -698.0C41.0 -698.0 105.0 -698.0 151.0 -698.0C151.0 -635.0 151.0 0.0 151.0 0.0L41.0 0.0L41.0 -698.0Z" />
+  <path id="Pi_C" d="M361.0 -698.0C361.0 -698.0 430.0 -698.0 471.0 -698.0C471.0 -652.0 471.0 0.0 471.0 0.0L361.0 0.0L361.0 -698.0Z" />
 </svg>
