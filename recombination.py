@@ -45,10 +45,14 @@ from Lib.ufo2svg.glif2svg import convertUFOToSVGFiles
 from fontParts.world import *
 from Lib.ufo2svg.simple_path import *
 from Lib.ufo2svg.svg2glif import *
+import numpy as np
 
 from Lib.helpers.svgpath2mpl import parse_path as mpl_parse_path
 
 from svg.path import parse_path
+
+
+import matplotlib.pyplot as plt
 
 
 
@@ -105,6 +109,11 @@ And possible custom functions that go into more detail.
 
 ET.register_namespace("","http://www.w3.org/2000/svg")
 
+def f7(seq):
+	seen = set()
+	seen_add = seen.add
+	return [x for x in seq if not (x in seen or seen_add(x))]
+	
 def path_to_coord(d):
 
 	# parsed = parse_path(d)
@@ -113,7 +122,30 @@ def path_to_coord(d):
 	# 	print(type(obj).__name__, ', start/end coords:', ((round(obj.start.real, 3), round(obj.start.imag, 3)), (round(obj.end.real, 3), round(obj.end.imag, 3))))
 	# print('-' * 20)
 	
-	print(mpl_parse_path(d))
+	_path = mpl_parse_path(d)
+
+	print(_path)
+
+	crd_mpl_vrt = _path.__dict__['_vertices'].tolist()
+	crd_mpl_cds = _path.__dict__['_codes'].tolist()
+
+
+	#Z = [x for _,x in sorted(zip(Y,X))]
+	print("VRT===")
+	print(crd_mpl_vrt)
+	print("CDS===")
+	print(crd_mpl_cds)
+
+	Z = [x for _,x in sorted(zip(crd_mpl_cds,crd_mpl_vrt))]
+
+	#print(Z)
+
+	unique_data = [list(x) for x in set(tuple(x) for x in Z)]
+
+	print("RESTULS", Z)
+
+	return unique_data
+	
 	# split_by_letters = re.findall('[A-Z|a-z][^A-Z|a-z]*', d)
 	# split_as_you_want = []
 	# for x in split_by_letters:
@@ -221,7 +253,7 @@ def t_mirror(l, nam, uni, ax=False):
 		x.attrib['d'] = formatPath(flipPath(parsePath(x.attrib['d']), horizontal=_h, vertical=_v))
 		#
 		print("------------------")
-		print( x.attrib['id'] )
+		print(x.attrib['id'])
 		print(path_to_coord((x.attrib['d'])) )
 		#
 	#
