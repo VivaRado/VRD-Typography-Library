@@ -67,6 +67,16 @@ import xml.etree.ElementTree as ET
 import copy
 import re
 
+
+from types import SimpleNamespace
+from fontTools.svgLib import SVGPath
+
+from fontTools.pens.pointPen import SegmentToPointPen
+from fontTools.ufoLib.glifLib import writeGlyphToString
+
+from fontTools.ufoLib.glifLib import GlifLibError, readGlyphFromString
+
+
 class Recomb(object):
 	def __init__(self):
 		
@@ -109,11 +119,33 @@ And possible custom functions that go into more detail.
 
 ET.register_namespace("","http://www.w3.org/2000/svg")
 
-def f7(seq):
-	seen = set()
-	seen_add = seen.add
-	return [x for x in seq if not (x in seen or seen_add(x))]
-	
+def svg2glif(svg, name, width=0, height=0, unicodes=None, transform=None,
+			 version=2):
+	""" Convert an SVG outline to a UFO glyph with given 'name', advance
+	'width' and 'height' (int), and 'unicodes' (list of int).
+	Return the resulting string in GLIF format (default: version 2).
+	If 'transform' is provided, apply a transformation matrix before the
+	conversion (must be tuple of 6 floats, or a FontTools Transform object).
+	"""
+	glyph = SimpleNamespace(width=width, height=height, unicodes=unicodes)
+	outline = SVGPath.fromstring(svg, transform=transform)
+
+	# writeGlyphToString takes a callable (usually a glyph's drawPoints
+	# method) that accepts a PointPen, however SVGPath currently only has
+	# a draw method that accepts a segment pen. We need to wrap the call
+	# with a converter pen.
+	def drawPoints(pointPen):
+		pen = SegmentToPointPen(pointPen)
+		outline.draw(pen)
+
+	return writeGlyphToString(name,
+							  glyphObject=glyph,
+							  drawPointsFunc=drawPoints,
+							  formatVersion=version)
+
+
+
+
 def path_to_coord(d):
 
 	# parsed = parse_path(d)
@@ -121,7 +153,8 @@ def path_to_coord(d):
 	# for obj in parsed:
 	# 	print(type(obj).__name__, ', start/end coords:', ((round(obj.start.real, 3), round(obj.start.imag, 3)), (round(obj.end.real, 3), round(obj.end.imag, 3))))
 	# print('-' * 20)
-	
+
+
 	_path = mpl_parse_path(d)
 
 	print(_path)
@@ -233,6 +266,52 @@ def cp(l, nam, uni, ax=False):
 	#
 	return glifnam
 
+def make_glyph(_g_dat,_name):
+		#
+		_let = _name
+		f = NewFont()
+		g = f.newGlyph(_let)
+		pen = g.getPointPen()
+		glyph_result = readGlyphFromString(_g_dat, glyphObject=g, pointPen=pen)
+		#
+		#
+		f_g = f[_let]
+		#
+		
+		#
+		return f_g
+		#
+	#
+offset_y = 700
+offset_x = 50
+
+def get_glif_coord(f_g, _type):
+		#
+		#
+		p_arr = []
+		#
+		for contour in f_g:
+			#
+			for point in contour.points:
+				#
+				if _type == 'corner':
+						
+					if point.type != 'offcurve':
+						#
+						p_arr.append([point.x, point.y])
+						#
+				#
+				else:
+					#
+					p_arr.append([point.x, point.y])
+					#
+
+			#
+		#
+		return p_arr
+		#
+	#
+
 def t_mirror(l, nam, uni, ax=False):
 	#
 	print(l, nam, ax, userNameToFileName(nam))
@@ -247,6 +326,20 @@ def t_mirror(l, nam, uni, ax=False):
 	#
 	_h = ax == "horizontal"
 	_v = ax == "vertical"
+	#
+	with open(l+'.svg', "rb") as f:
+		svg = f.read()
+	#
+	gli = svg2glif(svg, nam)
+	#
+	print("===== glif =")
+	print(gli)
+	#
+	made_g = make_glyph(gli,nam)
+	g_strt_coord = get_glif_coord(made_g, 'corner')
+	#
+	print("GOT STRT")
+	print(g_strt_coord)
 	#
 	for x in svg_data:
 		#
@@ -450,3 +543,5 @@ pprint.pprint(ans, sort_dicts=False)
 #from svgpathtools import svg2paths
 #paths, attributes = svg2paths('some_svg_file.svg')
 #
+
+
