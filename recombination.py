@@ -330,16 +330,12 @@ def t_mirror(l, nam, uni, ax=False):
 	with open(l+'.svg', "rb") as f:
 		svg = f.read()
 	#
-	gli = svg2glif(svg, nam)
-	#
-	print("===== glif =")
-	print(gli)
-	#
-	made_g = make_glyph(gli,nam)
-	g_strt_coord = get_glif_coord(made_g, 'corner')
+	glif = svg2glif(svg, nam)
+	m_glif = make_glyph(glif,nam)
+	anchors = get_glif_coord(m_glif, 'corner')
 	#
 	print("GOT STRT")
-	print(g_strt_coord)
+	print(anchors)
 	#
 	for x in svg_data:
 		#
