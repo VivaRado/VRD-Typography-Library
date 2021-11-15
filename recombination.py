@@ -192,7 +192,7 @@ def path_to_coord(d):
 
 def parse_svg_path(svg_dir):
 	#
-	print("PARSE PATH", svg_dir)
+	#print("PARSE PATH", svg_dir)
 	#
 	glyphName = svg_dir.split("/")[-1]
 	svg_file = os.path.join(svg_dir+'.svg')
@@ -292,24 +292,37 @@ def get_glif_coord(f_g, _type):
 		#
 		for contour in f_g:
 			#
+			nest = []
+			#
 			for point in contour.points:
+				#
 				#
 				if _type == 'corner':
 						
 					if point.type != 'offcurve':
 						#
-						p_arr.append([point.x, point.y])
+						nest.append([point.x, point.y])
 						#
 				#
 				else:
 					#
-					p_arr.append([point.x, point.y])
+					nest.append([point.x, point.y])
 					#
-
+			#
+			p_arr.append(nest)
 			#
 		#
 		return p_arr
 		#
+	#
+def get_vector_points(file,nam):
+	#
+	svg = open(file+'.svg', "rb").read()
+	glif = svg2glif(svg, nam)
+	m_glif = make_glyph(glif,nam)
+	anchors = get_glif_coord(m_glif, 'corner')
+	#
+	return anchors
 	#
 
 def t_mirror(l, nam, uni, ax=False):
@@ -327,25 +340,20 @@ def t_mirror(l, nam, uni, ax=False):
 	_h = ax == "horizontal"
 	_v = ax == "vertical"
 	#
-	with open(l+'.svg', "rb") as f:
-		svg = f.read()
+	anchors = get_vector_points(l,nam)
 	#
-	glif = svg2glif(svg, nam)
-	m_glif = make_glyph(glif,nam)
-	anchors = get_glif_coord(m_glif, 'corner')
+	print("CONTOUR POINT COORDINATES")
+	pprint.pprint(anchors)
 	#
-	print("GOT STRT")
-	print(anchors)
-	#
-	for x in svg_data:
-		#
-		x.attrib['d'] = formatPath(flipPath(parsePath(x.attrib['d']), horizontal=_h, vertical=_v))
-		#
-		print("------------------")
-		print(x.attrib['id'])
-		print(path_to_coord((x.attrib['d'])) )
-		#
-	#
+	# for x in svg_data:
+	# 	#
+	# 	x.attrib['d'] = formatPath(flipPath(parsePath(x.attrib['d']), horizontal=_h, vertical=_v))
+	# 	#
+	# 	print("------------------")
+	# 	print(x.attrib['id'])
+	# 	print(path_to_coord((x.attrib['d'])) )
+	# 	#
+	# #
 	# saving / SAME
 	glifnam = userNameToFileName(nam)
 	save_svg_file(l,glifnam,tree)
