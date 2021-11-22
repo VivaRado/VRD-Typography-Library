@@ -315,24 +315,26 @@ def get_glif_coord(f_g, _type):
 		return p_arr
 		#
 	#
-def get_vector_points(file,nam):
+def get_shape_points(svg_string,nam):
 	#
-	svg = open(file+'.svg', "rb").read()
-	glif = svg2glif(svg, nam)
+	# svg = open(file+'.svg', "rb").read()
+	# print("BEFORE", svg)
+	glif = svg2glif(svg_string, nam)
 	m_glif = make_glyph(glif,nam)
+	#
+	print(glif)
+	#
 	anchors = get_glif_coord(m_glif, 'corner')
 	#
 	return anchors
 	#
 
-def t_mirror(l, nam, uni, ax=False):
+def t_mirror(file, nam, uni, ax=False):
 	#
-	print(l, nam, ax, userNameToFileName(nam))
+	print(file, nam, ax, userNameToFileName(nam))
 	# parsing / SAME
-	tree, svg_data = parse_svg_path(l)
+	tree, svg_data = parse_svg_path(file)
 	#
-	#print("---")
-	#print(svg_data.attrib)
 	#
 	# transforming / CHANGING
 	svg_data.attrib['glyph'] = make_id(svg_data.attrib['glyph'], nam, uni)
@@ -340,23 +342,34 @@ def t_mirror(l, nam, uni, ax=False):
 	_h = ax == "horizontal"
 	_v = ax == "vertical"
 	#
-	anchors = get_vector_points(l,nam)
+	svg_string = ET.tostring(svg_data, encoding='utf8', method='xml')
+	#
+	anchors = get_shape_points(svg_string,nam)
 	#
 	print("CONTOUR POINT COORDINATES")
 	pprint.pprint(anchors)
 	#
-	# for x in svg_data:
-	# 	#
-	# 	x.attrib['d'] = formatPath(flipPath(parsePath(x.attrib['d']), horizontal=_h, vertical=_v))
-	# 	#
-	# 	print("------------------")
-	# 	print(x.attrib['id'])
-	# 	print(path_to_coord((x.attrib['d'])) )
-	# 	#
-	# #
+	print("---------------------------")
+	print(svg_data[0].attrib['d'])
+	print(svg_data[1].attrib['d'])
+	print(svg_data[2].attrib['d'])
+	print(anchors[0])
+	print(anchors[1])
+	print(anchors[2])
+	print("---------------------------")
+	#
+	for x in svg_data:
+		#
+		x.attrib['d'] = formatPath(flipPath(parsePath(x.attrib['d']), horizontal=_h, vertical=_v))
+		#
+		#print("------------------")
+		#print(x.attrib['id'])
+		#print(path_to_coord((x.attrib['d'])) )
+		#
+	#
 	# saving / SAME
 	glifnam = userNameToFileName(nam)
-	save_svg_file(l,glifnam,tree)
+	save_svg_file(file,glifnam,tree)
 	#
 	return tdir+glifnam
 
