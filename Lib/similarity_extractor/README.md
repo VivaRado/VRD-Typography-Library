@@ -1,7 +1,7 @@
-SIMEX (Similarity Extractor)
+SMEX (Similarity Extractor)
 ===================
 
-SIMEX is used to create the EFO Groups Files.
+SMEX is used to create the EFO Groups Files.
 
  * EFO/groups/components.plist:
 	This file is used to componentize the UFO glyphs inside the EFO.
