@@ -1,4 +1,4 @@
-SMEX (Similarity Extractor)
+SMEX (Similarity Extractor) Change name from SIMEX
 ===================
 
 SMEX is used to create the EFO Groups Files.
